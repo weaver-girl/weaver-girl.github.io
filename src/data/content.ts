@@ -452,7 +452,7 @@ public class MyInterceptor {
 }`;
 
 export const pluginDependencyExample = `<dependency>
-  <groupId>com.github.cc11001100</groupId>
+  <groupId>io.github.cc11001100</groupId>
   <artifactId>weaver-girl-api</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <scope>provided</scope>
