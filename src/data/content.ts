@@ -137,7 +137,7 @@ export interface Scenario {
   outcomes: string[];
 }
 
-/** Concrete things a team builds on top of the hook base. Mirrored by the runnable demos. */
+/** Product shapes the base is designed to carry. Data security, resilience and audit have runnable demos; APM/IAST/RASP are the product layer. */
 export const scenarios: Scenario[] = [
   {
     key: "apm",
@@ -471,6 +471,7 @@ export interface DocLink {
 }
 
 export const docLinks: DocLink[] = [
+  { title: "产品定位", description: "切面底座与完整 APM 平台的边界", href: `${REPO_URL}/blob/main/docs/positioning.md` },
   { title: "架构说明", description: "模块划分、类加载隔离与织入流程", href: `${REPO_URL}/blob/main/docs/ARCHITECTURE.md` },
   { title: "切面底座定位", description: "为什么本仓库只做底座，APM / IAST / RASP 属于切面应用", href: `${REPO_URL}/blob/main/docs/ant-aspect-base-decision.md` },
   { title: "插件开发指南", description: "从零编写并发布一个 WeaverPlugin", href: `${REPO_URL}/blob/main/docs/plugin-developer-guide.md` },
@@ -480,6 +481,8 @@ export const docLinks: DocLink[] = [
   { title: "故障排查", description: "常见挂载与拦截问题的定位方法", href: `${REPO_URL}/blob/main/docs/troubleshooting.md` },
   { title: "扩展点指南", description: "采样、导出、告警等 SPI 的扩展方式", href: `${REPO_URL}/blob/main/docs/extension-point-guide.md` },
   { title: "性能基线", description: "各热路径组件的 ns/op 与回归守卫", href: `${REPO_URL}/blob/main/docs/benchmarks/baseline-v1.md` },
+  { title: "版本与兼容性", description: "语义化版本、公开 API 与 Java 支持范围", href: `${REPO_URL}/blob/main/docs/versioning-and-compatibility.md` },
+  { title: "路线图", description: "1.0 发布、生态建设与 2.0 平台能力", href: `${REPO_URL}/blob/main/ROADMAP.md` },
   { title: "变更记录", description: "每个版本做了什么", href: `${REPO_URL}/blob/main/CHANGELOG.md` },
 ];
 

@@ -90,7 +90,7 @@ export function HomePage() {
           <div className="section-intro">
             <p className="eyebrow">能做什么</p>
             <h2>不止是拦截，是一整条产品线。</h2>
-            <p>同一个 agent 底座，多种落地方式；APM、数据安全与韧性在仓库里都有可运行的演示。</p>
+            <p>同一个 agent 底座，多种落地方式。APM、IAST、RASP 是底座承载的产品形态；数据安全、业务韧性与审计在仓库里有可运行的演示。</p>
           </div>
         </Reveal>
         <div className="scenario-grid">
