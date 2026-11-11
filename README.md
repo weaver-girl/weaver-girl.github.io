@@ -37,7 +37,7 @@ for anything a page quotes.
 
 - [`weaver-girl/weaver-girl`](https://github.com/weaver-girl/weaver-girl) — agent,
   public API, built-in plugins, docs
-- `weaver-girl/weaver-girl-plugin-template` — starter for third-party plugins
+- [`weaver-girl/weaver-girl-plugin-template`](https://github.com/weaver-girl/weaver-girl-plugin-template) — starter for third-party plugins
 
 ## License
 
