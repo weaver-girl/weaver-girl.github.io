@@ -1,11 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// BASE_PATH is "/" for local dev and "/<repo>/" when built for GitHub Pages
-// (project sites are served from a subpath). Set by the Pages workflow.
-export default defineConfig(({ mode }) => ({
-  // Project sites on GitHub Pages are served from /<repo>/, so the workflow
-  // builds with --mode pages. Local dev and preview stay at the domain root.
-  base: mode === "pages" ? "/weaver-girl/" : "/",
+// GitHub Pages serves an org site (a repo named <org>.github.io) from the domain
+// root, but a project site from /<repo>/. The Pages workflow derives BASE_PATH
+// from the actual repository name, so this config works unchanged either way.
+export default defineConfig({
+  base: process.env.BASE_PATH ?? "/",
   plugins: [react()],
-}));
+});
