@@ -52,7 +52,7 @@ export function CodeBlock({ code, file }: CodeBlockProps) {
           {lines.map((line, i) => (
             <span key={i}>
               {/* A leading flag is a wrapped continuation, not a new command. */}
-              {/^(mvn|java|curl) /.test(line) && !line.startsWith("-") ? (
+              {/^(mvn|java|curl|git|cd|docker|unzip) /.test(line) && !line.startsWith("-") ? (
                 <>
                   <span className="tok-cmd">{line.split(" ")[0]}</span>
                   {highlight(line.slice(line.indexOf(" ")))}

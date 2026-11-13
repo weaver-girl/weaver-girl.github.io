@@ -76,7 +76,7 @@ export function CasesPage() {
                 </div>
                 <Alert
                   type="info"
-                  showIcon
+                  showIcon={false}
                   message="自己跑一遍"
                   description={
                     <>
