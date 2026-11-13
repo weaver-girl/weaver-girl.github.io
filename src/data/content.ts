@@ -526,7 +526,7 @@ export const basePrimitives: Primitive[] = [
     name: "配置读取",
     en: "CONFIG",
     impl: "weaver.yml · watch=true",
-    detail: "本机 YAML 是唯一配置源；文件变更可热加载，不重启进程。配置格式与读取时机是契约的一部分。",
+    detail: "本机 YAML 是唯一配置源。文件变更可以热加载，不必重启进程，配置格式与读取时机都保持稳定。",
   },
   {
     n: "02",
@@ -547,7 +547,7 @@ export const basePrimitives: Primitive[] = [
     name: "模块加载",
     en: "LOADING",
     impl: "AgentClassLoader · plugins/",
-    detail: "child-first 隔离，插件失败由熔断器摘除；一个类变换失败不拖垮进程。",
+    detail: "child-first 隔离，插件失败由熔断器摘除。一个类变换失败，不会拖垮整个进程。",
   },
 ];
 
@@ -627,7 +627,7 @@ export const guarantees: Guarantee[] = [
   {
     title: "失败开放",
     en: "FAIL-OPEN",
-    detail: "类变换抛出（含 Error）时保留原字节，兄弟类继续增强，进程不退出。",
+    detail: "类变换抛出异常（含 Error）时保留原字节，兄弟类继续增强，进程照常运行。",
   },
   {
     title: "类加载隔离",

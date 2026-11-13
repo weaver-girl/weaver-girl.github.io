@@ -36,7 +36,7 @@ export function PluginsPage() {
       <PageHero
         kicker="INSTRUMENTATION COVERAGE"
         title="126 个内置插桩插件"
-        lede="这是覆盖面，不是产品目录。每个能力一个 jar，通过字节码匹配目标库，只在目标库存在时加载；用 disabledPlugins / enabledPlugins 按名称启停，配置目录支持热加载。"
+        lede="每个能力一个 jar，通过字节码匹配目标库；目标库不在场就跳过。用 disabledPlugins / enabledPlugins 按名称启停，配置目录支持热加载。"
       />
 
       <div className="page-body">

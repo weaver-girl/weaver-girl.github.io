@@ -31,15 +31,15 @@ export function HomePage() {
           </p>
           <h1>
             切面底座
-            <span className="h1-sub">不是 APM。</span>
+            <span className="h1-sub">给 JVM 应用的一层可编程切面。</span>
           </h1>
           <p className="lede">
-            weaver-girl 把切点植入、上下文改写、数据上报与模块加载做成 JVM
-            基础设施。APM、IAST、RASP、审计与韧性是构建其上的切面应用，不是本仓库。
+            weaver-girl 把切点织入、隔离加载与数据上报做成 JVM 基础设施。APM、IAST、RASP、
+            审计与韧性，都是在它之上长出来的切面应用。
           </p>
           <div className="cta-row">
             <Link to="/architecture" className="btn btn-primary">
-              阅读架构
+              看看架构
             </Link>
             <a
               href={`${REPO_URL}/blob/main/docs/plugin-developer-guide.md`}
@@ -47,7 +47,7 @@ export function HomePage() {
               target="_blank"
               rel="noreferrer"
             >
-              插件开发指南
+              写一个插件
             </a>
           </div>
           <dl className="hero-spec">
@@ -96,10 +96,10 @@ export function HomePage() {
           <p className="eyebrow">
             <span>01</span> 职责
           </p>
-          <h2>底座只做四件事。</h2>
+          <h2>四项基础能力。</h2>
           <p className="section-lede">
-            四项之外的规则、判定、存储和界面，属于切面应用与切面管控。这条边界决定了一个
-            agent 能承载多少产品，也决定了升级时什么会坏。
+            织入、配置、上报、加载。四项之外的规则、存储和界面，留给切面应用与管控层。
+            边界清楚，升级才轻松。
           </p>
         </header>
         <ol className="primitive-list">
@@ -125,10 +125,10 @@ export function HomePage() {
             <p className="eyebrow">
               <span>02</span> 边界
             </p>
-            <h2>底座 / 应用 / 管控。</h2>
+            <h2>三层责任，各归其位。</h2>
             <p className="section-lede">
-              同一个 agent 可以承载多个产品，但三层的责任不能混。混在一起，底座就会被某一个产品的
-              规则、存储和界面拖住。
+              同一个 agent 可以承载多个产品。底座、切面应用与管控各管一层，
+              出了问题也知道该看哪里。
             </p>
           </header>
           <div className="boundary-grid">
@@ -157,15 +157,15 @@ export function HomePage() {
           </p>
           <h2>插件只依赖一个 jar。</h2>
           <p className="section-lede">
-            第三方产品编译期只看见 <code className="inline">weaver-girl-api</code>。engine、transformer 和
-            shaded ByteBuddy 都是内部实现，可以随版本演进而不破坏插件。
+            编译期只需要 <code className="inline">weaver-girl-api</code>。engine、transformer 和
+            shaded ByteBuddy 都是内部实现，跟着版本走，不会牵连插件。
           </p>
         </header>
         <div className="contract-grid">
           <div className="contract-side">
             <p className="prose">
-              一个插件声明名称，向注册表登记切点；运行时由 agent 发现、隔离并加载。公开面保持小，
-              是为了让底座能升级，而不是为了少写几个类。
+              一个插件声明名称、登记切点，运行时由 agent 发现、隔离并加载。公开面小一点，
+              底座就能走得更远。
             </p>
             <dl className="api-table">
               {contractApis.map((api) => (
@@ -195,10 +195,9 @@ export function HomePage() {
           <p className="eyebrow">
             <span>04</span> 运行时
           </p>
-          <h2>一条织入链路，几条硬约束。</h2>
+          <h2>从挂载到第一行 advice。</h2>
           <p className="section-lede">
-            从 attach 到 advice 内联只有四步。真正决定它能不能进生产的是失败开放、类加载隔离和
-            自我保护，而不是拦截器写得多漂亮。
+            四步完成织入。真正让它敢进生产的是失败开放、类加载隔离和自我保护。
           </p>
         </header>
         <div className="flow">
@@ -228,10 +227,9 @@ export function HomePage() {
           <p className="eyebrow">
             <span>05</span> 覆盖
           </p>
-          <h2>126 个插件是覆盖面，不是产品。</h2>
+          <h2>126 个插件，覆盖真实运行环境。</h2>
           <p className="section-lede">
-            插件证明底座能落到多少运行环境；产品要做什么，仍然由你的切面应用决定。下面是可核对
-            的覆盖率与质量数据。
+            插件是覆盖面，不是产品目录。要做什么由你的切面应用决定，下面的数字都可以核对。
           </p>
         </header>
         <div className="coverage-table">
@@ -255,10 +253,9 @@ export function HomePage() {
           <p className="eyebrow">
             <span>06</span> 验证
           </p>
-          <h2>三个可运行结果。</h2>
+          <h2>先看结果，再读代码。</h2>
           <p className="section-lede">
-            业务代码从未引用插件；脚本把同一个程序跑两遍——没有 agent 和挂上 agent——输出由退出码
-            断言，不是手工截取。
+            三个可运行程序：同一份业务代码跑两遍，没有 agent 和挂上 agent，输出由退出码断言。
           </p>
         </header>
         <div className="evidence-table">
@@ -282,10 +279,10 @@ export function HomePage() {
           <p className="eyebrow">
             <span>07</span> 开始
           </p>
-          <h2>把它当一个基础设施接入。</h2>
+          <h2>从一行 javaagent 参数开始。</h2>
           <p className="section-lede">
-            构建 agent，挂到任何 Java 进程；插件与 <code className="inline">plugins/</code> 目录随构建产出。
-            如果要做产品，从插件模板开始，而不是改 engine。
+            构建 agent，挂到任意 Java 进程；插件跟着 <code className="inline">plugins/</code> 目录走。
+            要做产品，从插件模板开始，不必改动 engine。
           </p>
         </header>
         <div className="start-grid">

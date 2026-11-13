@@ -15,7 +15,7 @@ export function ArchitecturePage() {
       <PageHero
         kicker="ARCHITECTURE"
         title="底座的四项职责"
-        lede="配置读取、切点植入、数据上报、模块加载。Agent 通过 premain（或运行期 agentmain）挂入目标 JVM，从插件目录发现能力并登记拦截器，ByteBuddy 在类加载或重转换时把 Advice 内联进目标方法。"
+        lede="四项能力串成一条链路：挂载 JVM、发现插件、登记切点、内联 Advice。premain 与运行期 agentmain 走的是同一条路径。"
       />
 
       <div className="page-body">
@@ -34,16 +34,15 @@ export function ArchitecturePage() {
       <Alert
         className="arch-alert"
         type="info"
-        showIcon
+        showIcon={false}
         message="agent jar 本身不含插件实现"
-        description="能力按 jar 拆分：内置插件在 agent 旁边的 plugins/，运行时能力配置对应键后才加载。少了 plugins/，agent 能启动但不会拦截任何东西。"
+        description="能力按 jar 拆分：内置插件放在 agent 旁边的 plugins/，运行时能力配置对应键后才加载。少了 plugins/，agent 能启动，但不会拦截任何东西。"
       />
 
       <h2 className="subhead">底座、应用与管控</h2>
       <p className="prose">
-        APM、IAST、RASP 都是切面应用：它们在方法、字段或异常切点上做各自的判定。weaver-girl 提供底座——
-        切点植入、上下文改写、数据上报与模块加载；应用层的漏洞规则、攻击拦截、脱敏与降级策略，以及控制台、
-        规则下发和存储，属于产品自己实现的部分。仓库自带可运行的样板，但不冒充完整的安全产品。
+        APM、IAST、RASP 都是切面应用，各自决定方法、字段和异常怎么判定。weaver-girl 提供底座：
+        切点植入、上下文改写、数据上报与模块加载。规则、控制台和存储，属于产品自己实现的部分。
       </p>
 
       <h2 className="subhead">模块</h2>

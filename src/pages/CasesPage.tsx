@@ -13,7 +13,7 @@ export function CasesPage() {
       <PageHero
         kicker="RUNNABLE EVIDENCE"
         title="三个可运行结果。"
-        lede="三个案例都来自仓库里的可运行程序：业务代码从未引用插件，脚本会把同一个程序跑两遍——没有 agent 和挂上 agent——下面的输出就是两次真实运行的结果，并由退出码断言。"
+        lede="三个案例都是仓库里的可运行程序。同一份业务代码跑两遍——没有 agent，再挂上 agent——输出由退出码断言。"
       />
 
       <div className="page-body">
