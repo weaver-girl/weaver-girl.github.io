@@ -37,7 +37,7 @@ export const features: Feature[] = [
   {
     title: "生产级自我保护",
     description:
-      "熔断器自动摘除异常拦截器，自适应采样在高负载下降开销，插件类加载器隔离，安全策略与审计日志托底。",
+      "熔断器自动摘除异常拦截器，自适应采样在高负载下自动降低采样率，插件类加载器隔离，安全策略与审计日志托底。",
   },
 ];
 
@@ -392,9 +392,9 @@ export const quickStart = `git clone ${REPO_URL}.git
 cd weaver-girl
 mvn clean package -DskipTests
 
-# target/plugins/ 必须与 agent jar 放在一起（发行包已打包好）
-java -javaagent:weaver-girl-agent/target/weaver-girl-agent-1.0.0-SNAPSHOT.jar \\
-  -jar your-app.jar`;
+cd weaver-girl-agent/target
+# plugins/ 必须与 agent jar 放在一起（发行包已打包好）
+java -javaagent:weaver-girl-agent-1.0.0-SNAPSHOT.jar -jar your-app.jar`;
 
 export const releaseInstall = `# GitHub Release 提供 weaver-girl-agent-<version>-dist.zip
 # 内含 agent jar 与它需要的 plugins/ 目录
@@ -642,7 +642,7 @@ export const guarantees: Guarantee[] = [
   {
     title: "自我保护",
     en: "CONTAINMENT",
-    detail: "熔断器自动摘除异常拦截器，自适应采样在高负载下收紧开销。",
+    detail: "熔断器自动摘除异常拦截器，自适应采样在高负载下自动降低采样率。",
   },
   {
     title: "公开契约",

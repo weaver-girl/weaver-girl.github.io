@@ -229,7 +229,7 @@ export function HomePage() {
           </p>
           <h2>126 个插件，覆盖真实运行环境。</h2>
           <p className="section-lede">
-            插件是覆盖面，不是产品目录。要做什么由你的切面应用决定，下面的数字都可以核对。
+            每个插件对应一种真实运行环境。要做什么，由你的切面应用决定；下面的数字都可以核对。
           </p>
         </header>
         <div className="coverage-table">
