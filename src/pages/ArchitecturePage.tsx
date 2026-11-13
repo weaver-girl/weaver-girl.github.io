@@ -14,8 +14,8 @@ export function ArchitecturePage() {
     <>
       <PageHero
         kicker="ARCHITECTURE"
-        title="一条织入链路"
-        lede="Agent 通过 premain（或运行期 agentmain）挂入目标 JVM，从插件目录发现能力并登记拦截器，ByteBuddy 在类加载或重转换时把 Advice 内联进目标方法。"
+        title="底座的四项职责"
+        lede="配置读取、切点植入、数据上报、模块加载。Agent 通过 premain（或运行期 agentmain）挂入目标 JVM，从插件目录发现能力并登记拦截器，ByteBuddy 在类加载或重转换时把 Advice 内联进目标方法。"
       />
 
       <div className="page-body">

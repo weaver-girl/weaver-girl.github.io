@@ -1,7 +1,7 @@
 /** Static site content. Mirrors README.md, docs/ARCHITECTURE.md and the module tree. */
 
 export const REPO_URL = "https://github.com/weaver-girl/weaver-girl";
-export const SITE_URL = "https://weaver-girl.github.io/weaver-girl/";
+export const SITE_URL = "https://weaver-girl.github.io/";
 
 export interface Feature {
   title: string;
@@ -504,3 +504,202 @@ export const modules: ModuleRow[] = [
   { key: "testkit", name: "weaver-girl-testkit", description: "进程内测试工具，插件作者无需真实框架即可验证织入行为" },
   { key: "sample", name: "weaver-girl-sample", description: "示例应用，演示编程式、注解与 YAML 三种模式" },
 ];
+
+/* -------------------------------------------------------------------------
+ * Hook-base positioning. The site describes an infrastructure component:
+ * four responsibilities, one public contract, and a boundary the product
+ * layer owns. Keep this copy aligned with docs/positioning.md.
+ * ---------------------------------------------------------------------- */
+
+export interface Primitive {
+  n: string;
+  name: string;
+  en: string;
+  impl: string;
+  detail: string;
+}
+
+/** The four responsibilities a hook base owns; everything else is a product. */
+export const basePrimitives: Primitive[] = [
+  {
+    n: "01",
+    name: "配置读取",
+    en: "CONFIG",
+    impl: "weaver.yml · watch=true",
+    detail: "本机 YAML 是唯一配置源；文件变更可热加载，不重启进程。配置格式与读取时机是契约的一部分。",
+  },
+  {
+    n: "02",
+    name: "切点植入",
+    en: "WEAVING",
+    impl: "WeaverTransformer · ByteBuddy Advice",
+    detail: "方法、字段、异常三类切点；premain 与运行期 agentmain 走同一条织入链路。",
+  },
+  {
+    n: "03",
+    name: "数据上报",
+    en: "EXPORT",
+    impl: "events · metrics · trace · OTLP",
+    detail: "拦截事件、指标、span 与拓扑通过 SPI 出口送出；接哪个后端由切面应用决定。",
+  },
+  {
+    n: "04",
+    name: "模块加载",
+    en: "LOADING",
+    impl: "AgentClassLoader · plugins/",
+    detail: "child-first 隔离，插件失败由熔断器摘除；一个类变换失败不拖垮进程。",
+  },
+];
+
+export interface BoundaryLayer {
+  layer: string;
+  owner: string;
+  state: string;
+  items: string[];
+  tone: "base" | "app" | "control";
+}
+
+/** Where the base stops. This table is the positioning argument, not a feature list. */
+export const boundaries: BoundaryLayer[] = [
+  {
+    layer: "切面底座",
+    owner: "本仓库",
+    state: "提供",
+    tone: "base",
+    items: [
+      "配置读取与热加载",
+      "切点植入（方法 / 字段 / 异常）",
+      "上下文、参数与返回值改写",
+      "事件、指标、trace 与拓扑出口",
+      "模块加载、隔离、熔断与采样",
+    ],
+  },
+  {
+    layer: "切面应用",
+    owner: "插件",
+    state: "由你实现",
+    tone: "app",
+    items: [
+      "APM 的 span 命名与后端",
+      "IAST 的 source / sink 规则",
+      "RASP 的规则与阻断策略",
+      "脱敏策略与审计口径",
+      "降级、重试与业务判定",
+    ],
+  },
+  {
+    layer: "切面管控",
+    owner: "产品层",
+    state: "不提供",
+    tone: "control",
+    items: [
+      "控制台与规则下发",
+      "存储、查询与检索",
+      "告警编排与权限",
+      "多租户与计费",
+      "跨进程的集中管控",
+    ],
+  },
+];
+
+export interface ContractApi {
+  name: string;
+  role: string;
+}
+
+/** The public surface a plugin may rely on. Everything else is internal. */
+export const contractApis: ContractApi[] = [
+  { name: "WeaverPlugin", role: "插件入口：声明名称并登记拦截器" },
+  { name: "InterceptorRegistry", role: "唯一的切点注册表" },
+  { name: "MethodInvocation", role: "参数、返回值与异常" },
+  { name: "Tracer", role: "span、baggage 与 W3C 上下文" },
+  { name: "MetricRegistry", role: "计数、计时与快照" },
+  { name: "DataExporter", role: "把事件送到自己的后端" },
+];
+
+export interface Guarantee {
+  title: string;
+  en: string;
+  detail: string;
+}
+
+export const guarantees: Guarantee[] = [
+  {
+    title: "失败开放",
+    en: "FAIL-OPEN",
+    detail: "类变换抛出（含 Error）时保留原字节，兄弟类继续增强，进程不退出。",
+  },
+  {
+    title: "类加载隔离",
+    en: "ISOLATION",
+    detail: "child-first AgentClassLoader；第三方插件只看到 api、annotation 与 JDK。",
+  },
+  {
+    title: "热加载",
+    en: "HOT RELOAD",
+    detail: "YAML 与插件开关运行期生效，连接与业务状态不丢。",
+  },
+  {
+    title: "自我保护",
+    en: "CONTAINMENT",
+    detail: "熔断器自动摘除异常拦截器，自适应采样在高负载下收紧开销。",
+  },
+  {
+    title: "公开契约",
+    en: "CONTRACT",
+    detail: "只有 weaver-girl-api 是稳定面；engine 与 shaded ByteBuddy 属于内部实现。",
+  },
+  {
+    title: "可验证",
+    en: "VERIFIED",
+    detail: "3,671 个测试、打包冒烟，以及在 JDK 8 / 11 / 17 / 21 上的真实 attach。",
+  },
+];
+
+export interface CoverageRow {
+  label: string;
+  value: string;
+  note: string;
+}
+
+/** Evidence of coverage, not the headline. Rendered as a spec table. */
+export const coverageRows: CoverageRow[] = [
+  { label: "内置插桩插件", value: "126", note: "每个能力一个 jar，目标库不在场就跳过" },
+  { label: "可选运行时能力", value: "14", note: "配置对应键后才加载" },
+  { label: "切点类型", value: "3", note: "method / field / catch" },
+  { label: "JDK", value: "8–21", note: "一份 Java 8 字节码，向上运行" },
+  { label: "自动化测试", value: "3,671", note: "0 失败，0 错误" },
+  { label: "热路径匹配", value: "≈1.2 ns", note: "精确类 / 方法匹配的基准值" },
+];
+
+/** Hero panel: what the JVM prints when the base starts. */
+export const bootLines: { key: string; value: string }[] = [
+  { key: "contract", value: "weaver-girl-api" },
+  { key: "weaving", value: "WeaverTransformer / ByteBuddy Advice" },
+  { key: "export", value: "json-events · prometheus · otlp" },
+  { key: "plugins", value: "126 jars discovered from plugins/" },
+  { key: "isolation", value: "child-first · fail-open" },
+  { key: "product", value: "your APM / IAST / RASP plugin" },
+];
+
+export const pluginSkeleton = `public final class PaymentPlugin extends AbstractPlugin {
+
+    @Override
+    public String name() {
+        return "payment-audit";
+    }
+
+    @Override
+    public void registerInterceptors(InterceptorRegistry registry) {
+        registry.register(
+            intercept("com.example.PaymentService")
+                .method("charge")
+                .before(inv -> MetricRegistry.record("pay.charge", 1))
+                .build());
+
+        registry.register(
+            interceptField("com.example.Payment", "cardNumber")
+                .onGet((inv, value) -> inv.setReturnValue("***"))
+                .build());
+    }
+}`;

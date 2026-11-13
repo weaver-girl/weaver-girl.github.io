@@ -18,15 +18,15 @@ createRoot(root).render(
       locale={zhCN}
       theme={{
         token: {
-          colorPrimary: "#0071e3",
-          colorInfo: "#0071e3",
-          colorText: "#1d1d1f",
-          colorTextSecondary: "#6e6e73",
-          colorBorder: "rgba(0, 0, 0, 0.12)",
+          colorPrimary: "#0b5d3b",
+          colorInfo: "#0b5d3b",
+          colorText: "#16181a",
+          colorTextSecondary: "#62666a",
+          colorBorder: "#d7d3c9",
           colorBgContainer: "#ffffff",
-          borderRadius: 12,
+          borderRadius: 2,
           fontFamily:
-            '-apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif',
+            '-apple-system, BlinkMacSystemFont, "Inter", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif',
         },
       }}
     >

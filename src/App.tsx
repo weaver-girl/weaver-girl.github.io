@@ -9,11 +9,11 @@ import { PluginsPage } from "./pages/PluginsPage";
 import { QuickStartPage } from "./pages/QuickStartPage";
 
 const NAV = [
-  { key: "/", label: "首页" },
-  { key: "/quick-start", label: "快速开始" },
-  { key: "/cases", label: "案例" },
-  { key: "/plugins", label: "插件" },
+  { key: "/", label: "概览" },
   { key: "/architecture", label: "架构" },
+  { key: "/plugins", label: "插件" },
+  { key: "/cases", label: "验证" },
+  { key: "/quick-start", label: "构建" },
   { key: "/docs", label: "文档" },
 ];
 
@@ -37,10 +37,10 @@ export default function App() {
     <>
       <header className={scrolled ? "nav scrolled" : "nav"}>
         <Link to="/" className="brand" onClick={() => setOpen(false)}>
-          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M8 1 L15 8 L8 15 L1 8 Z" fill="#1d1d1f" />
+          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 1 L15 8 L8 15 L1 8 Z" fill="currentColor" />
           </svg>
-          Weaver Girl
+          <span>weaver-girl</span>
         </Link>
         <nav className={open ? "nav-links open" : "nav-links"}>
           {NAV.map((item) => (
@@ -78,7 +78,10 @@ export default function App() {
       </main>
 
       <footer className="site-footer">
-        <span>Weaver Girl · MIT License</span>
+        <span className="footer-id">weaver-girl / hook base</span>
+        <span className="footer-meta">
+          MIT · Java 8–21 · pre-1.0
+        </span>
         <span>
           源码与文档维护于{" "}
           <a href={REPO_URL} target="_blank" rel="noreferrer">

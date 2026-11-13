@@ -1,4 +1,4 @@
-import { Alert, Statistic, Tag } from "antd";
+import { Alert, Statistic } from "antd";
 import { CodeBlock } from "../components/CodeBlock";
 import { PageHero } from "../components/PageHero";
 import { caseStudies } from "../data/content";
@@ -11,16 +11,16 @@ export function CasesPage() {
   return (
     <>
       <PageHero
-        kicker="CASES"
-        title="不是演示概念，是能跑出来的结果。"
-        lede="三个案例都来自仓库里的可运行程序：业务代码从未引用插件，脚本会把同一个程序跑两遍——没有 agent 和挂上 agent——下面的输出就是两次真实运行的结果。"
+        kicker="RUNNABLE EVIDENCE"
+        title="三个可运行结果。"
+        lede="三个案例都来自仓库里的可运行程序：业务代码从未引用插件，脚本会把同一个程序跑两遍——没有 agent 和挂上 agent——下面的输出就是两次真实运行的结果，并由退出码断言。"
       />
 
       <div className="page-body">
         <nav className="case-quicknav" aria-label="案例导航">
           {caseStudies.map((study, i) => (
             <a key={study.key} href={`#${study.key}`} className="case-quicknav-item">
-              <span>0{i + 1}</span>
+              <span>{String(i + 1).padStart(2, "0")}</span>
               <b>{study.tag}</b>
               <small>{study.title}</small>
             </a>
@@ -31,13 +31,11 @@ export function CasesPage() {
           <article key={study.key} id={study.key} className="case-study">
             <header className="case-head">
               <div className="case-meta">
-                <Tag color={study.tagColor} className="case-tag">
-                  {study.tag}
-                </Tag>
+                <span className="case-tag">{study.tag}</span>
                 <code className="case-demo">{study.demo}</code>
               </div>
               <h2>
-                <span className="case-index">0{index + 1}</span>
+                <span className="case-index">{String(index + 1).padStart(2, "0")}</span>
                 {study.title}
               </h2>
               <p className="case-sub">{study.subtitle}</p>

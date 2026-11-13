@@ -1,41 +1,23 @@
-import { Tag } from "antd";
-import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { CodeBlock } from "../components/CodeBlock";
-import { Reveal } from "../components/Reveal";
-import { TraceStage } from "../components/TraceStage";
-import { benchmarks, caseStudies, features, quickStart, scenarios, stats } from "../data/content";
+import {
+  REPO_URL,
+  basePrimitives,
+  bootLines,
+  boundaries,
+  caseStudies,
+  contractApis,
+  coverageRows,
+  guarantees,
+  pluginSkeleton,
+  quickStart,
+} from "../data/content";
 
-/** Small line icons, one per feature card, drawn on a 24 grid. */
-const ICONS: ReactNode[] = [
-  <svg key="i" viewBox="0 0 24 24">
-    <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
-    <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
-    <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
-    <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
-  </svg>,
-  <svg key="i" viewBox="0 0 24 24">
-    <path d="M8 7 L4 12 L8 17" />
-    <path d="M16 7 L20 12 L16 17" />
-    <path d="M13 5 L11 19" />
-  </svg>,
-  <svg key="i" viewBox="0 0 24 24">
-    <path d="M13 3 L5 13 H11 L10 21 L19 10 H13 Z" />
-  </svg>,
-  <svg key="i" viewBox="0 0 24 24">
-    <path d="M4 12 H9 L12 5 L15 19 L17 12 H20" />
-  </svg>,
-  <svg key="i" viewBox="0 0 24 24">
-    <path d="M12 3 L20 6.5 V12 C20 16.5 16.5 20 12 21.5 C7.5 20 4 16.5 4 12 V6.5 Z" />
-    <path d="M8.5 12 L11 14.5 L15.5 9.5" />
-  </svg>,
-  <svg key="i" viewBox="0 0 24 24">
-    <circle cx="6" cy="7" r="2.2" />
-    <circle cx="18" cy="6" r="2.2" />
-    <circle cx="8" cy="18" r="2.2" />
-    <circle cx="17" cy="16" r="2.2" />
-    <path d="M8 8 L16 7 M7.2 9 L8.6 16 M10 17.5 L15 16.4 M16.4 8 L17.2 14" />
-  </svg>,
+const FLOW = [
+  { name: "premain", text: "挂入目标 JVM" },
+  { name: "plugins/", text: "按 jar 发现能力" },
+  { name: "registry", text: "登记切点与配置" },
+  { name: "advice", text: "内联进目标方法" },
 ];
 
 export function HomePage() {
@@ -44,238 +26,303 @@ export function HomePage() {
       <section className="hero">
         <div className="hero-copy">
           <p className="kicker">
-            <span className="kicker-dot" />
-            Java 字节码插桩框架
+            <span className="kicker-index">00</span>
+            JVM INSTRUMENTATION / HOOK BASE
           </p>
           <h1>
-            把观测能力
-            <br />
-            <span className="grad">织进每一个方法</span>
+            切面底座
+            <span className="h1-sub">不是 APM。</span>
           </h1>
           <p className="lede">
-            挂上一个 agent，不用改一行业务代码。126 个插件自动发现并拦截方法、字段与异常，调用链、指标、拓扑、
-            告警与污点分析即刻可用。为 APM、IAST、RASP 等切面应用准备的 Hook 底座。
+            weaver-girl 把切点植入、上下文改写、数据上报与模块加载做成 JVM
+            基础设施。APM、IAST、RASP、审计与韧性是构建其上的切面应用，不是本仓库。
           </p>
           <div className="cta-row">
-            <Link to="/quick-start" className="btn btn-primary">
-              30 秒上手
+            <Link to="/architecture" className="btn btn-primary">
+              阅读架构
             </Link>
-            <Link to="/cases" className="btn btn-ghost">
-              看真实案例
-            </Link>
-          </div>
-          <ul className="hero-points">
-            <li>基于 ByteBuddy，热路径零分配</li>
-            <li>JDK 8 到 21，一份字节码通吃</li>
-            <li>Prometheus、OTLP、W3C Trace Context</li>
-          </ul>
-        </div>
-        <TraceStage />
-      </section>
-
-      <section className="stats">
-        {stats.map((stat) => (
-          <div key={stat.label} className="stat">
-            <b>
-              {stat.value}
-              {stat.unit && <small>{stat.unit}</small>}
-            </b>
-            <span>{stat.label}</span>
-          </div>
-        ))}
-      </section>
-
-      <section className="section wrap" id="scenarios">
-        <Reveal>
-          <div className="section-intro">
-            <p className="eyebrow">能做什么</p>
-            <h2>不止是拦截，是一整条产品线。</h2>
-            <p>同一个 agent 底座，多种落地方式。APM、IAST、RASP 是底座承载的产品形态；数据安全、业务韧性与审计在仓库里有可运行的演示。</p>
-          </div>
-        </Reveal>
-        <div className="scenario-grid">
-          {scenarios.map((scenario) => (
-            <Reveal
-              key={scenario.key}
-              className={scenario.key === "rasp" ? "scenario-wide" : undefined}
+            <a
+              href={`${REPO_URL}/blob/main/docs/plugin-developer-guide.md`}
+              className="btn btn-ghost"
+              target="_blank"
+              rel="noreferrer"
             >
-              <article className="scenario-card">
-                <span className="scenario-tag">{scenario.tag}</span>
-                <h3>{scenario.title}</h3>
-                <p>{scenario.description}</p>
+              插件开发指南
+            </a>
+          </div>
+          <dl className="hero-spec">
+            <div>
+              <dt>契约面</dt>
+              <dd>weaver-girl-api</dd>
+            </div>
+            <div>
+              <dt>拦截</dt>
+              <dd>method · field · catch</dd>
+            </div>
+            <div>
+              <dt>JDK</dt>
+              <dd>8 – 21</dd>
+            </div>
+            <div>
+              <dt>许可</dt>
+              <dd>MIT</dd>
+            </div>
+          </dl>
+        </div>
+
+        <aside className="system-panel" aria-label="Agent 启动时的契约面">
+          <div className="panel-bar">
+            <span className="panel-title">agent.boot</span>
+            <span className="panel-status">JVM · attached</span>
+          </div>
+          <div className="panel-command">
+            <span className="panel-prompt">$</span>
+            <code>-javaagent:weaver-girl-agent.jar=config=weaver.yml</code>
+          </div>
+          <dl className="panel-lines">
+            {bootLines.map((line) => (
+              <div key={line.key}>
+                <dt>{line.key}</dt>
+                <dd>{line.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="panel-foot">base / product boundary</p>
+        </aside>
+      </section>
+
+      <section className="section wrap" id="primitives">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>01</span> 职责
+          </p>
+          <h2>底座只做四件事。</h2>
+          <p className="section-lede">
+            四项之外的规则、判定、存储和界面，属于切面应用与切面管控。这条边界决定了一个
+            agent 能承载多少产品，也决定了升级时什么会坏。
+          </p>
+        </header>
+        <ol className="primitive-list">
+          {basePrimitives.map((primitive) => (
+            <li key={primitive.n} className="primitive">
+              <span className="primitive-n">{primitive.n}</span>
+              <div className="primitive-main">
+                <h3>
+                  {primitive.name}
+                  <span>{primitive.en}</span>
+                </h3>
+                <p>{primitive.detail}</p>
+              </div>
+              <code className="primitive-impl">{primitive.impl}</code>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="boundary-section">
+        <div className="wrap">
+          <header className="section-head section-head-invert">
+            <p className="eyebrow">
+              <span>02</span> 边界
+            </p>
+            <h2>底座 / 应用 / 管控。</h2>
+            <p className="section-lede">
+              同一个 agent 可以承载多个产品，但三层的责任不能混。混在一起，底座就会被某一个产品的
+              规则、存储和界面拖住。
+            </p>
+          </header>
+          <div className="boundary-grid">
+            {boundaries.map((layer) => (
+              <article key={layer.layer} className={`boundary-col boundary-${layer.tone}`}>
+                <header>
+                  <h3>{layer.layer}</h3>
+                  <span className="boundary-state">{layer.state}</span>
+                </header>
+                <p className="boundary-owner">{layer.owner}</p>
                 <ul>
-                  {scenario.outcomes.map((outcome) => (
-                    <li key={outcome}>{outcome}</li>
+                  {layer.items.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
               </article>
-            </Reveal>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="section wrap" id="positioning">
-        <Reveal>
-          <div className="section-intro">
-            <p className="eyebrow">定位</p>
-            <h2>一个底座，多种切面应用。</h2>
-            <p>
-              APM、IAST、RASP 的动作其实是同一套：在方法、字段或异常处植入切点，拿到上下文，做判定并上报。
-              weaver-girl 做的是这套底座，应用层的规则与管控由产品自己实现。
-            </p>
-          </div>
-        </Reveal>
-        <Reveal>
-          <div className="layer-stack">
-            <div className="layer">
-              <span className="layer-label">切面应用</span>
-              <div className="layer-tags">
-                <b>APM</b>
-                <b>IAST</b>
-                <b>RASP</b>
-                <b>数据安全</b>
-                <b>业务韧性</b>
-                <b>业务审计</b>
-              </div>
-              <p>规则、判定与处置：漏洞规则、攻击拦截、脱敏策略、降级阈值、审计口径。</p>
-            </div>
-            <div className="layer-arrow">↓</div>
-            <div className="layer layer-base">
-              <span className="layer-label">切面底座 · weaver-girl</span>
-              <div className="layer-cols">
-                <div>
-                  <b>切点植入</b>
-                  <p>方法、字段与异常，premain 与运行期 agentmain</p>
-                </div>
-                <div>
-                  <b>上下文与判定</b>
-                  <p>参数、返回值、异常改写，跳过方法或字段写入</p>
-                </div>
-                <div>
-                  <b>数据上报</b>
-                  <p>事件、指标、trace、OTLP / Prometheus / REST</p>
-                </div>
-                <div>
-                  <b>模块加载</b>
-                  <p>插件发现、类加载隔离、熔断与自适应采样</p>
-                </div>
-              </div>
-            </div>
-            <div className="layer-arrow">↓</div>
-            <div className="layer layer-control">
-              <span className="layer-label">切面管控</span>
-              <p>控制台、规则下发、存储与告警编排——属于产品层，本仓库不提供。</p>
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
-      <section className="section wrap">
-        <Reveal>
-          <div className="section-intro">
-            <p className="eyebrow">真实案例</p>
-            <h2>同一个程序，两种结果。</h2>
-            <p>业务代码一行不改，插件放进 plugins/ 就生效。下面三个输出都来自仓库里的可运行演示。</p>
-          </div>
-        </Reveal>
-        <div className="case-teaser-grid">
-          {caseStudies.map((study) => (
-            <Reveal key={study.key}>
-              <Link to="/cases" className="case-teaser-card">
-                <Tag color={study.tagColor} className="case-tag">
-                  {study.tag}
-                </Tag>
-                <h3>{study.title}</h3>
-                <p>{study.subtitle}</p>
-                <div className="case-teaser-metric">
-                  <b>{study.metrics[0].value}</b>
-                  <span>{study.metrics[0].label}</span>
-                </div>
-                <span className="chev">查看实测输出 ›</span>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="section wrap">
-        <Reveal>
-          <div className="section-intro">
-            <p className="eyebrow">能力</p>
-            <h2>为一个 agent 准备的全部。</h2>
-            <p>从拦截到可观测，生产环境需要的自我保护也在里面。</p>
-          </div>
-        </Reveal>
-        <div className="grid-3">
-          {features.map((feature, i) => (
-            <Reveal key={feature.title}>
-              <article className={`feature-card tone-${i % 3}`}>
-                <span className="feature-icon">{ICONS[i]}</span>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="bench-strip">
-        {benchmarks.map((item) => (
-          <div key={item.label}>
-            <b>{item.value}</b>
-            <span>{item.label}</span>
-          </div>
-        ))}
-      </section>
-
-      <section className="band">
-        <div className="band-inner">
-          <div>
-            <p className="eyebrow">为什么用它</p>
-            <h2>挂上，就够了。</h2>
-            <p>
-              126 个内置插件在启动时从 <code className="inline">plugins/</code> 自动发现，目标库不在场就跳过。
-              没有配置文件要写，YAML 改了也不用重启，出问题的拦截器会被熔断器自动摘除。
-            </p>
-            <Link to="/architecture" className="chev">
-              了解它如何工作 ›
-            </Link>
-          </div>
-          <ol className="band-list">
-            <li>
-              <b>01</b>
-              <span>premain 挂入目标 JVM</span>
-            </li>
-            <li>
-              <b>02</b>
-              <span>插件加载器发现并登记能力</span>
-            </li>
-            <li>
-              <b>03</b>
-              <span>Advice 内联进目标方法</span>
-            </li>
-            <li>
-              <b>04</b>
-              <span>调用链、指标、告警即刻可用</span>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <section className="section wrap">
-        <Reveal>
-          <div className="section-intro">
-            <p className="eyebrow">开始</p>
-            <h2>两行命令，跑起来。</h2>
-            <p>构建 agent，挂到任何 Java 进程；插件与 plugins/ 目录随构建一起产出。</p>
-          </div>
-          <CodeBlock code={quickStart} file="terminal" />
-          <p className="prose" style={{ textAlign: "center" }}>
-            <Link to="/quick-start" className="chev">
-              查看配置、API 与注解写法 ›
-            </Link>
+      <section className="section wrap" id="contract">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>03</span> 契约
           </p>
-        </Reveal>
+          <h2>插件只依赖一个 jar。</h2>
+          <p className="section-lede">
+            第三方产品编译期只看见 <code className="inline">weaver-girl-api</code>。engine、transformer 和
+            shaded ByteBuddy 都是内部实现，可以随版本演进而不破坏插件。
+          </p>
+        </header>
+        <div className="contract-grid">
+          <div className="contract-side">
+            <p className="prose">
+              一个插件声明名称，向注册表登记切点；运行时由 agent 发现、隔离并加载。公开面保持小，
+              是为了让底座能升级，而不是为了少写几个类。
+            </p>
+            <dl className="api-table">
+              {contractApis.map((api) => (
+                <div key={api.name}>
+                  <dt>
+                    <code>{api.name}</code>
+                  </dt>
+                  <dd>{api.role}</dd>
+                </div>
+              ))}
+            </dl>
+            <a
+              className="link-arrow"
+              href={`${REPO_URL}/tree/main/weaver-girl-plugin-template`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              从插件模板开始 →
+            </a>
+          </div>
+          <CodeBlock code={pluginSkeleton} file="PaymentPlugin.java" />
+        </div>
+      </section>
+
+      <section className="section wrap" id="runtime">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>04</span> 运行时
+          </p>
+          <h2>一条织入链路，几条硬约束。</h2>
+          <p className="section-lede">
+            从 attach 到 advice 内联只有四步。真正决定它能不能进生产的是失败开放、类加载隔离和
+            自我保护，而不是拦截器写得多漂亮。
+          </p>
+        </header>
+        <div className="flow">
+          {FLOW.map((node, i) => (
+            <span key={node.name} className="flow-item">
+              {i > 0 && <span className="flow-arrow">→</span>}
+              <div className="flow-node">
+                <b>{node.name}</b>
+                <span>{node.text}</span>
+              </div>
+            </span>
+          ))}
+        </div>
+        <div className="guarantee-grid">
+          {guarantees.map((item) => (
+            <article key={item.en} className="guarantee">
+              <span className="guarantee-en">{item.en}</span>
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section wrap" id="coverage">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>05</span> 覆盖
+          </p>
+          <h2>126 个插件是覆盖面，不是产品。</h2>
+          <p className="section-lede">
+            插件证明底座能落到多少运行环境；产品要做什么，仍然由你的切面应用决定。下面是可核对
+            的覆盖率与质量数据。
+          </p>
+        </header>
+        <div className="coverage-table">
+          {coverageRows.map((row) => (
+            <div key={row.label} className="coverage-row">
+              <span className="coverage-label">{row.label}</span>
+              <b className="coverage-value">{row.value}</b>
+              <span className="coverage-note">{row.note}</span>
+            </div>
+          ))}
+        </div>
+        <p className="coverage-link">
+          <Link to="/plugins" className="link-arrow">
+            查看全部插件与运行时能力 →
+          </Link>
+        </p>
+      </section>
+
+      <section className="section wrap" id="evidence">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>06</span> 验证
+          </p>
+          <h2>三个可运行结果。</h2>
+          <p className="section-lede">
+            业务代码从未引用插件；脚本把同一个程序跑两遍——没有 agent 和挂上 agent——输出由退出码
+            断言，不是手工截取。
+          </p>
+        </header>
+        <div className="evidence-table">
+          {caseStudies.map((study, i) => (
+            <Link key={study.key} to="/cases" className="evidence-row">
+              <span className="evidence-index">{String(i + 1).padStart(2, "0")}</span>
+              <span className="evidence-tag">{study.tag}</span>
+              <span className="evidence-title">{study.title}</span>
+              <span className="evidence-metric">
+                <b>{study.metrics[0].value}</b>
+                {study.metrics[0].label}
+              </span>
+              <span className="evidence-arrow">→</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="section wrap" id="start">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>07</span> 开始
+          </p>
+          <h2>把它当一个基础设施接入。</h2>
+          <p className="section-lede">
+            构建 agent，挂到任何 Java 进程；插件与 <code className="inline">plugins/</code> 目录随构建产出。
+            如果要做产品，从插件模板开始，而不是改 engine。
+          </p>
+        </header>
+        <div className="start-grid">
+          <CodeBlock code={quickStart} file="terminal" />
+          <div className="start-links">
+            <Link to="/quick-start" className="start-link">
+              <span className="start-kicker">BUILD</span>
+              <b>构建与挂载</b>
+              <span>源码、发行包与容器三种接入方式</span>
+            </Link>
+            <Link to="/architecture" className="start-link">
+              <span className="start-kicker">ARCHITECTURE</span>
+              <b>架构与隔离</b>
+              <span>四项职责、模块划分与类加载隔离</span>
+            </Link>
+            <a
+              className="start-link"
+              href={`${REPO_URL}/blob/main/docs/versioning-and-compatibility.md`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="start-kicker">CONTRACT</span>
+              <b>版本与兼容性</b>
+              <span>公开 API、语义化版本与 Java 支持范围</span>
+            </a>
+            <a
+              className="start-link"
+              href={REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="start-kicker">SOURCE</span>
+              <b>源码与文档</b>
+              <span>MIT 许可，文档与代码同一个版本</span>
+            </a>
+          </div>
+        </div>
       </section>
     </>
   );
