@@ -2,22 +2,25 @@ import { Link } from "react-router-dom";
 import { CodeBlock } from "../components/CodeBlock";
 import {
   REPO_URL,
+  afterBase,
   basePrimitives,
+  beforeBase,
   bootLines,
   boundaries,
   caseStudies,
   contractApis,
   coverageRows,
   guarantees,
+  outcomes,
   pluginSkeleton,
   quickStart,
 } from "../data/content";
 
 const FLOW = [
-  { name: "premain", text: "挂入目标 JVM" },
-  { name: "plugins/", text: "按 jar 发现能力" },
-  { name: "registry", text: "登记切点与配置" },
-  { name: "advice", text: "内联进目标方法" },
+  { name: "挂入程序", text: "启动时把底座接进目标系统", tone: "clay" },
+  { name: "发现插件", text: "按目录里的 jar 自动识别能力", tone: "olive" },
+  { name: "登记位置", text: "记下要拦截的方法、字段与异常", tone: "ochre" },
+  { name: "织入逻辑", text: "把插件逻辑放进正在运行的代码", tone: "slate" },
 ];
 
 export function HomePage() {
@@ -27,41 +30,36 @@ export function HomePage() {
         <div className="hero-copy">
           <p className="kicker">
             <span className="kicker-index">00</span>
-            JVM INSTRUMENTATION / HOOK BASE
+            PLUG-IN BASE / RUNNING SYSTEM
           </p>
           <h1>
             切面底座
-            <span className="h1-sub">给 JVM 应用的一层可编程切面。</span>
+            <span className="h1-sub">不用改代码，就能给系统加能力。</span>
           </h1>
           <p className="lede">
-            weaver-girl 把切点织入、隔离加载与数据上报做成 JVM 基础设施。APM、IAST、RASP、
-            审计与韧性，都是在它之上长出来的切面应用。
+            很多系统还在跑，却已经改不动了：想加数据脱敏、审计记录、攻击拦截，都得改业务代码、
+            排期、重新发布。weaver-girl 把这层能力做成“插件”，放进去就生效，业务代码一行不改。
           </p>
           <div className="cta-row">
-            <Link to="/architecture" className="btn btn-primary">
-              看看架构
-            </Link>
-            <a
-              href={`${REPO_URL}/blob/main/docs/plugin-developer-guide.md`}
-              className="btn btn-ghost"
-              target="_blank"
-              rel="noreferrer"
-            >
-              写一个插件
+            <a href="#problem" className="btn btn-primary">
+              它解决什么问题
             </a>
+            <Link to="/architecture" className="btn btn-ghost">
+              看看怎么做到的
+            </Link>
           </div>
           <dl className="hero-spec">
             <div>
-              <dt>契约面</dt>
-              <dd>weaver-girl-api</dd>
+              <dt>接入方式</dt>
+              <dd>放一个 jar</dd>
             </div>
             <div>
-              <dt>拦截</dt>
-              <dd>method · field · catch</dd>
+              <dt>业务改动</dt>
+              <dd>0 行</dd>
             </div>
             <div>
-              <dt>JDK</dt>
-              <dd>8 – 21</dd>
+              <dt>支持系统</dt>
+              <dd>Java 8 – 21</dd>
             </div>
             <div>
               <dt>许可</dt>
@@ -91,15 +89,70 @@ export function HomePage() {
         </aside>
       </section>
 
-      <section className="section wrap" id="primitives">
+      <section className="section wrap tone-clay" id="problem">
         <header className="section-head">
           <p className="eyebrow">
-            <span>01</span> 职责
+            <span>01</span> 问题
           </p>
-          <h2>四项基础能力。</h2>
+          <h2>系统还在跑，但改不动了。</h2>
           <p className="section-lede">
-            织入、配置、上报、加载。四项之外的规则、存储和界面，留给切面应用与管控层。
-            边界清楚，升级才轻松。
+            给一个已经上线的系统加能力——数据脱敏、审计记录、攻击拦截——通常意味着改业务代码、
+            排期、回归、重新发布。风险大、周期长，很多团队干脆不做。
+          </p>
+        </header>
+        <div className="problem-grid">
+          <article className="problem-col problem-without">
+            <p className="problem-label">没有底座</p>
+            <ul>
+              {beforeBase.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+          <article className="problem-col problem-with">
+            <p className="problem-label">有 weaver-girl</p>
+            <ul>
+              {afterBase.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
+        <p className="problem-note">把“给系统加能力”，从改代码变成插插件。</p>
+      </section>
+
+      <section className="section wrap tone-olive" id="outcomes">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>02</span> 用途
+          </p>
+          <h2>一块底座，长出三种产品。</h2>
+          <p className="section-lede">
+            监控、安全、审计看起来是三件不同的事，底层都要先做同一件事：
+            把逻辑插进运行中的系统，再把看到的数据送出去。换一批插件，就换一种产品。
+          </p>
+        </header>
+        <div className="outcome-grid">
+          {outcomes.map((item) => (
+            <article key={item.key} className={`outcome-card outcome-${item.tone}`}>
+              <span className="outcome-en">{item.en}</span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
+          ))}
+        </div>
+        <p className="outcome-note">底座只负责“通电”。规则、控制台和存储，由插件与产品层决定。</p>
+      </section>
+
+      <section className="section wrap tone-ochre" id="primitives">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>03</span> 职责
+          </p>
+          <h2>底座只做四件事。</h2>
+          <p className="section-lede">
+            读取配置、把逻辑插进程序、把数据送出去、安全地加载插件。判断规则、存储和界面，
+            都不在底座里——那是上层产品的事。
           </p>
         </header>
         <ol className="primitive-list">
@@ -119,16 +172,16 @@ export function HomePage() {
         </ol>
       </section>
 
-      <section className="boundary-section">
+      <section className="boundary-section tone-slate">
         <div className="wrap">
           <header className="section-head section-head-invert">
             <p className="eyebrow">
-              <span>02</span> 边界
+              <span>04</span> 边界
             </p>
-            <h2>三层责任，各归其位。</h2>
+            <h2>三层分工，各归其位。</h2>
             <p className="section-lede">
-              同一个 agent 可以承载多个产品。底座、切面应用与管控各管一层，
-              出了问题也知道该看哪里。
+              把底座想成墙里的电线：它负责通电，不决定你插什么电器。监控、安全、审计是电器，
+              控制台和存储是物业。哪一层出问题，一眼就能找到。
             </p>
           </header>
           <div className="boundary-grid">
@@ -150,22 +203,22 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section wrap" id="contract">
+      <section className="section wrap tone-plum" id="contract">
         <header className="section-head">
           <p className="eyebrow">
-            <span>03</span> 契约
+            <span>05</span> 契约
           </p>
-          <h2>插件只依赖一个 jar。</h2>
+          <h2>写插件，只需要认一个接口。</h2>
           <p className="section-lede">
-            编译期只需要 <code className="inline">weaver-girl-api</code>。engine、transformer 和
-            shaded ByteBuddy 都是内部实现，跟着版本走，不会牵连插件。
+            插件只依赖 <code className="inline">weaver-girl-api</code> 这一个 jar。底座内部怎么实现、
+            怎么升级，都不会牵连插件——写插件的人不用关心底座里有什么。
           </p>
         </header>
         <div className="contract-grid">
           <div className="contract-side">
             <p className="prose">
-              一个插件声明名称、登记切点，运行时由 agent 发现、隔离并加载。公开面小一点，
-              底座就能走得更远。
+              一个插件声明名称、登记要插入的位置，剩下的交给底座：发现、隔离、加载。
+              约定越小，插件越容易写，也越不容易被底座的变化影响。
             </p>
             <dl className="api-table">
               {contractApis.map((api) => (
@@ -190,21 +243,22 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section wrap" id="runtime">
+      <section className="section wrap tone-teal" id="runtime">
         <header className="section-head">
           <p className="eyebrow">
-            <span>04</span> 运行时
+            <span>06</span> 运行时
           </p>
-          <h2>从挂载到第一行 advice。</h2>
+          <h2>一次挂载，四步生效。</h2>
           <p className="section-lede">
-            四步完成织入。真正让它敢进生产的是失败开放、类加载隔离和自我保护。
+            启动时挂上底座，它自己发现插件、登记位置、把逻辑织进程序。失败开放、隔离和自保，
+            让它敢一直待在线上。
           </p>
         </header>
         <div className="flow">
           {FLOW.map((node, i) => (
             <span key={node.name} className="flow-item">
               {i > 0 && <span className="flow-arrow">→</span>}
-              <div className="flow-node">
+              <div className={`flow-node tone-${node.tone}`}>
                 <b>{node.name}</b>
                 <span>{node.text}</span>
               </div>
@@ -222,14 +276,15 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section wrap" id="coverage">
+      <section className="section wrap tone-clay" id="coverage">
         <header className="section-head">
           <p className="eyebrow">
-            <span>05</span> 覆盖
+            <span>07</span> 覆盖
           </p>
-          <h2>126 个插件，覆盖真实运行环境。</h2>
+          <h2>126 块现成能力，常见系统都覆盖。</h2>
           <p className="section-lede">
-            每个插件对应一种真实运行环境。要做什么，由你的切面应用决定；下面的数字都可以核对。
+            数据库、缓存、消息队列、Web 框架、HTTP 客户端……系统里用什么，插件就拦什么；
+            没用到的不会加载，也不占资源。
           </p>
         </header>
         <div className="coverage-table">
@@ -248,14 +303,15 @@ export function HomePage() {
         </p>
       </section>
 
-      <section className="section wrap" id="evidence">
+      <section className="section wrap tone-olive" id="evidence">
         <header className="section-head">
           <p className="eyebrow">
-            <span>06</span> 验证
+            <span>08</span> 验证
           </p>
-          <h2>先看结果，再读代码。</h2>
+          <h2>三个小故事，看它改变了什么。</h2>
           <p className="section-lede">
-            三个可运行程序：同一份业务代码跑两遍，没有 agent 和挂上 agent，输出由退出码断言。
+            同一段业务代码跑两遍：一遍不装底座，一遍装上。差别由程序自己断言，
+            不是手工截的图，也不是准备好的演示。
           </p>
         </header>
         <div className="evidence-table">
@@ -274,15 +330,15 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section wrap" id="start">
+      <section className="section wrap tone-slate" id="start">
         <header className="section-head">
           <p className="eyebrow">
-            <span>07</span> 开始
+            <span>09</span> 开始
           </p>
-          <h2>从一行 javaagent 参数开始。</h2>
+          <h2>三步，把它跑起来。</h2>
           <p className="section-lede">
-            构建 agent，挂到任意 Java 进程；插件跟着 <code className="inline">plugins/</code> 目录走。
-            要做产品，从插件模板开始，不必改动 engine。
+            构建、挂上、观察。不需要改业务代码，也不需要额外安装中间件；插件跟着{" "}
+            <code className="inline">plugins/</code> 目录走。
           </p>
         </header>
         <div className="start-grid">

@@ -3,6 +3,12 @@ import { CodeBlock } from "../components/CodeBlock";
 import { PageHero } from "../components/PageHero";
 import { caseStudies } from "../data/content";
 
+const TONES: Record<string, string> = {
+  blue: "slate",
+  volcano: "clay",
+  purple: "plum",
+};
+
 /**
  * Case studies read top to bottom: what was happening, what the plugin does, and the two real
  * outputs from the repo's demo scripts (with the agent and without it).
@@ -11,15 +17,19 @@ export function CasesPage() {
   return (
     <>
       <PageHero
-        kicker="RUNNABLE EVIDENCE"
-        title="三个可运行结果。"
-        lede="三个案例都是仓库里的可运行程序。同一份业务代码跑两遍——没有 agent，再挂上 agent——输出由退出码断言。"
+        kicker="REAL, RUNNABLE STORIES"
+        title="三个小故事，看它改变了什么"
+        lede="三个真实可运行的小程序：同一个业务，跑两遍——先不装底座，再装上。差别由程序自己断言，不是演示稿。"
       />
 
       <div className="page-body">
         <nav className="case-quicknav" aria-label="案例导航">
           {caseStudies.map((study, i) => (
-            <a key={study.key} href={`#${study.key}`} className="case-quicknav-item">
+            <a
+              key={study.key}
+              href={`#${study.key}`}
+              className={`case-quicknav-item tone-${TONES[study.tagColor] ?? "clay"}`}
+            >
               <span>{String(i + 1).padStart(2, "0")}</span>
               <b>{study.tag}</b>
               <small>{study.title}</small>
@@ -28,7 +38,11 @@ export function CasesPage() {
         </nav>
 
         {caseStudies.map((study, index) => (
-          <article key={study.key} id={study.key} className="case-study">
+          <article
+            key={study.key}
+            id={study.key}
+            className={`case-study tone-${TONES[study.tagColor] ?? "clay"}`}
+          >
             <header className="case-head">
               <div className="case-meta">
                 <span className="case-tag">{study.tag}</span>

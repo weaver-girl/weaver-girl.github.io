@@ -76,8 +76,8 @@ export function QuickStartPage() {
     <>
       <PageHero
         kicker="BUILD & ATTACH"
-        title="从源码到第一个切点"
-        lede="运行时需要 Java 8 及以上；构建建议使用 JDK 17，产物是 Java 8 字节码，可以挂到 JDK 8、11、17、21 的进程上。构建、挂载、验证三步，没有隐藏的安装器。"
+        title="三步，把它跑起来"
+        lede="构建底座、挂到你的 Java 程序、看结果。支持 Java 8 及以上；不需要改业务代码，也不需要额外安装中间件。"
       />
 
       <div className="page-body">

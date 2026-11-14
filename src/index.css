@@ -21,6 +21,24 @@
   --accent: #b4552f;
   --accent-hover: #8f4224;
   --accent-soft: #f3e7df;
+  --clay: #b4552f;
+  --clay-soft: #f6e7de;
+  --clay-line: #e8cdbf;
+  --olive: #5c6b45;
+  --olive-soft: #edf0e3;
+  --olive-line: #d8dfc7;
+  --ochre: #99691f;
+  --ochre-soft: #f7edda;
+  --ochre-line: #e9d7b4;
+  --slate: #4d6473;
+  --slate-soft: #e8eef2;
+  --slate-line: #cfdde4;
+  --plum: #7b5468;
+  --plum-soft: #f2e8ee;
+  --plum-line: #e2cfd9;
+  --teal: #3f6b66;
+  --teal-soft: #e6efed;
+  --teal-line: #cbdedb;
   --code-bg: #1e1d1b;
   --radius: 6px;
   --radius-lg: 8px;
@@ -74,6 +92,44 @@ a:hover {
 
 ::selection {
   background: #ecd9cd;
+}
+
+/* Muted accent families. Tone classes set --tone/--tone-soft/--tone-line so one
+   rule can colour a marker, a chip or a rule without repeating selectors. */
+.tone-clay {
+  --tone: var(--clay);
+  --tone-soft: var(--clay-soft);
+  --tone-line: var(--clay-line);
+}
+
+.tone-olive {
+  --tone: var(--olive);
+  --tone-soft: var(--olive-soft);
+  --tone-line: var(--olive-line);
+}
+
+.tone-ochre {
+  --tone: var(--ochre);
+  --tone-soft: var(--ochre-soft);
+  --tone-line: var(--ochre-line);
+}
+
+.tone-slate {
+  --tone: var(--slate);
+  --tone-soft: var(--slate-soft);
+  --tone-line: var(--slate-line);
+}
+
+.tone-plum {
+  --tone: var(--plum);
+  --tone-soft: var(--plum-soft);
+  --tone-line: var(--plum-line);
+}
+
+.tone-teal {
+  --tone: var(--teal);
+  --tone-soft: var(--teal-soft);
+  --tone-line: var(--teal-line);
 }
 
 code,
@@ -204,7 +260,7 @@ pre {
   gap: 12px;
   align-items: baseline;
   margin: 0 0 18px;
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 10.5px;
   letter-spacing: 0.14em;
@@ -278,6 +334,126 @@ pre {
   color: var(--accent-hover);
 }
 
+/* ---------- problem & outcomes ---------- */
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.problem-col {
+  padding: 26px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.problem-with {
+  border-color: var(--clay-line);
+  background: var(--clay-soft);
+}
+
+.problem-label {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.problem-with .problem-label {
+  color: var(--clay);
+}
+
+.problem-col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.problem-col li {
+  position: relative;
+  padding: 10px 0 10px 22px;
+  border-top: 1px solid rgba(20, 20, 19, 0.07);
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.problem-col li:first-child {
+  border-top: 0;
+}
+
+.problem-col li::before {
+  position: absolute;
+  left: 0;
+  color: var(--faint);
+  font-family: var(--mono);
+  content: "–";
+}
+
+.problem-with li::before {
+  color: var(--clay);
+  content: "+";
+}
+
+.problem-note {
+  margin: 24px 0 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+.outcome-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.outcome-card {
+  padding: 24px;
+  border: 1px solid var(--tone-line, var(--line));
+  border-radius: var(--radius-lg);
+  background: var(--tone-soft, var(--surface-2));
+}
+
+.outcome-clay { --tone: var(--clay); --tone-soft: var(--clay-soft); --tone-line: var(--clay-line); }
+.outcome-olive { --tone: var(--olive); --tone-soft: var(--olive-soft); --tone-line: var(--olive-line); }
+.outcome-slate { --tone: var(--slate); --tone-soft: var(--slate-soft); --tone-line: var(--slate-line); }
+
+.outcome-en {
+  color: var(--tone, var(--accent));
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.outcome-card h3 {
+  margin: 10px 0 7px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.outcome-card p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.outcome-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
 /* ---------- hero ---------- */
 
 .hero {
@@ -288,6 +464,17 @@ pre {
   max-width: 1160px;
   margin: 0 auto;
   padding: 92px 32px 76px;
+  background:
+    radial-gradient(
+      560px 340px at 10% 20%,
+      rgba(246, 231, 222, 0.85),
+      rgba(246, 231, 222, 0) 70%
+    ),
+    radial-gradient(
+      520px 320px at 92% 82%,
+      rgba(237, 240, 227, 0.7),
+      rgba(237, 240, 227, 0) 72%
+    );
 }
 
 .kicker {
@@ -359,15 +546,15 @@ pre {
 }
 
 .btn-primary {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: #fbfaf6;
+  border-color: var(--clay);
+  background: var(--clay);
+  color: #fffaf5;
 }
 
 .btn-primary:hover {
-  border-color: #2b2a26;
-  background: #2b2a26;
-  color: #fbfaf6;
+  border-color: var(--accent-hover);
+  background: var(--accent-hover);
+  color: #fffaf5;
 }
 
 .btn-ghost {
@@ -515,9 +702,25 @@ pre {
 
 .primitive-n {
   padding-top: 6px;
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 12px;
+}
+
+.primitive:nth-child(4n + 1) {
+  --tone: var(--clay);
+}
+
+.primitive:nth-child(4n + 2) {
+  --tone: var(--olive);
+}
+
+.primitive:nth-child(4n + 3) {
+  --tone: var(--ochre);
+}
+
+.primitive:nth-child(4n) {
+  --tone: var(--slate);
 }
 
 .primitive-main h3 {
@@ -583,6 +786,16 @@ pre {
   border-left: 1px solid var(--line-strong);
 }
 
+.boundary-col::before {
+  display: block;
+  width: 30px;
+  height: 3px;
+  margin-bottom: 18px;
+  border-radius: 2px;
+  background: var(--tone, var(--clay));
+  content: "";
+}
+
 .boundary-col:first-child {
   padding-left: 0;
   border-left: 0;
@@ -590,6 +803,21 @@ pre {
 
 .boundary-col:last-child {
   padding-right: 0;
+}
+
+.boundary-base {
+  --tone: var(--clay);
+  --tone-soft: var(--clay-soft);
+}
+
+.boundary-app {
+  --tone: var(--olive);
+  --tone-soft: var(--olive-soft);
+}
+
+.boundary-control {
+  --tone: var(--slate);
+  --tone-soft: var(--slate-soft);
 }
 
 .boundary-col header {
@@ -608,15 +836,11 @@ pre {
 }
 
 .boundary-state {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.boundary-app .boundary-state {
-  color: var(--accent-hover);
 }
 
 .boundary-control .boundary-state {
@@ -721,6 +945,17 @@ pre {
   font-size: 13px;
 }
 
+.flow-node b::before {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--tone, var(--accent));
+  vertical-align: 1px;
+  content: "";
+}
+
 .flow-node span {
   color: var(--muted);
   font-size: 13.5px;
@@ -748,14 +983,44 @@ pre {
 
 .guarantee {
   padding: 22px 0 26px;
-  border-top: 1px solid var(--line-strong);
+  border-top: 2px solid var(--tone-soft, var(--line-strong));
 }
 
 .guarantee-en {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: 0.12em;
+}
+
+.guarantee:nth-child(6n + 1) {
+  --tone: var(--clay);
+  --tone-soft: var(--clay-line);
+}
+
+.guarantee:nth-child(6n + 2) {
+  --tone: var(--olive);
+  --tone-soft: var(--olive-line);
+}
+
+.guarantee:nth-child(6n + 3) {
+  --tone: var(--ochre);
+  --tone-soft: var(--ochre-line);
+}
+
+.guarantee:nth-child(6n + 4) {
+  --tone: var(--slate);
+  --tone-soft: var(--slate-line);
+}
+
+.guarantee:nth-child(6n + 5) {
+  --tone: var(--plum);
+  --tone-soft: var(--plum-line);
+}
+
+.guarantee:nth-child(6n) {
+  --tone: var(--teal);
+  --tone-soft: var(--teal-line);
 }
 
 .guarantee h3 {
@@ -797,12 +1062,19 @@ pre {
 }
 
 .coverage-value {
-  color: var(--ink);
+  color: var(--tone, var(--ink));
   font-family: var(--mono);
   font-size: 20px;
   font-weight: 500;
   letter-spacing: -0.02em;
 }
+
+.coverage-row:nth-child(6n + 1) { --tone: var(--clay); }
+.coverage-row:nth-child(6n + 2) { --tone: var(--olive); }
+.coverage-row:nth-child(6n + 3) { --tone: var(--ochre); }
+.coverage-row:nth-child(6n + 4) { --tone: var(--slate); }
+.coverage-row:nth-child(6n + 5) { --tone: var(--plum); }
+.coverage-row:nth-child(6n) { --tone: var(--teal); }
 
 .coverage-note {
   color: var(--muted);
@@ -840,8 +1112,15 @@ pre {
 
 .evidence-row:hover .evidence-title,
 .evidence-row:hover .evidence-arrow {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
 }
+
+.evidence-row:nth-child(6n + 1) { --tone: var(--clay); }
+.evidence-row:nth-child(6n + 2) { --tone: var(--olive); }
+.evidence-row:nth-child(6n + 3) { --tone: var(--ochre); }
+.evidence-row:nth-child(6n + 4) { --tone: var(--slate); }
+.evidence-row:nth-child(6n + 5) { --tone: var(--plum); }
+.evidence-row:nth-child(6n) { --tone: var(--teal); }
 
 .evidence-index {
   color: var(--faint);
@@ -852,8 +1131,8 @@ pre {
 .evidence-tag {
   justify-self: start;
   padding-left: 8px;
-  border-left: 2px solid var(--accent);
-  color: var(--accent);
+  border-left: 2px solid var(--tone, var(--accent));
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.06em;
@@ -911,18 +1190,23 @@ pre {
   color: var(--ink);
 }
 
+.start-link:nth-child(4n + 1) { --tone: var(--clay); }
+.start-link:nth-child(4n + 2) { --tone: var(--olive); }
+.start-link:nth-child(4n + 3) { --tone: var(--ochre); }
+.start-link:nth-child(4n) { --tone: var(--slate); }
+
 .start-link:hover {
   color: var(--ink);
 }
 
 .start-link:hover b {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
 }
 
 .start-kicker {
   display: block;
   margin-bottom: 4px;
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: 0.12em;
@@ -1183,12 +1467,20 @@ pre {
 .runtime-card {
   padding: 20px;
   border: 1px solid var(--line);
+  border-top: 2px solid var(--tone-line, var(--line));
   border-radius: var(--radius);
   background: transparent;
 }
 
+.runtime-card:nth-child(6n + 1) { --tone: var(--clay); --tone-line: var(--clay-line); }
+.runtime-card:nth-child(6n + 2) { --tone: var(--olive); --tone-line: var(--olive-line); }
+.runtime-card:nth-child(6n + 3) { --tone: var(--ochre); --tone-line: var(--ochre-line); }
+.runtime-card:nth-child(6n + 4) { --tone: var(--slate); --tone-line: var(--slate-line); }
+.runtime-card:nth-child(6n + 5) { --tone: var(--plum); --tone-line: var(--plum-line); }
+.runtime-card:nth-child(6n) { --tone: var(--teal); --tone-line: var(--teal-line); }
+
 .runtime-card code {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-size: 12.5px;
 }
 
@@ -1263,13 +1555,17 @@ pre {
   transition: border-color 150ms ease;
 }
 
+.doc-card:nth-child(3n + 1) { --tone: var(--clay); --tone-soft: var(--clay-soft); }
+.doc-card:nth-child(3n + 2) { --tone: var(--olive); --tone-soft: var(--olive-soft); }
+.doc-card:nth-child(3n) { --tone: var(--ochre); --tone-soft: var(--ochre-soft); }
+
 .doc-card:hover {
-  border-color: var(--ink);
+  border-color: var(--tone, var(--ink));
   color: var(--ink);
 }
 
 .doc-card .doc-kicker {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: 0.1em;
@@ -1303,7 +1599,7 @@ pre {
 
 .case-quicknav-item {
   padding-top: 16px;
-  border-top: 1px solid var(--line-strong);
+  border-top: 2px solid var(--tone-line, var(--line-strong));
   color: var(--ink);
 }
 
@@ -1312,12 +1608,12 @@ pre {
 }
 
 .case-quicknav-item:hover b {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
 }
 
 .case-quicknav-item span {
   display: block;
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 9.5px;
 }
@@ -1340,7 +1636,7 @@ pre {
 .case-study {
   margin-bottom: 80px;
   padding-top: 28px;
-  border-top: 1px solid var(--line-strong);
+  border-top: 2px solid var(--tone-line, var(--line-strong));
 }
 
 .case-meta {
@@ -1356,7 +1652,7 @@ pre {
 }
 
 .case-tag {
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.06em;
@@ -1373,7 +1669,7 @@ pre {
 
 .case-index {
   margin-right: 10px;
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 400;
@@ -1395,7 +1691,7 @@ pre {
 
 .case-narrative h3 {
   margin: 20px 0 6px;
-  color: var(--accent);
+  color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 9.5px;
   font-weight: 400;
@@ -1440,7 +1736,7 @@ pre {
 }
 
 .case-metric .ant-statistic-content {
-  color: var(--ink) !important;
+  color: var(--tone, var(--ink)) !important;
   font-family: var(--mono) !important;
   font-size: 22px !important;
   font-weight: 500 !important;
@@ -1711,6 +2007,11 @@ pre {
 
   .primitive-impl {
     grid-column: 2;
+  }
+
+  .problem-grid,
+  .outcome-grid {
+    grid-template-columns: 1fr;
   }
 
   .coverage-row {

@@ -7,7 +7,7 @@ export function DocsPage() {
       <PageHero
         kicker="DOCS & CONTRACT"
         title="文档与契约"
-        lede="完整文档随源码一起维护在 docs 目录，保证和代码同一个版本。先读定位与架构，再决定要不要把它接进产品。"
+        lede="文档和代码放在同一个仓库、同一个版本。想先弄清楚它是什么，读产品定位；准备接进系统，读架构和插件指南。"
       />
       <div className="page-body">
       <div className="doc-grid" style={{ marginTop: 36 }}>

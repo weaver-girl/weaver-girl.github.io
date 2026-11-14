@@ -13,12 +13,16 @@ export function ArchitecturePage() {
   return (
     <>
       <PageHero
-        kicker="ARCHITECTURE"
-        title="底座的四项职责"
-        lede="四项能力串成一条链路：挂载 JVM、发现插件、登记切点、内联 Advice。premain 与运行期 agentmain 走的是同一条路径。"
+        kicker="HOW IT WORKS"
+        title="底座是怎么工作的"
+        lede="它不碰业务逻辑，只在程序运行时，把插件登记的代码“织”到指定位置。一次挂载，四步完成：进入系统、发现插件、登记位置、织入逻辑。"
       />
 
       <div className="page-body">
+      <p className="prose">
+        插件看到的是方法参数、返回值和异常，不是业务实现。底座负责发现、隔离和加载，
+        至于拦到之后做什么判断，由插件自己决定。
+      </p>
       <div className="flow" style={{ marginTop: 36 }}>
         {FLOW.map((node, i) => (
           <span key={node.name} style={{ display: "contents" }}>

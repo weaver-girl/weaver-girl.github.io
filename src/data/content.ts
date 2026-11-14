@@ -394,7 +394,8 @@ mvn clean package -DskipTests
 
 cd weaver-girl-agent/target
 # plugins/ 必须与 agent jar 放在一起（发行包已打包好）
-java -javaagent:weaver-girl-agent-1.0.0-SNAPSHOT.jar -jar your-app.jar`;
+java -javaagent:weaver-girl-agent-1.0.0-SNAPSHOT.jar \\
+  -jar your-app.jar`;
 
 export const releaseInstall = `# GitHub Release 提供 weaver-girl-agent-<version>-dist.zip
 # 内含 agent jar 与它需要的 plugins/ 目录
@@ -519,6 +520,54 @@ export interface Primitive {
   detail: string;
 }
 
+/** Plain-language framing for the home page: the problem before the mechanism. */
+export const beforeBase = [
+  "每加一项能力，就要改一次业务代码",
+  "每个团队各写一套字节码工具，重复踩坑",
+  "上线要排期、回归、发布，几周过去",
+  "一处插件出错，可能影响整个系统",
+];
+
+export const afterBase = [
+  "能力做成插件，放进目录就生效",
+  "业务代码一行不改，也不用预留接口",
+  "改配置即时生效，不用重启系统",
+  "插件相互隔离，坏了只摘除它自己",
+];
+
+export interface Outcome {
+  key: string;
+  en: string;
+  title: string;
+  text: string;
+  tone: "clay" | "olive" | "slate";
+}
+
+/** What teams actually build on top of the base, in ordinary language. */
+export const outcomes: Outcome[] = [
+  {
+    key: "apm",
+    en: "APM · 监控",
+    title: "看清系统慢在哪里",
+    text: "每次请求经过了哪些服务、每一步花了多久，自动记录下来，不用在业务代码里埋点。",
+    tone: "clay",
+  },
+  {
+    key: "security",
+    en: "IAST / RASP · 安全",
+    title: "发现并挡住安全问题",
+    text: "检查进入系统的数据，发现代码里的漏洞；可疑请求在到达核心逻辑前就被拦住。",
+    tone: "olive",
+  },
+  {
+    key: "audit",
+    en: "AUDIT · 审计",
+    title: "留下可追溯的记录",
+    text: "谁在什么时候动了敏感数据，自动留痕，满足合规、对账和事后追查的需要。",
+    tone: "slate",
+  },
+];
+
 /** The four responsibilities a hook base owns; everything else is a product. */
 export const basePrimitives: Primitive[] = [
   {
@@ -526,28 +575,29 @@ export const basePrimitives: Primitive[] = [
     name: "配置读取",
     en: "CONFIG",
     impl: "weaver.yml · watch=true",
-    detail: "本机 YAML 是唯一配置源。文件变更可以热加载，不必重启进程，配置格式与读取时机都保持稳定。",
+    detail: "告诉底座要开启哪些能力。改完配置即时生效，不用重启系统，接入方式保持稳定。",
   },
   {
     n: "02",
     name: "切点植入",
     en: "WEAVING",
     impl: "WeaverTransformer · ByteBuddy Advice",
-    detail: "方法、字段、异常三类切点；premain 与运行期 agentmain 走同一条织入链路。",
+    detail:
+      "在程序的关键位置“插一句话”：方法进入、字段读取、异常抛出。业务代码不用改，也不用提前预留接口。",
   },
   {
     n: "03",
     name: "数据上报",
     en: "EXPORT",
     impl: "events · metrics · trace · OTLP",
-    detail: "拦截事件、指标、span 与拓扑通过 SPI 出口送出；接哪个后端由切面应用决定。",
+    detail: "把看到的事情整理成事件、指标和调用链路，送到你自己的监控或安全平台。",
   },
   {
     n: "04",
     name: "模块加载",
     en: "LOADING",
     impl: "AgentClassLoader · plugins/",
-    detail: "child-first 隔离，插件失败由熔断器摘除。一个类变换失败，不会拖垮整个进程。",
+    detail: "每个能力独立打包、独立加载。某个插件坏了，只摘除它自己，系统照常运行。",
   },
 ];
 
@@ -567,11 +617,11 @@ export const boundaries: BoundaryLayer[] = [
     state: "提供",
     tone: "base",
     items: [
-      "配置读取与热加载",
-      "切点植入（方法 / 字段 / 异常）",
-      "上下文、参数与返回值改写",
-      "事件、指标、trace 与拓扑出口",
-      "模块加载、隔离、熔断与采样",
+      "读取配置，改完即时生效",
+      "在方法、字段、异常处插入逻辑",
+      "改写参数与返回值",
+      "把事件、指标、链路送出去",
+      "加载插件，隔离、熔断与采样",
     ],
   },
   {
@@ -580,10 +630,10 @@ export const boundaries: BoundaryLayer[] = [
     state: "由你实现",
     tone: "app",
     items: [
-      "APM 的 span 命名与后端",
-      "IAST 的 source / sink 规则",
-      "RASP 的规则与阻断策略",
-      "脱敏策略与审计口径",
+      "监控平台（APM）：记录请求怎么走",
+      "安全检测（IAST）：发现代码里的漏洞",
+      "攻击拦截（RASP）：运行时挡住攻击",
+      "数据脱敏与审计口径",
       "降级、重试与业务判定",
     ],
   },
@@ -594,10 +644,10 @@ export const boundaries: BoundaryLayer[] = [
     tone: "control",
     items: [
       "控制台与规则下发",
-      "存储、查询与检索",
+      "数据存储、查询与检索",
       "告警编排与权限",
       "多租户与计费",
-      "跨进程的集中管控",
+      "跨系统的集中管理",
     ],
   },
 ];
@@ -627,32 +677,32 @@ export const guarantees: Guarantee[] = [
   {
     title: "失败开放",
     en: "FAIL-OPEN",
-    detail: "类变换抛出异常（含 Error）时保留原字节，兄弟类继续增强，进程照常运行。",
+    detail: "插件织入失败时保留程序原样，兄弟类继续处理，进程照常运行。",
   },
   {
     title: "类加载隔离",
     en: "ISOLATION",
-    detail: "child-first AgentClassLoader；第三方插件只看到 api、annotation 与 JDK。",
+    detail: "插件和业务代码各用各的类库，同名依赖不会互相覆盖。",
   },
   {
     title: "热加载",
     en: "HOT RELOAD",
-    detail: "YAML 与插件开关运行期生效，连接与业务状态不丢。",
+    detail: "改配置、开关插件都不需要重启，连接和业务状态不丢。",
   },
   {
     title: "自我保护",
     en: "CONTAINMENT",
-    detail: "熔断器自动摘除异常拦截器，自适应采样在高负载下自动降低采样率。",
+    detail: "某个拦截器一直出错会被自动摘除；系统压力大时自动降低采样。",
   },
   {
     title: "公开契约",
     en: "CONTRACT",
-    detail: "只有 weaver-girl-api 是稳定面；engine 与 shaded ByteBuddy 属于内部实现。",
+    detail: "插件只依赖一个稳定的 API，底座内部升级不会牵连插件。",
   },
   {
     title: "可验证",
     en: "VERIFIED",
-    detail: "3,671 个测试、打包冒烟，以及在 JDK 8 / 11 / 17 / 21 上的真实 attach。",
+    detail: "3,671 个自动化测试，以及在 JDK 8 / 11 / 17 / 21 上的真实挂载验证。",
   },
 ];
 
@@ -664,12 +714,12 @@ export interface CoverageRow {
 
 /** Evidence of coverage, not the headline. Rendered as a spec table. */
 export const coverageRows: CoverageRow[] = [
-  { label: "内置插桩插件", value: "126", note: "每个能力一个 jar，目标库不在场就跳过" },
-  { label: "可选运行时能力", value: "14", note: "配置对应键后才加载" },
-  { label: "切点类型", value: "3", note: "method / field / catch" },
-  { label: "JDK", value: "8–21", note: "一份 Java 8 字节码，向上运行" },
+  { label: "现成能力插件", value: "126", note: "每个能力一个 jar，系统里没有的库不会加载" },
+  { label: "可选运行时模块", value: "14", note: "配置对应功能后才启用" },
+  { label: "可插入的位置", value: "3", note: "方法 / 字段 / 异常" },
+  { label: "支持的系统", value: "Java 8–21", note: "一份字节码，向上兼容" },
   { label: "自动化测试", value: "3,671", note: "0 失败，0 错误" },
-  { label: "热路径匹配", value: "≈1.2 ns", note: "精确类 / 方法匹配的基准值" },
+  { label: "每次判断的耗时", value: "≈1.2 ns", note: "基准值，跑在业务热路径上" },
 ];
 
 /** Hero panel: what the JVM prints when the base starts. */

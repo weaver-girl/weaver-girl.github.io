@@ -34,9 +34,9 @@ export function PluginsPage() {
   return (
     <>
       <PageHero
-        kicker="INSTRUMENTATION COVERAGE"
-        title="126 个内置插桩插件"
-        lede="每个能力一个 jar，通过字节码匹配目标库；目标库不在场就跳过。用 disabledPlugins / enabledPlugins 按名称启停，配置目录支持热加载。"
+        kicker="WHAT CAN PLUG IN"
+        title="126 块现成能力"
+        lede="数据库、缓存、消息队列、HTTP 客户端、Web 框架……常见的 Java 组件都有现成插件。系统里用到哪个，才加载哪个；没用到的不占资源，也可以按名称随时关掉。"
       />
 
       <div className="page-body">
