@@ -523,7 +523,7 @@ export interface Primitive {
 /** Plain-language framing for the home page: the problem before the mechanism. */
 export const beforeBase = [
   "每加一项能力，就要改一次业务代码",
-  "每个团队各写一套字节码工具，重复踩坑",
+  "每个团队各写一套改造工具，重复踩坑",
   "上线要排期、回归、发布，几周过去",
   "一处插件出错，可能影响整个系统",
 ];
@@ -717,7 +717,7 @@ export const coverageRows: CoverageRow[] = [
   { label: "现成能力插件", value: "126", note: "每个能力一个 jar，系统里没有的库不会加载" },
   { label: "可选运行时模块", value: "14", note: "配置对应功能后才启用" },
   { label: "可插入的位置", value: "3", note: "方法 / 字段 / 异常" },
-  { label: "支持的系统", value: "Java 8–21", note: "一份字节码，向上兼容" },
+  { label: "支持的系统", value: "Java 8–21", note: "同一份程序，向上兼容" },
   { label: "自动化测试", value: "3,671", note: "0 失败，0 错误" },
   { label: "每次判断的耗时", value: "≈1.2 ns", note: "基准值，跑在业务热路径上" },
 ];
