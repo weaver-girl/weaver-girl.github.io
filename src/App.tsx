@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { RouteMeta } from "./components/RouteMeta";
 import { REPO_URL } from "./data/content";
-import { ArchitecturePage } from "./pages/ArchitecturePage";
-import { CasesPage } from "./pages/CasesPage";
-import { DocsPage } from "./pages/DocsPage";
 import { HomePage } from "./pages/HomePage";
-import { PluginsPage } from "./pages/PluginsPage";
-import { QuickStartPage } from "./pages/QuickStartPage";
+
+// The home page is the landing target; the other five routes are split out so a
+// visitor who only reads the overview does not download antd's table, tabs and steps.
+const ArchitecturePage = lazy(() =>
+  import("./pages/ArchitecturePage").then((m) => ({ default: m.ArchitecturePage })),
+);
+const CasesPage = lazy(() => import("./pages/CasesPage").then((m) => ({ default: m.CasesPage })));
+const DocsPage = lazy(() => import("./pages/DocsPage").then((m) => ({ default: m.DocsPage })));
+const PluginsPage = lazy(() => import("./pages/PluginsPage").then((m) => ({ default: m.PluginsPage })));
+const QuickStartPage = lazy(() =>
+  import("./pages/QuickStartPage").then((m) => ({ default: m.QuickStartPage })),
+);
 
 const NAV = [
   { key: "/", label: "概览" },
@@ -50,15 +58,6 @@ export default function App() {
     }
   }, [pathname]);
 
-  // Apply the document title per route so bookmarks and history entries are readable.
-  useEffect(() => {
-    const item = NAV.find((entry) => entry.key === current);
-    document.title =
-      current === "/"
-        ? "Weaver-Girl — JVM 切面底座 / Hook Base"
-        : `${item?.label ?? "概览"} · Weaver-Girl`;
-  }, [current]);
-
   // Close the mobile menu on resize/blur so it never blocks a page underneath.
   useEffect(() => {
     const onResize = () => setOpen(false);
@@ -68,6 +67,7 @@ export default function App() {
 
   return (
     <>
+      <RouteMeta />
       <header className={scrolled ? "nav scrolled" : "nav"}>
         <a
           className="skip-link"
@@ -109,15 +109,17 @@ export default function App() {
       </header>
 
       <main className="page" id="main" tabIndex={-1}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/quick-start" element={<QuickStartPage />} />
-          <Route path="/cases" element={<CasesPage />} />
-          <Route path="/plugins" element={<PluginsPage />} />
-          <Route path="/architecture" element={<ArchitecturePage />} />
-          <Route path="/docs" element={<DocsPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<div className="route-loading" role="status">正在加载…</div>}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/quick-start" element={<QuickStartPage />} />
+            <Route path="/cases" element={<CasesPage />} />
+            <Route path="/plugins" element={<PluginsPage />} />
+            <Route path="/architecture" element={<ArchitecturePage />} />
+            <Route path="/docs" element={<DocsPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </main>
 
       <footer className="site-footer">

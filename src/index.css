@@ -175,6 +175,16 @@ main:focus {
   outline: none;
 }
 
+.route-loading {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 80px 32px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
 .nav {
   position: sticky;
   top: 0;
@@ -2008,11 +2018,6 @@ main:focus {
 }
 
 /* ---------- motion ---------- */
-
-.reveal {
-  opacity: 1;
-  transform: none;
-}
 
 @media (prefers-reduced-motion: reduce) {
   * {
