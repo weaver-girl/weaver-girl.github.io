@@ -21,7 +21,7 @@
   --accent: #a34a27;
   --accent-hover: #8f4224;
   --accent-soft: #f3e7df;
-  --clay: #b4552f;
+  --clay: #a34a27;
   --clay-soft: #f6e7de;
   --clay-line: #e8cdbf;
   --olive: #5c6b45;
@@ -1371,7 +1371,7 @@ main:focus {
 }
 
 .tok-cmd {
-  color: #b4552f;
+  color: var(--accent);
 }
 
 .tok-flag {
@@ -1387,7 +1387,7 @@ main:focus {
 }
 
 .tok-ann {
-  color: #b4552f;
+  color: var(--accent);
 }
 
 .tok-str {
