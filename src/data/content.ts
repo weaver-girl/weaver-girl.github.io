@@ -41,6 +41,48 @@ export const features: Feature[] = [
   },
 ];
 
+/**
+ * Functional groups for the plugin catalog. Every name in `allPlugins` belongs to exactly one
+ * group; a test in the site repo keeps it that way when modules are added.
+ */
+export const pluginGroups: { key: string; label: string; names: string[] }[] = [
+  {
+    key: "db",
+    label: "数据库",
+    names: ["jdbc", "mybatis", "hibernate", "hibernatesearch", "druid", "hikari", "dbcp", "c3p0", "vibur", "pool", "clickhouse", "cassandra", "couchbase", "mongo", "hbase", "geode", "influxdb", "elasticsearch", "opensearch", "vertxsql", "vertxredis", "rediscala"],
+  },
+  {
+    key: "cache",
+    label: "缓存",
+    names: ["caffeine", "redis", "jedis", "lettuce", "redisson", "memcached"],
+  },
+  {
+    key: "mq",
+    label: "消息队列",
+    names: ["kafka", "springkafka", "rocketmq", "rabbitmq", "springamqp", "pulsar", "springpulsar", "jms", "springjms", "nats"],
+  },
+  {
+    key: "web",
+    label: "Web 框架",
+    names: ["servlet", "spring", "springmvc", "springws", "springbatch", "springrmi", "webflux", "reactor", "netty", "tomcat", "jetty", "jettyhttp", "jetty12http", "undertow", "grizzly", "jaxrs", "jaxws", "jersey", "resteasy", "restlet", "struts", "struts2", "jsf", "jsp", "wicket", "tapestry", "vaadin", "dropwizard", "play", "playws", "ratpack", "sparkjava", "javalin", "jfinal", "jodd", "quarkus", "liberty", "grails", "gwt", "finatra", "vertx", "websocket", "graphql", "activej", "camel", "cxf"],
+  },
+  {
+    key: "rpc",
+    label: "RPC 与 HTTP 客户端",
+    names: ["dubbo", "grpc", "thrift", "feign", "resttemplate", "httpclient", "httpclient5", "commonshttp", "okhttp", "asynchttp", "async", "httpasync", "ninghttp", "ghttp", "googlehttp", "awssdk", "awssdk2", "awslambda", "azurecore", "twilio", "kubernetes"],
+  },
+  {
+    key: "func",
+    label: "异步与调度",
+    names: ["scheduled", "scheduling", "quartz", "xxljob", "powerjob", "elasticjob", "hystrix", "rxjava", "scalafuture", "scalaforkjoin", "kotlin", "avaje"],
+  },
+  {
+    key: "meta",
+    label: "通用能力",
+    names: ["timing", "exception", "logging", "trace", "traceanno", "traced", "withspan", "elasticapm", "estransport"],
+  },
+];
+
 export interface PluginRow {
   key: string;
   name: string;
@@ -607,6 +649,8 @@ export interface BoundaryLayer {
   state: string;
   items: string[];
   tone: "base" | "app" | "control";
+  /** One sentence for readers who will not read the bullets. */
+  summary?: string;
 }
 
 /** Where the base stops. This table is the positioning argument, not a feature list. */
@@ -616,6 +660,7 @@ export const boundaries: BoundaryLayer[] = [
     owner: "本仓库",
     state: "提供",
     tone: "base",
+    summary: "底座负责“通电”：知道怎么接进程序、把插件装好、把数据送出去。",
     items: [
       "读取配置，改完即时生效",
       "在方法、字段、异常处插入逻辑",
@@ -629,6 +674,7 @@ export const boundaries: BoundaryLayer[] = [
     owner: "插件",
     state: "由你实现",
     tone: "app",
+    summary: "插件（也就是产品）负责“决定”：拦到之后怎么做判断、记什么、报给谁。",
     items: [
       "监控平台（APM）：记录请求怎么走",
       "安全检测（IAST）：发现代码里的漏洞",
@@ -642,6 +688,7 @@ export const boundaries: BoundaryLayer[] = [
     owner: "产品层",
     state: "不提供",
     tone: "control",
+    summary: "管控层负责“物业”：界面、存储、告警与权限，交给你的平台团队。",
     items: [
       "控制台与规则下发",
       "数据存储、查询与检索",
@@ -720,6 +767,29 @@ export const coverageRows: CoverageRow[] = [
   { label: "支持的系统", value: "Java 8–21", note: "同一份程序，向上兼容" },
   { label: "自动化测试", value: "3,671", note: "0 失败，0 错误" },
   { label: "每次判断的耗时", value: "≈1.2 ns", note: "基准值，跑在业务热路径上" },
+];
+
+export interface FitRow {
+  key: string;
+  label: string;
+  text: string;
+  tone: "clay" | "olive";
+}
+
+/** "Is this for me?" — the two answers that save readers from a wrong adoption. */
+export const fits: FitRow[] = [
+  {
+    key: "yes",
+    label: "适合你，如果",
+    tone: "olive",
+    text: "你要做的是自己的监控、安全或审计产品，需要稳定地插进别人的系统，又不想从零写一套字节码引擎。",
+  },
+  {
+    key: "no",
+    label: "不适合，如果",
+    tone: "clay",
+    text: "你只是想买一个开箱即用的 APM 平台。那种需求用现成产品更划算，底座给不了界面、存储和规则库。",
+  },
 ];
 
 /** Hero panel: what the JVM prints when the base starts. */

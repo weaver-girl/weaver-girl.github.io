@@ -18,7 +18,7 @@
   --faint: #8b887c;
   --line: #e5e1d5;
   --line-strong: #d5cfc0;
-  --accent: #b4552f;
+  --accent: #a34a27;
   --accent-hover: #8f4224;
   --accent-soft: #f3e7df;
   --clay: #b4552f;
@@ -27,7 +27,7 @@
   --olive: #5c6b45;
   --olive-soft: #edf0e3;
   --olive-line: #d8dfc7;
-  --ochre: #99691f;
+  --ochre: #8a5d18;
   --ochre-soft: #f7edda;
   --ochre-line: #e9d7b4;
   --slate: #4d6473;
@@ -138,6 +138,42 @@ pre {
 }
 
 /* ---------- nav ---------- */
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 16px;
+  z-index: 40;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13px;
+  transform: translateY(-200%);
+  transition: transform 150ms ease;
+}
+
+.skip-link:focus-visible {
+  color: var(--paper);
+  transform: translateY(12px);
+}
+
+/* Every focusable control gets the same visible ring; antd keeps its own. */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+[id] {
+  scroll-margin-top: 88px;
+}
+
+main:focus {
+  outline: none;
+}
 
 .nav {
   position: sticky;
@@ -856,6 +892,13 @@ pre {
   text-transform: uppercase;
 }
 
+.boundary-summary {
+  margin: 0 0 18px;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
 .boundary-col ul {
   margin: 0;
   padding: 0;
@@ -1170,6 +1213,58 @@ pre {
   transform: translateX(2px);
 }
 
+/* ---------- fit ---------- */
+
+.fit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.fit-card {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 26px 26px 28px;
+  border: 1px solid var(--tone-line, var(--line));
+  border-radius: var(--radius-lg);
+  background: var(--tone-soft, var(--surface-2));
+}
+
+.fit-mark {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--tone-line, var(--line-strong));
+  border-radius: 50%;
+  color: var(--tone, var(--ink));
+  font-size: 15px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.fit-card h3 {
+  margin: 4px 0 6px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.fit-card p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+
+.fit-note {
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 /* ---------- start ---------- */
 
 .start-grid {
@@ -1399,6 +1494,50 @@ pre {
   color: var(--muted);
   font-family: var(--mono);
   font-size: 10.5px;
+}
+
+.plugin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 16px;
+}
+
+.plugin-filter {
+  display: inline-flex;
+  gap: 7px;
+  align-items: baseline;
+  padding: 5px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.plugin-filter span {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.plugin-filter:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.plugin-filter.active {
+  border-color: var(--accent);
+  background: var(--clay-soft);
+  color: var(--accent);
+}
+
+.plugin-filter.active span {
+  color: var(--accent);
 }
 
 .plugin-tag-grid {
@@ -2010,7 +2149,8 @@ pre {
   }
 
   .problem-grid,
-  .outcome-grid {
+  .outcome-grid,
+  .fit-grid {
     grid-template-columns: 1fr;
   }
 

@@ -10,6 +10,7 @@ import {
   caseStudies,
   contractApis,
   coverageRows,
+  fits,
   guarantees,
   outcomes,
   pluginSkeleton,
@@ -192,6 +193,7 @@ export function HomePage() {
                   <span className="boundary-state">{layer.state}</span>
                 </header>
                 <p className="boundary-owner">{layer.owner}</p>
+                {layer.summary && <p className="boundary-summary">{layer.summary}</p>}
                 <ul>
                   {layer.items.map((item) => (
                     <li key={item}>{item}</li>
@@ -330,10 +332,43 @@ export function HomePage() {
         </div>
       </section>
 
+      <section className="section wrap tone-plum" id="fit">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>09</span> 选型
+          </p>
+          <h2>先想清楚：它是不是给你的。</h2>
+          <p className="section-lede">
+            底座不是万能的。它擅长“给系统加能力”，不擅长“直接给你一个能用的产品”。
+            两句话就能判断。
+          </p>
+        </header>
+        <div className="fit-grid">
+          {fits.map((fit, i) => (
+            <article key={fit.key} className={`fit-card tone-${fit.tone}`}>
+              <span className="fit-mark" aria-hidden="true">
+                {i === 0 ? "✓" : "✕"}
+              </span>
+              <div>
+                <h3>{fit.label}</h3>
+                <p>{fit.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="fit-note">
+          想知道它和 SkyWalking、OpenTelemetry Agent 的差别，
+          <a href={`${REPO_URL}/blob/main/docs/positioning.md`} target="_blank" rel="noreferrer">
+            产品定位文档
+          </a>
+          里有一张逐项对照表。
+        </p>
+      </section>
+
       <section className="section wrap tone-slate" id="start">
         <header className="section-head">
           <p className="eyebrow">
-            <span>09</span> 开始
+            <span>10</span> 开始
           </p>
           <h2>三步，把它跑起来。</h2>
           <p className="section-lede">

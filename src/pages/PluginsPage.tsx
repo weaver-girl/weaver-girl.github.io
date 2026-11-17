@@ -4,6 +4,7 @@ import type { ColumnsType } from "antd/es/table";
 import { PageHero } from "../components/PageHero";
 import {
   allPlugins,
+  pluginGroups,
   pluginHighlights,
   runtimeCapabilities,
   type PluginRow,
@@ -26,10 +27,19 @@ const COLUMNS: ColumnsType<PluginRow> = [
 
 export function PluginsPage() {
   const [query, setQuery] = useState("");
+  const [group, setGroup] = useState<string>("all");
+
   const filtered = useMemo(() => {
     const keyword = query.trim().toLowerCase();
-    return keyword ? allPlugins.filter((name) => name.includes(keyword)) : allPlugins;
-  }, [query]);
+    const names = group === "all" ? allPlugins : (pluginGroups.find((g) => g.key === group)?.names ?? []);
+    return keyword ? names.filter((name) => name.includes(keyword)) : names;
+  }, [query, group]);
+
+  const countFor = (key: string) => {
+    const names = key === "all" ? allPlugins : (pluginGroups.find((g) => g.key === key)?.names ?? []);
+    const keyword = query.trim().toLowerCase();
+    return keyword ? names.filter((name) => name.includes(keyword)).length : names.length;
+  };
 
   return (
     <>
@@ -52,6 +62,20 @@ export function PluginsPage() {
         <span className="plugin-count">
           {filtered.length} / {allPlugins.length}
         </span>
+      </div>
+      <div className="plugin-filters" role="group" aria-label="按类别筛选插件">
+        {[{ key: "all", label: "全部" }, ...pluginGroups].map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            className={item.key === group ? "plugin-filter active" : "plugin-filter"}
+            aria-pressed={item.key === group}
+            onClick={() => setGroup(item.key)}
+          >
+            {item.label}
+            <span>{countFor(item.key)}</span>
+          </button>
+        ))}
       </div>
       <div className="plugin-tag-grid">
         {filtered.map((name) => (

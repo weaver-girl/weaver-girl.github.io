@@ -18,9 +18,9 @@ createRoot(root).render(
       locale={zhCN}
       theme={{
         token: {
-          colorPrimary: "#b4552f",
-          colorInfo: "#b4552f",
-          colorLink: "#b4552f",
+          colorPrimary: "#a34a27",
+          colorInfo: "#a34a27",
+          colorLink: "#a34a27",
           colorText: "#141413",
           colorTextSecondary: "#5f5d55",
           colorBorder: "#dcd7ca",

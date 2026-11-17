@@ -33,9 +33,52 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // BrowserRouter keeps the window position across navigations, so a link at the
+  // bottom of one page would open the next page half-way down. Reset to the top,
+  // and keep in-page anchors (/#problem) working.
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    const target = hash ? document.getElementById(hash) : null;
+    if (target) {
+      target.scrollIntoView({ block: "start" });
+      // The skip link points at #main; drop it so later navigations start clean.
+      if (hash === "main") {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
+
+  // Apply the document title per route so bookmarks and history entries are readable.
+  useEffect(() => {
+    const item = NAV.find((entry) => entry.key === current);
+    document.title =
+      current === "/"
+        ? "Weaver-Girl — JVM 切面底座 / Hook Base"
+        : `${item?.label ?? "概览"} · Weaver-Girl`;
+  }, [current]);
+
+  // Close the mobile menu on resize/blur so it never blocks a page underneath.
+  useEffect(() => {
+    const onResize = () => setOpen(false);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   return (
     <>
       <header className={scrolled ? "nav scrolled" : "nav"}>
+        <a
+          className="skip-link"
+          href="#main"
+          onClick={(event) => {
+            event.preventDefault();
+            document.getElementById("main")?.focus();
+          }}
+        >
+          跳到正文
+        </a>
         <Link to="/" className="brand" onClick={() => setOpen(false)}>
           <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M8 1 L15 8 L8 15 L1 8 Z" fill="currentColor" />
@@ -65,7 +108,7 @@ export default function App() {
         </button>
       </header>
 
-      <main className="page">
+      <main className="page" id="main" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/quick-start" element={<QuickStartPage />} />
