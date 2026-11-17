@@ -13,9 +13,9 @@ import {
 } from "../data/content";
 
 const STEPS = [
-  { title: "构建", description: "mvn clean package，产物是 Java 8 字节码" },
-  { title: "挂载", description: "-javaagent 指向 agent jar，旁边保留 plugins/" },
-  { title: "观察", description: "插件自动拦截，指标与健康检查随即可用" },
+  { title: "拿到 agent", description: "下载发行包，或从源码构建一次" },
+  { title: "放进启动命令", description: "加 -javaagent 参数，旁边保留 plugins/ 目录" },
+  { title: "看结果", description: "插件自动开始工作，指标和健康检查随即可用" },
 ];
 
 const INSTALL_TABS = [
@@ -81,6 +81,11 @@ export function QuickStartPage() {
       />
 
       <div className="page-body">
+      <p className="prose">
+        如果只是先看看效果：把 agent jar 和它旁边的 <code className="inline">plugins/</code> 目录一起放进服务器，
+        在启动命令里加一个 <code className="inline">-javaagent</code> 参数就行——相当于告诉 Java“启动时先加载这个工具”。
+        业务代码不用改，程序照常启动。
+      </p>
       <Steps
         className="quick-steps"
         items={STEPS.map((step) => ({ title: step.title, description: step.description }))}

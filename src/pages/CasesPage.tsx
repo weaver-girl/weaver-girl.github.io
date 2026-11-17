@@ -67,6 +67,7 @@ export function CasesPage() {
                 </section>
                 <section>
                   <h3>插件做了什么</h3>
+                  {study.plain && <p className="case-plain">{study.plain}</p>}
                   <p>{study.approach}</p>
                 </section>
                 <section>

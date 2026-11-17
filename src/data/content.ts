@@ -237,6 +237,8 @@ export interface CaseStudy {
   scene: string;
   problem: string;
   approach: string;
+  /** Plain-language restatement of `approach`, shown above the technical detail. */
+  plain?: string;
   beforeLabel: string;
   before: string;
   afterLabel: string;
@@ -263,6 +265,7 @@ export const caseStudies: CaseStudy[] = [
       "客服每天把工单内容复述到聊天窗口或工单备注里。工单系统保存的是客户原文，卡号和手机号会随文本一起离开系统。",
     problem:
       "合规要求敏感信息不得明文外发，但脱敏点分散在导出、复制、对接等多个出口，靠人工检查必然有漏网之鱼。",
+    plain: "工单库里的原文不变，只在数据“交出去”的那一刻把卡号和手机号打码，谁复制、谁导出都一样。",
     approach:
       "redaction 插件按类名织入 TicketStore.render，在方法返回前用 @Advice.Return(readOnly = false) 改写返回值。工单存储保持原文，只有交出去的那一份被掩码。",
     beforeLabel: "没有插件",
@@ -313,6 +316,7 @@ plugin active: the pasted text was redacted without the desk knowing`,
       "支付网关调用下游通道。通道在一段时间内连续超时，而这套网关是早期代码，没有熔断和降级逻辑。",
     problem:
       "六笔请求全部打到故障通道，四笔失败直接抛给用户；故障期间下游被持续打满，恢复也更慢。",
+    plain: "网关照常调用下游，但连续失败三次后自动“断路”：后面的请求直接拿到降级结果，不再打到已经挂掉的通道上。",
     approach:
       "resilience 插件拦截 PaymentGateway.charge：连续三次失败后打开熔断，第四笔直接返回 queued: 降级结果，不再占用下游；通道恢复后自动闭合。",
     beforeLabel: "没有插件",
@@ -371,6 +375,7 @@ charges shed, from the metric registry: 1`,
       "支付服务处理扣款和退款。财务与风控需要逐笔审计线，但服务里原本没有任何埋点。",
     problem:
       "在核心支付链路里加审计代码需要排期、回归和发布；任何一处遗漏，都会让对账缺数据。",
+    plain: "审计记录在业务代码之外生成：每笔扣款自动复制一份脱敏后的流水，原来的支付逻辑一行不用动。",
     approach:
       "audit 插件按类名监听 PaymentService，在拦截事件里脱敏卡号、把扣款金额累加到 MetricRegistry，并通过自己的 DataExporter 输出审计行；被拒绝的扣款不计入。",
     beforeLabel: "没有插件",
@@ -513,20 +518,36 @@ export interface DocLink {
   href: string;
 }
 
+export interface DocLink {
+  title: string;
+  description: string;
+  href: string;
+  /** Reading path this doc belongs to; the docs page renders one block per topic. */
+  topic?: "understand" | "build" | "operate" | "evolve";
+}
+
+/** The order a newcomer should read in, used by the docs page. */
+export const docTopics: { key: NonNullable<DocLink["topic"]>; label: string; hint: string }[] = [
+  { key: "understand", label: "先弄清楚它是什么", hint: "10 分钟，回答“这跟我有什么关系”。" },
+  { key: "build", label: "把它接进系统", hint: "插件怎么写、配置怎么填。" },
+  { key: "operate", label: "放到线上", hint: "部署、观测、出问题怎么查。" },
+  { key: "evolve", label: "长期维护", hint: "版本、性能与下一步计划。" },
+];
+
 export const docLinks: DocLink[] = [
-  { title: "产品定位", description: "切面底座与完整 APM 平台的边界", href: `${REPO_URL}/blob/main/docs/positioning.md` },
-  { title: "架构说明", description: "模块划分、类加载隔离与织入流程", href: `${REPO_URL}/blob/main/docs/ARCHITECTURE.md` },
-  { title: "切面底座定位", description: "为什么本仓库只做底座，APM / IAST / RASP 属于切面应用", href: `${REPO_URL}/blob/main/docs/ant-aspect-base-decision.md` },
-  { title: "插件开发指南", description: "从零编写并发布一个 WeaverPlugin", href: `${REPO_URL}/blob/main/docs/plugin-developer-guide.md` },
-  { title: "YAML 配置参考", description: "全部配置项与默认值", href: `${REPO_URL}/blob/main/docs/yaml-config-reference.md` },
-  { title: "可观测性指南", description: "追踪、指标、OTLP 与告警的完整目录", href: `${REPO_URL}/blob/main/docs/observability.md` },
-  { title: "运维手册", description: "Kubernetes、Docker 与生产部署", href: `${REPO_URL}/blob/main/docs/runbook.md` },
-  { title: "故障排查", description: "常见挂载与拦截问题的定位方法", href: `${REPO_URL}/blob/main/docs/troubleshooting.md` },
-  { title: "扩展点指南", description: "采样、导出、告警等 SPI 的扩展方式", href: `${REPO_URL}/blob/main/docs/extension-point-guide.md` },
-  { title: "性能基线", description: "各热路径组件的 ns/op 与回归守卫", href: `${REPO_URL}/blob/main/docs/benchmarks/baseline-v1.md` },
-  { title: "版本与兼容性", description: "语义化版本、公开 API 与 Java 支持范围", href: `${REPO_URL}/blob/main/docs/versioning-and-compatibility.md` },
-  { title: "路线图", description: "1.0 发布、生态建设与 2.0 平台能力", href: `${REPO_URL}/blob/main/ROADMAP.md` },
-  { title: "变更记录", description: "每个版本做了什么", href: `${REPO_URL}/blob/main/CHANGELOG.md` },
+  { title: "产品定位", description: "切面底座与完整 APM 平台的边界", href: `${REPO_URL}/blob/main/docs/positioning.md`, topic: "understand" },
+  { title: "架构说明", description: "模块划分、类加载隔离与织入流程", href: `${REPO_URL}/blob/main/docs/ARCHITECTURE.md`, topic: "understand" },
+  { title: "切面底座定位", description: "为什么本仓库只做底座，APM / IAST / RASP 属于切面应用", href: `${REPO_URL}/blob/main/docs/ant-aspect-base-decision.md`, topic: "understand" },
+  { title: "插件开发指南", description: "从零编写并发布一个 WeaverPlugin", href: `${REPO_URL}/blob/main/docs/plugin-developer-guide.md`, topic: "build" },
+  { title: "YAML 配置参考", description: "全部配置项与默认值", href: `${REPO_URL}/blob/main/docs/yaml-config-reference.md`, topic: "build" },
+  { title: "扩展点指南", description: "采样、导出、告警等 SPI 的扩展方式", href: `${REPO_URL}/blob/main/docs/extension-point-guide.md`, topic: "build" },
+  { title: "运维手册", description: "Kubernetes、Docker 与生产部署", href: `${REPO_URL}/blob/main/docs/runbook.md`, topic: "operate" },
+  { title: "可观测性指南", description: "追踪、指标、OTLP 与告警的完整目录", href: `${REPO_URL}/blob/main/docs/observability.md`, topic: "operate" },
+  { title: "故障排查", description: "常见挂载与拦截问题的定位方法", href: `${REPO_URL}/blob/main/docs/troubleshooting.md`, topic: "operate" },
+  { title: "性能基线", description: "各热路径组件的 ns/op 与回归守卫", href: `${REPO_URL}/blob/main/docs/benchmarks/baseline-v1.md`, topic: "evolve" },
+  { title: "版本与兼容性", description: "语义化版本、公开 API 与 Java 支持范围", href: `${REPO_URL}/blob/main/docs/versioning-and-compatibility.md`, topic: "evolve" },
+  { title: "路线图", description: "1.0 发布、生态建设与 2.0 平台能力", href: `${REPO_URL}/blob/main/ROADMAP.md`, topic: "evolve" },
+  { title: "变更记录", description: "每个版本做了什么", href: `${REPO_URL}/blob/main/CHANGELOG.md`, topic: "evolve" },
 ];
 
 export interface ModuleRow {

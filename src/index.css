@@ -1687,26 +1687,60 @@ main:focus {
   line-height: 1.7;
 }
 
+.doc-topic {
+  margin-top: 44px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.doc-topic:last-of-type {
+  padding-bottom: 40px;
+}
+
+.doc-topic-head {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.doc-topic-head h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.doc-topic-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .doc-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  margin-top: 28px;
+  margin-top: 18px;
 }
 
 .doc-card {
-  display: block;
-  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 22px 18px;
   border: 1px solid var(--line);
+  border-top: 2px solid var(--tone-line, var(--line));
   border-radius: var(--radius);
   background: transparent;
   color: var(--ink);
-  transition: border-color 150ms ease;
+  transition: border-color 150ms ease, background 150ms ease;
 }
 
-.doc-card:nth-child(3n + 1) { --tone: var(--clay); --tone-soft: var(--clay-soft); }
-.doc-card:nth-child(3n + 2) { --tone: var(--olive); --tone-soft: var(--olive-soft); }
-.doc-card:nth-child(3n) { --tone: var(--ochre); --tone-soft: var(--ochre-soft); }
+.doc-card:nth-child(3n + 1) { --tone: var(--clay); --tone-line: var(--clay-line); }
+.doc-card:nth-child(3n + 2) { --tone: var(--olive); --tone-line: var(--olive-line); }
+.doc-card:nth-child(3n) { --tone: var(--ochre); --tone-line: var(--ochre-line); }
 
 .doc-card:hover {
   border-color: var(--tone, var(--ink));
@@ -1722,20 +1756,25 @@ main:focus {
 }
 
 .doc-card h3 {
-  margin: 8px 0 6px;
+  margin: 0;
   color: var(--ink);
   font-family: var(--serif);
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 500;
+  line-height: 1.5;
   letter-spacing: -0.01em;
 }
 
-.doc-card p {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 14px;
-  line-height: 1.65;
+.doc-card .doc-open {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
 }
+
+.doc-card:hover .doc-open {
+  color: var(--tone, var(--accent));
+}
+
 
 /* ---------- cases ---------- */
 
@@ -1862,6 +1901,16 @@ main:focus {
 .case-narrative ul {
   margin: 0;
   padding-left: 18px;
+}
+
+/* The plain-language restatement sits above the implementation detail. */
+.case-plain {
+  margin: 0 0 10px;
+  padding-left: 14px;
+  border-left: 2px solid var(--tone, var(--accent));
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.75;
 }
 
 .case-side {
