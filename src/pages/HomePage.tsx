@@ -24,70 +24,98 @@ const FLOW = [
   { name: "织入逻辑", text: "把插件逻辑放进正在运行的代码", tone: "slate" },
 ];
 
+/** The chip row under the hero: what the 126 plugins actually cover. */
+const HERO_CHIPS = [
+  { label: "JDBC", tone: "clay" },
+  { label: "Redis", tone: "olive" },
+  { label: "Kafka", tone: "ochre" },
+  { label: "Dubbo", tone: "slate" },
+  { label: "Spring", tone: "plum" },
+  { label: "Tomcat", tone: "teal" },
+  { label: "MyBatis", tone: "clay" },
+  { label: "Quartz", tone: "olive" },
+];
+
 export function HomePage() {
   return (
     <>
       <section className="hero">
-        <div className="hero-copy">
-          <p className="kicker">
-            <span className="kicker-index">00</span>
-            PLUG-IN BASE / RUNNING SYSTEM
-          </p>
-          <h1>
-            切面底座
-            <span className="h1-sub">不用改代码，就能给系统加能力。</span>
-          </h1>
-          <p className="lede">
-            很多系统还在跑，却已经改不动了：想给敏感数据打码、记录操作、挡住攻击，都得改业务代码、
-            排期、重新发布。weaver-girl 把这层能力做成“插件”，放进去就生效，业务代码一行不改。
-          </p>
-          <div className="cta-row">
-            <a href="#problem" className="btn btn-primary">
-              它解决什么问题
-            </a>
-            <Link to="/architecture" className="btn btn-ghost">
-              看看怎么做到的
-            </Link>
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <p className="kicker">
+              <span className="kicker-index">00</span>
+              PLUG-IN BASE / RUNNING SYSTEM
+            </p>
+            <h1>切面底座</h1>
+            <p className="hero-line">不用改代码，就能给系统加能力。</p>
+            <p className="lede">
+              很多系统还在跑，却已经改不动了：想给敏感数据打码、记录操作、挡住攻击，都得改业务代码、
+              排期、重新发布。weaver-girl 把这层能力做成“插件”，放进去就生效。
+            </p>
+            <div className="cta-row">
+              <Link to="/quick-start" className="btn btn-primary">
+                开始接入
+              </Link>
+              <a href="#problem" className="btn btn-ghost">
+                它解决什么问题
+              </a>
+            </div>
+            <dl className="hero-spec">
+              <div>
+                <dt>接入方式</dt>
+                <dd>放一个 jar</dd>
+              </div>
+              <div>
+                <dt>业务改动</dt>
+                <dd>0 行</dd>
+              </div>
+              <div>
+                <dt>支持系统</dt>
+                <dd>Java 8 – 21</dd>
+              </div>
+              <div>
+                <dt>许可</dt>
+                <dd>MIT</dd>
+              </div>
+            </dl>
           </div>
-          <dl className="hero-spec">
-            <div>
-              <dt>接入方式</dt>
-              <dd>放一个 jar</dd>
+
+          <aside className="system-panel" aria-label="Agent 启动时的契约面">
+            <div className="panel-bar">
+              <span className="panel-dots" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              <span className="panel-title">agent.boot</span>
+              <span className="panel-status">JVM · attached</span>
             </div>
-            <div>
-              <dt>业务改动</dt>
-              <dd>0 行</dd>
+            <div className="panel-command">
+              <span className="panel-prompt">$</span>
+              <code>-javaagent:weaver-girl-agent.jar=config=weaver.yml</code>
             </div>
-            <div>
-              <dt>支持系统</dt>
-              <dd>Java 8 – 21</dd>
-            </div>
-            <div>
-              <dt>许可</dt>
-              <dd>MIT</dd>
-            </div>
-          </dl>
+            <dl className="panel-lines">
+              {bootLines.map((line) => (
+                <div key={line.key}>
+                  <dt>{line.key}</dt>
+                  <dd>{line.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="panel-foot">base / product boundary</p>
+          </aside>
         </div>
 
-        <aside className="system-panel" aria-label="Agent 启动时的契约面">
-          <div className="panel-bar">
-            <span className="panel-title">agent.boot</span>
-            <span className="panel-status">JVM · attached</span>
-          </div>
-          <div className="panel-command">
-            <span className="panel-prompt">$</span>
-            <code>-javaagent:weaver-girl-agent.jar=config=weaver.yml</code>
-          </div>
-          <dl className="panel-lines">
-            {bootLines.map((line) => (
-              <div key={line.key}>
-                <dt>{line.key}</dt>
-                <dd>{line.value}</dd>
-              </div>
+        <div className="hero-chips">
+          <p className="chips-label">底座之上，插件决定它能做什么</p>
+          <ul className="chips">
+            {HERO_CHIPS.map((chip) => (
+              <li key={chip.label} className={`tone-${chip.tone}`}>
+                {chip.label}
+              </li>
             ))}
-          </dl>
-          <p className="panel-foot">base / product boundary</p>
-        </aside>
+          </ul>
+        </div>
       </section>
 
       <section className="section wrap tone-clay" id="problem">

@@ -2,7 +2,12 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <!-- SVG first so current browsers pick a sharp mark at any size; the .ico keeps
+         Windows tabs and pinned shortcuts from falling back to a blank page glyph. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#faf9f5" />
     <meta
@@ -17,8 +22,10 @@
     />
     <meta property="og:site_name" content="Weaver-Girl" />
     <meta property="og:locale" content="zh_CN" />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta property="og:url" content="https://weaver-girl.github.io/" />
+    <meta property="og:image" content="https://weaver-girl.github.io/og-image.png" />
+    <meta name="twitter:image" content="https://weaver-girl.github.io/og-image.png" />
     <title>Weaver-Girl — 不用改代码，给 Java 系统加能力</title>
   </head>
   <body>

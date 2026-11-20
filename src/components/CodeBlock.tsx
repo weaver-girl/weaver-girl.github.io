@@ -42,8 +42,10 @@ export function CodeBlock({ code, file }: CodeBlockProps) {
   return (
     <div className="code-window">
       <div className="code-bar">
-        <span className="code-prompt" aria-hidden="true">
-          &gt;_
+        <span className="code-dots" aria-hidden="true">
+          <i />
+          <i />
+          <i />
         </span>
         {file ?? "shell"}
       </div>

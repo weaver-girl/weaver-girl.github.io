@@ -20,16 +20,18 @@ createRoot(root).render(
         // Keep antd on the same ramp as index.css: claude.com's ivory paper, near-black
         // ink and a darkened clay for interactive colour (pastel clay fails contrast).
         token: {
-          colorPrimary: "#ac4727",
-          colorInfo: "#ac4727",
-          colorLink: "#ac4727",
+          colorPrimary: "#a94c29",
+          colorInfo: "#a94c29",
+          colorLink: "#a94c29",
           colorText: "#141413",
           colorTextSecondary: "#5e5d59",
           colorBorder: "#d1cfc5",
           colorBorderSecondary: "#e8e6dc",
           colorBgContainer: "#ffffff",
           colorBgLayout: "#faf9f5",
-          borderRadius: 6,
+          colorFillSecondary: "#f5f4ed",
+          borderRadius: 8,
+          fontSize: 15,
           fontFamily:
             '"Inter", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Noto Sans SC", "Microsoft YaHei", sans-serif',
         },

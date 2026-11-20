@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Weaver-Girl">
+  <title>Weaver-Girl</title>
+  <!-- The mark is the site's own language: a diamond (the nav glyph and the tone
+       ticks) drawn once in clay, hollowed so the loom's core shows through. -->
+  <rect width="32" height="32" rx="7.5" fill="#d97757"/>
+  <path d="M16 5.4 26.6 16 16 26.6 5.4 16Z" fill="#faf9f5"/>
+  <path d="M16 12 20 16l-4 4-4-4Z" fill="#d97757"/>
+</svg>
