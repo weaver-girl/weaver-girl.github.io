@@ -2,46 +2,75 @@
  * Weaver-Girl site: an infrastructure spec sheet in the warm, editorial register
  * of claude.com, not a SaaS landing page.
  * Rules of the system:
- *   - warm ivory paper, near-black ink, one terracotta signal
+ *   - the palette is claude.com's own ramp: ivory paper, near-black ink, one clay signal
+ *   - colour is a signal, not a field: tone hues live in small marks, labels and
+ *     hairlines; fields stay paper, white or a whisper of the hue
+ *   - every tone ships two values: a pastel `-mark` for decoration and a darkened
+ *     `-ink` for text, so labels clear 4.5:1 instead of glowing mid-pastel
  *   - serif display type for headings; sans for prose; mono for identifiers
  *   - hairline rules and generous whitespace instead of boxes, shadows and pills
- *   - small radii (4-8px) only where a surface must read as an object
- *   - one dark charcoal panel anchors the hero; everything else stays light
+ *   - small radii (4-10px) only where a surface must read as an object
+ *   - one near-black panel anchors the hero; everything else stays light
+ *
+ * The tone *slots* (clay / olive / ochre / slate / plum / teal) keep their old names
+ * so the pages do not change, but the hues behind them are claude.com's brand pastels:
+ * clay→clay #d97757, olive→cactus #8ca077, ochre→sand #c99a5b,
+ * slate→sky #6a9bcc, plum→heather #827dbd, teal→mineral #629987.
  */
 :root {
+  /* paper & ink — claude.com's gray ramp */
   --paper: #faf9f5;
-  --surface: #f2f0e8;
-  --surface-2: #f6f4ec;
+  --surface: #f0eee6;
+  --surface-2: #f5f4ed;
+  --card: #ffffff;
   --ink: #141413;
-  --ink-2: #403f39;
-  --muted: #6f6d63;
-  --faint: #8b887c;
-  --line: #e5e1d5;
-  --line-strong: #d5cfc0;
-  --accent: #a34a27;
-  --accent-hover: #8f4224;
-  --accent-soft: #f3e7df;
-  --clay: #a34a27;
-  --clay-soft: #f6e7de;
-  --clay-line: #e8cdbf;
-  --olive: #5c6b45;
-  --olive-soft: #edf0e3;
-  --olive-line: #d8dfc7;
-  --ochre: #8a5d18;
-  --ochre-soft: #f7edda;
-  --ochre-line: #e9d7b4;
-  --slate: #4d6473;
-  --slate-soft: #e8eef2;
-  --slate-line: #cfdde4;
-  --plum: #7b5468;
-  --plum-soft: #f2e8ee;
-  --plum-line: #e2cfd9;
-  --teal: #3f6b66;
-  --teal-soft: #e6efed;
-  --teal-line: #cbdedb;
-  --code-bg: #1e1d1b;
+  --ink-2: #3d3d3a;
+  --muted: #5e5d59;
+  --faint: #6b6a63;
+  --line: #e8e6dc;
+  --line-strong: #d1cfc5;
+
+  /* one signal: clay pastel for marks, its darkened ink for text */
+  --accent: #ac4727;
+  --accent-hover: #8f3d21;
+  --accent-mark: #d97757;
+  --accent-line: #efcdbf;
+
+  /* tone slots: pastel mark + accessible ink + whisper wash + hairline */
+  --clay: #ac4727;
+  --clay-mark: #d97757;
+  --clay-soft: #f7ece5;
+  --clay-line: #efcdbf;
+  --olive: #5c6c4b;
+  --olive-mark: #8ca077;
+  --olive-soft: #eff0e8;
+  --olive-line: #d5dbca;
+  --ochre: #87602c;
+  --ochre-mark: #c99a5b;
+  --ochre-soft: #f5f0e6;
+  --ochre-line: #e9d9c1;
+  --slate: #376a9e;
+  --slate-mark: #6a9bcc;
+  --slate-soft: #ecf0f1;
+  --slate-line: #c9d9e7;
+  --plum: #635da4;
+  --plum-mark: #827dbd;
+  --plum-soft: #eeedef;
+  --plum-line: #d1cfe2;
+  --teal: #476e61;
+  --teal-mark: #629987;
+  --teal-soft: #ebefea;
+  --teal-line: #c6d8d0;
+
+  /* the one dark surface */
+  --panel: #1a1918;
+  --panel-ink: #f5f4ed;
+  --panel-muted: #9c9a92;
+  --panel-faint: #87867f;
+  --panel-line: rgba(250, 249, 245, 0.09);
+  --code-bg: #1a1918;
   --radius: 6px;
-  --radius-lg: 8px;
+  --radius-lg: 10px;
   --serif: "Iowan Old Style", Georgia, "Songti SC", "STSong",
     "Noto Serif CJK SC", "Source Han Serif SC", "Noto Serif SC",
     "Times New Roman", serif;
@@ -91,43 +120,51 @@ a:hover {
 }
 
 ::selection {
-  background: #ecd9cd;
+  background: #f0d5c8;
 }
 
-/* Muted accent families. Tone classes set --tone/--tone-soft/--tone-line so one
-   rule can colour a marker, a chip or a rule without repeating selectors. */
+/* Tone families. A tone class sets four variables so one rule can colour a
+   marker, a chip, a wash or a hairline without repeating selectors:
+     --tone       text-safe ink     --tone-mark  pastel used for decoration only
+     --tone-soft  whispered wash    --tone-line  hairline drawn from the hue */
 .tone-clay {
   --tone: var(--clay);
+  --tone-mark: var(--clay-mark);
   --tone-soft: var(--clay-soft);
   --tone-line: var(--clay-line);
 }
 
 .tone-olive {
   --tone: var(--olive);
+  --tone-mark: var(--olive-mark);
   --tone-soft: var(--olive-soft);
   --tone-line: var(--olive-line);
 }
 
 .tone-ochre {
   --tone: var(--ochre);
+  --tone-mark: var(--ochre-mark);
   --tone-soft: var(--ochre-soft);
   --tone-line: var(--ochre-line);
 }
 
 .tone-slate {
   --tone: var(--slate);
+  --tone-mark: var(--slate-mark);
   --tone-soft: var(--slate-soft);
   --tone-line: var(--slate-line);
 }
 
 .tone-plum {
   --tone: var(--plum);
+  --tone-mark: var(--plum-mark);
   --tone-soft: var(--plum-soft);
   --tone-line: var(--plum-line);
 }
 
 .tone-teal {
   --tone: var(--teal);
+  --tone-mark: var(--teal-mark);
   --tone-soft: var(--teal-soft);
   --tone-line: var(--teal-line);
 }
@@ -215,7 +252,7 @@ main:focus {
 }
 
 .brand svg {
-  color: var(--accent);
+  color: var(--accent-mark);
 }
 
 .brand:hover {
@@ -306,15 +343,17 @@ main:focus {
   gap: 12px;
   align-items: baseline;
   margin: 0 0 18px;
-  color: var(--tone, var(--accent));
+  color: var(--muted);
   font-family: var(--mono);
   font-size: 10.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
+/* The index carries the one accent; the label stays grey so ten section markers
+   do not turn the page into a colour chart. */
 .eyebrow span {
-  color: var(--faint);
+  color: var(--accent);
   letter-spacing: 0.08em;
 }
 
@@ -369,7 +408,7 @@ main:focus {
 .link-arrow {
   display: inline-block;
   padding-bottom: 2px;
-  border-bottom: 1px solid rgba(180, 85, 47, 0.4);
+  border-bottom: 1px solid var(--accent-line);
   color: var(--accent);
   font-size: 13.5px;
   transition: border-color 150ms ease, color 150ms ease;
@@ -392,7 +431,7 @@ main:focus {
   padding: 26px 28px;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: var(--surface-2);
+  background: var(--card);
 }
 
 .problem-with {
@@ -422,7 +461,7 @@ main:focus {
 .problem-col li {
   position: relative;
   padding: 10px 0 10px 22px;
-  border-top: 1px solid rgba(20, 20, 19, 0.07);
+  border-top: 1px solid var(--line);
   color: var(--ink-2);
   font-size: 15px;
   line-height: 1.65;
@@ -459,21 +498,24 @@ main:focus {
   gap: 16px;
 }
 
+/* Cards are paper-white objects on the ivory page; the tone shows up as a 2px
+   top rule and in the label, never as a coloured field. */
 .outcome-card {
   padding: 24px;
-  border: 1px solid var(--tone-line, var(--line));
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--tone-mark, var(--accent-mark));
   border-radius: var(--radius-lg);
-  background: var(--tone-soft, var(--surface-2));
+  background: var(--card);
 }
 
-.outcome-clay { --tone: var(--clay); --tone-soft: var(--clay-soft); --tone-line: var(--clay-line); }
-.outcome-olive { --tone: var(--olive); --tone-soft: var(--olive-soft); --tone-line: var(--olive-line); }
-.outcome-slate { --tone: var(--slate); --tone-soft: var(--slate-soft); --tone-line: var(--slate-line); }
+.outcome-clay { --tone: var(--clay); --tone-mark: var(--clay-mark); --tone-soft: var(--clay-soft); --tone-line: var(--clay-line); }
+.outcome-olive { --tone: var(--olive); --tone-mark: var(--olive-mark); --tone-soft: var(--olive-soft); --tone-line: var(--olive-line); }
+.outcome-slate { --tone: var(--slate); --tone-mark: var(--slate-mark); --tone-soft: var(--slate-soft); --tone-line: var(--slate-line); }
 
 .outcome-en {
   color: var(--tone, var(--accent));
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -512,14 +554,14 @@ main:focus {
   padding: 92px 32px 76px;
   background:
     radial-gradient(
-      560px 340px at 10% 20%,
-      rgba(246, 231, 222, 0.85),
-      rgba(246, 231, 222, 0) 70%
+      620px 380px at 6% 12%,
+      rgba(217, 119, 87, 0.11),
+      rgba(217, 119, 87, 0) 68%
     ),
     radial-gradient(
-      520px 320px at 92% 82%,
-      rgba(237, 240, 227, 0.7),
-      rgba(237, 240, 227, 0) 72%
+      560px 340px at 96% 86%,
+      rgba(140, 160, 119, 0.1),
+      rgba(140, 160, 119, 0) 70%
     );
 }
 
@@ -591,16 +633,18 @@ main:focus {
     color 150ms ease;
 }
 
+/* claude.com's primary CTA is near-black, not brand-coloured: the clay stays a
+   signal for marks and labels. */
 .btn-primary {
-  border-color: var(--clay);
-  background: var(--clay);
-  color: #fffaf5;
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .btn-primary:hover {
-  border-color: var(--accent-hover);
-  background: var(--accent-hover);
-  color: #fffaf5;
+  border-color: #30302e;
+  background: #30302e;
+  color: var(--paper);
 }
 
 .btn-ghost {
@@ -610,7 +654,7 @@ main:focus {
 }
 
 .btn-ghost:hover {
-  border-color: #b7b0a0;
+  border-color: var(--ink-2);
   background: var(--surface);
   color: var(--ink);
 }
@@ -646,10 +690,10 @@ main:focus {
 /* ---------- boot panel ---------- */
 
 .system-panel {
-  border: 1px solid #2c2b27;
+  border: 1px solid #30302e;
   border-radius: var(--radius-lg);
-  background: var(--code-bg);
-  color: #e8e4da;
+  background: var(--panel);
+  color: var(--panel-ink);
   overflow: hidden;
 }
 
@@ -658,8 +702,8 @@ main:focus {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  color: #9a968b;
+  border-bottom: 1px solid var(--panel-line);
+  color: var(--panel-muted);
   font-family: var(--mono);
   font-size: 10.5px;
   letter-spacing: 0.1em;
@@ -667,13 +711,13 @@ main:focus {
 }
 
 .panel-status {
-  color: #d99a7c;
+  color: var(--accent-mark);
 }
 
 .panel-command {
   padding: 16px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  color: #f2eee3;
+  border-bottom: 1px solid var(--panel-line);
+  color: var(--panel-ink);
   font-family: var(--mono);
   font-size: 12.5px;
   line-height: 1.7;
@@ -682,7 +726,7 @@ main:focus {
 
 .panel-prompt {
   margin-right: 8px;
-  color: #d97757;
+  color: var(--accent-mark);
 }
 
 .panel-lines {
@@ -695,7 +739,7 @@ main:focus {
   grid-template-columns: 88px minmax(0, 1fr);
   gap: 12px;
   padding: 9px 0;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  border-bottom: 1px dashed var(--panel-line);
 }
 
 .panel-lines div:last-child {
@@ -703,7 +747,7 @@ main:focus {
 }
 
 .panel-lines dt {
-  color: #918d83;
+  color: var(--panel-faint);
   font-family: var(--mono);
   font-size: 10.5px;
   letter-spacing: 0.04em;
@@ -711,7 +755,7 @@ main:focus {
 
 .panel-lines dd {
   margin: 0;
-  color: #ddd8cc;
+  color: var(--panel-ink);
   font-family: var(--mono);
   font-size: 11.5px;
   overflow-wrap: anywhere;
@@ -720,8 +764,8 @@ main:focus {
 .panel-foot {
   margin: 0;
   padding: 12px 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: #9a9488;
+  border-top: 1px solid var(--panel-line);
+  color: var(--panel-faint);
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.12em;
@@ -748,25 +792,9 @@ main:focus {
 
 .primitive-n {
   padding-top: 6px;
-  color: var(--tone, var(--accent));
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 12px;
-}
-
-.primitive:nth-child(4n + 1) {
-  --tone: var(--clay);
-}
-
-.primitive:nth-child(4n + 2) {
-  --tone: var(--olive);
-}
-
-.primitive:nth-child(4n + 3) {
-  --tone: var(--ochre);
-}
-
-.primitive:nth-child(4n) {
-  --tone: var(--slate);
 }
 
 .primitive-main h3 {
@@ -834,11 +862,11 @@ main:focus {
 
 .boundary-col::before {
   display: block;
-  width: 30px;
+  width: 34px;
   height: 3px;
   margin-bottom: 18px;
   border-radius: 2px;
-  background: var(--tone, var(--clay));
+  background: var(--tone-mark, var(--accent-mark));
   content: "";
 }
 
@@ -853,16 +881,19 @@ main:focus {
 
 .boundary-base {
   --tone: var(--clay);
+  --tone-mark: var(--clay-mark);
   --tone-soft: var(--clay-soft);
 }
 
 .boundary-app {
   --tone: var(--olive);
+  --tone-mark: var(--olive-mark);
   --tone-soft: var(--olive-soft);
 }
 
 .boundary-control {
   --tone: var(--slate);
+  --tone-mark: var(--slate-mark);
   --tone-soft: var(--slate-soft);
 }
 
@@ -884,7 +915,7 @@ main:focus {
 .boundary-state {
   color: var(--tone, var(--accent));
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -917,7 +948,7 @@ main:focus {
 
 .boundary-col li {
   padding: 10px 0;
-  border-top: 1px solid rgba(20, 20, 19, 0.08);
+  border-top: 1px solid var(--line);
   color: var(--ink-2);
   font-size: 14px;
   line-height: 1.65;
@@ -972,7 +1003,7 @@ main:focus {
   align-items: stretch;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: var(--surface-2);
+  background: var(--card);
   overflow: hidden;
 }
 
@@ -1004,7 +1035,7 @@ main:focus {
   height: 7px;
   margin-right: 8px;
   border-radius: 50%;
-  background: var(--tone, var(--accent));
+  background: var(--accent-mark);
   vertical-align: 1px;
   content: "";
 }
@@ -1036,44 +1067,14 @@ main:focus {
 
 .guarantee {
   padding: 22px 0 26px;
-  border-top: 2px solid var(--tone-soft, var(--line-strong));
+  border-top: 1px solid var(--line-strong);
 }
 
 .guarantee-en {
-  color: var(--tone, var(--accent));
+  color: var(--accent);
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.12em;
-}
-
-.guarantee:nth-child(6n + 1) {
-  --tone: var(--clay);
-  --tone-soft: var(--clay-line);
-}
-
-.guarantee:nth-child(6n + 2) {
-  --tone: var(--olive);
-  --tone-soft: var(--olive-line);
-}
-
-.guarantee:nth-child(6n + 3) {
-  --tone: var(--ochre);
-  --tone-soft: var(--ochre-line);
-}
-
-.guarantee:nth-child(6n + 4) {
-  --tone: var(--slate);
-  --tone-soft: var(--slate-line);
-}
-
-.guarantee:nth-child(6n + 5) {
-  --tone: var(--plum);
-  --tone-soft: var(--plum-line);
-}
-
-.guarantee:nth-child(6n) {
-  --tone: var(--teal);
-  --tone-soft: var(--teal-line);
 }
 
 .guarantee h3 {
@@ -1115,19 +1116,15 @@ main:focus {
 }
 
 .coverage-value {
-  color: var(--tone, var(--ink));
+  color: var(--ink);
   font-family: var(--mono);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 500;
   letter-spacing: -0.02em;
 }
 
-.coverage-row:nth-child(6n + 1) { --tone: var(--clay); }
-.coverage-row:nth-child(6n + 2) { --tone: var(--olive); }
-.coverage-row:nth-child(6n + 3) { --tone: var(--ochre); }
-.coverage-row:nth-child(6n + 4) { --tone: var(--slate); }
-.coverage-row:nth-child(6n + 5) { --tone: var(--plum); }
-.coverage-row:nth-child(6n) { --tone: var(--teal); }
+/* Six tinted numerals would read as a chart legend rather than a spec table, so
+   the values stay ink and the section's one accent lives in the link below. */
 
 .coverage-note {
   color: var(--muted);
@@ -1156,7 +1153,7 @@ main:focus {
   padding: 18px 0;
   border-bottom: 1px solid var(--line);
   color: var(--ink);
-  transition: background 150ms ease;
+  transition: color 150ms ease;
 }
 
 .evidence-row:hover {
@@ -1168,12 +1165,12 @@ main:focus {
   color: var(--tone, var(--accent));
 }
 
-.evidence-row:nth-child(6n + 1) { --tone: var(--clay); }
-.evidence-row:nth-child(6n + 2) { --tone: var(--olive); }
-.evidence-row:nth-child(6n + 3) { --tone: var(--ochre); }
-.evidence-row:nth-child(6n + 4) { --tone: var(--slate); }
-.evidence-row:nth-child(6n + 5) { --tone: var(--plum); }
-.evidence-row:nth-child(6n) { --tone: var(--teal); }
+.evidence-row:nth-child(6n + 1) { --tone: var(--clay); --tone-mark: var(--clay-mark); }
+.evidence-row:nth-child(6n + 2) { --tone: var(--olive); --tone-mark: var(--olive-mark); }
+.evidence-row:nth-child(6n + 3) { --tone: var(--ochre); --tone-mark: var(--ochre-mark); }
+.evidence-row:nth-child(6n + 4) { --tone: var(--slate); --tone-mark: var(--slate-mark); }
+.evidence-row:nth-child(6n + 5) { --tone: var(--plum); --tone-mark: var(--plum-mark); }
+.evidence-row:nth-child(6n) { --tone: var(--teal); --tone-mark: var(--teal-mark); }
 
 .evidence-index {
   color: var(--faint);
@@ -1184,7 +1181,7 @@ main:focus {
 .evidence-tag {
   justify-self: start;
   padding-left: 8px;
-  border-left: 2px solid var(--tone, var(--accent));
+  border-left: 2px solid var(--tone-mark, var(--accent-mark));
   color: var(--tone, var(--accent));
   font-family: var(--mono);
   font-size: 10px;
@@ -1236,9 +1233,10 @@ main:focus {
   gap: 18px;
   align-items: flex-start;
   padding: 26px 26px 28px;
-  border: 1px solid var(--tone-line, var(--line));
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--tone-line, var(--line));
   border-radius: var(--radius-lg);
-  background: var(--tone-soft, var(--surface-2));
+  background: var(--card);
 }
 
 .fit-mark {
@@ -1247,6 +1245,7 @@ main:focus {
   height: 30px;
   border: 1px solid var(--tone-line, var(--line-strong));
   border-radius: 50%;
+  background: var(--tone-soft, transparent);
   color: var(--tone, var(--ink));
   font-size: 15px;
   line-height: 28px;
@@ -1295,25 +1294,20 @@ main:focus {
   color: var(--ink);
 }
 
-.start-link:nth-child(4n + 1) { --tone: var(--clay); }
-.start-link:nth-child(4n + 2) { --tone: var(--olive); }
-.start-link:nth-child(4n + 3) { --tone: var(--ochre); }
-.start-link:nth-child(4n) { --tone: var(--slate); }
-
 .start-link:hover {
   color: var(--ink);
 }
 
 .start-link:hover b {
-  color: var(--tone, var(--accent));
+  color: var(--accent);
 }
 
 .start-kicker {
   display: block;
   margin-bottom: 4px;
-  color: var(--tone, var(--accent));
+  color: var(--accent);
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.12em;
 }
 
@@ -1333,11 +1327,13 @@ main:focus {
 
 /* ---------- code window ---------- */
 
+/* Code sits on the paper tint, not on white: it keeps the light register of the
+   page and lets the ink stay the same near-black as the prose. */
 .code-window {
   min-width: 0;
   max-width: 100%;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--surface-2);
   overflow: hidden;
 }
@@ -1346,7 +1342,7 @@ main:focus {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--line);
   background: transparent;
   color: var(--muted);
@@ -1364,7 +1360,7 @@ main:focus {
   margin: 0;
   padding: 18px 16px;
   overflow-x: auto;
-  color: #34332d;
+  color: var(--ink-2);
   font-size: 13px;
   line-height: 1.8;
   tab-size: 2;
@@ -1375,23 +1371,23 @@ main:focus {
 }
 
 .tok-flag {
-  color: #94613a;
+  color: var(--ochre);
 }
 
 .tok-cmt {
-  color: #8a867a;
+  color: var(--faint);
 }
 
 .tok-key {
-  color: #4f6558;
+  color: var(--teal);
 }
 
 .tok-ann {
-  color: var(--accent);
+  color: var(--plum);
 }
 
 .tok-str {
-  color: #57694f;
+  color: var(--olive);
 }
 
 /* ---------- inner pages ---------- */
@@ -1441,6 +1437,14 @@ main:focus {
   font-weight: 600;
 }
 
+/* antd fades not-yet-reached steps to 45% opacity, which drops them under 4.5:1 on
+   the paper tint. Keep them grey but readable. */
+.quick-steps .ant-steps-item-wait .ant-steps-item-title,
+.quick-steps .ant-steps-item-wait .ant-steps-item-description {
+  color: var(--muted) !important;
+  opacity: 1;
+}
+
 .quick-steps .ant-steps-item-description {
   max-width: none !important;
   color: var(--muted) !important;
@@ -1458,7 +1462,7 @@ main:focus {
 }
 
 .quick-steps .ant-steps-item-process .ant-steps-icon {
-  color: #fbfaf6 !important;
+  color: var(--paper) !important;
 }
 
 .quick-steps .ant-steps-item-tail::after {
@@ -1480,7 +1484,7 @@ main:focus {
 
 .site-tabs .ant-tabs-ink-bar {
   height: 2px;
-  background: var(--accent);
+  background: var(--ink);
 }
 
 .site-tabs .ant-tabs-nav::before {
@@ -1497,7 +1501,7 @@ main:focus {
 .plugin-toolbar .ant-input-affix-wrapper {
   border-radius: var(--radius);
   border-color: var(--line-strong);
-  background: var(--surface-2);
+  background: var(--card);
 }
 
 .plugin-count {
@@ -1550,6 +1554,11 @@ main:focus {
   color: var(--accent);
 }
 
+.plugin-filter.active:hover {
+  border-color: var(--accent-hover);
+  color: var(--accent-hover);
+}
+
 .plugin-tag-grid {
   display: flex;
   flex-wrap: wrap;
@@ -1576,7 +1585,7 @@ main:focus {
 
 .plugin-table .ant-table {
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   font-size: 14px;
   overflow: hidden;
 }
@@ -1616,20 +1625,14 @@ main:focus {
 .runtime-card {
   padding: 20px;
   border: 1px solid var(--line);
-  border-top: 2px solid var(--tone-line, var(--line));
-  border-radius: var(--radius);
-  background: transparent;
+  border-top: 2px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--card);
 }
 
-.runtime-card:nth-child(6n + 1) { --tone: var(--clay); --tone-line: var(--clay-line); }
-.runtime-card:nth-child(6n + 2) { --tone: var(--olive); --tone-line: var(--olive-line); }
-.runtime-card:nth-child(6n + 3) { --tone: var(--ochre); --tone-line: var(--ochre-line); }
-.runtime-card:nth-child(6n + 4) { --tone: var(--slate); --tone-line: var(--slate-line); }
-.runtime-card:nth-child(6n + 5) { --tone: var(--plum); --tone-line: var(--plum-line); }
-.runtime-card:nth-child(6n) { --tone: var(--teal); --tone-line: var(--teal-line); }
 
 .runtime-card code {
-  color: var(--tone, var(--accent));
+  color: var(--accent);
   font-size: 12.5px;
 }
 
@@ -1670,8 +1673,8 @@ main:focus {
   margin: 24px 0;
   padding: 18px 22px;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
 }
 
 .arch-alert .ant-alert-message {
@@ -1693,6 +1696,14 @@ main:focus {
   border-top: 1px solid var(--line-strong);
 }
 
+/* The body already opens with whitespace, and the topic rule is the separator —
+   the first group should not stack a second hairline under the page hero. */
+.doc-topic:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
 .doc-topic:last-of-type {
   padding-bottom: 40px;
 }
@@ -1704,8 +1715,12 @@ main:focus {
   flex-wrap: wrap;
 }
 
-.doc-topic-head h2 {
+/* The heading inherits .subhead for type, but the topic rule already does the
+   separating, so the second border has to go. */
+.doc-topic-head h2.subhead {
   margin: 0;
+  padding-top: 0;
+  border-top: 0;
   font-family: var(--serif);
   font-size: 25px;
   font-weight: 500;
@@ -1731,26 +1746,24 @@ main:focus {
   gap: 6px;
   padding: 20px 22px 18px;
   border: 1px solid var(--line);
-  border-top: 2px solid var(--tone-line, var(--line));
-  border-radius: var(--radius);
-  background: transparent;
+  border-top: 2px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--card);
   color: var(--ink);
-  transition: border-color 150ms ease, background 150ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
-.doc-card:nth-child(3n + 1) { --tone: var(--clay); --tone-line: var(--clay-line); }
-.doc-card:nth-child(3n + 2) { --tone: var(--olive); --tone-line: var(--olive-line); }
-.doc-card:nth-child(3n) { --tone: var(--ochre); --tone-line: var(--ochre-line); }
 
 .doc-card:hover {
-  border-color: var(--tone, var(--ink));
+  border-color: var(--tone-line, var(--line-strong));
   color: var(--ink);
+  box-shadow: 0 1px 2px rgba(20, 20, 19, 0.04);
 }
 
 .doc-card .doc-kicker {
-  color: var(--tone, var(--accent));
+  color: var(--accent);
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -1772,9 +1785,8 @@ main:focus {
 }
 
 .doc-card:hover .doc-open {
-  color: var(--tone, var(--accent));
+  color: var(--accent);
 }
-
 
 /* ---------- cases ---------- */
 
@@ -1786,10 +1798,23 @@ main:focus {
 }
 
 .case-quicknav-item {
+  position: relative;
+  display: block;
   padding-top: 16px;
-  border-top: 2px solid var(--tone-line, var(--line-strong));
+  border-top: 1px solid var(--line-strong);
   color: var(--ink);
 }
+
+.case-quicknav-item::before {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 44px;
+  height: 2px;
+  background: var(--tone-mark, var(--accent-mark));
+  content: "";
+}
+
 
 .case-quicknav-item:hover {
   color: var(--ink);
@@ -1803,7 +1828,7 @@ main:focus {
   display: block;
   color: var(--tone, var(--accent));
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
 }
 
 .case-quicknav-item b {
@@ -1824,7 +1849,7 @@ main:focus {
 .case-study {
   margin-bottom: 80px;
   padding-top: 28px;
-  border-top: 2px solid var(--tone-line, var(--line-strong));
+  border-top: 1px solid var(--tone-line, var(--line-strong));
 }
 
 .case-meta {
@@ -1881,7 +1906,7 @@ main:focus {
   margin: 20px 0 6px;
   color: var(--tone, var(--accent));
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1907,7 +1932,7 @@ main:focus {
 .case-plain {
   margin: 0 0 10px;
   padding-left: 14px;
-  border-left: 2px solid var(--tone, var(--accent));
+  border-left: 2px solid var(--tone-mark, var(--accent-mark));
   color: var(--ink);
   font-size: 15px;
   line-height: 1.75;
@@ -1934,7 +1959,7 @@ main:focus {
 }
 
 .case-metric .ant-statistic-content {
-  color: var(--tone, var(--ink)) !important;
+  color: var(--ink) !important;
   font-family: var(--mono) !important;
   font-size: 22px !important;
   font-weight: 500 !important;
@@ -1950,8 +1975,8 @@ main:focus {
 .case-side .ant-alert {
   margin-top: 16px;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
 }
 
 .case-side .ant-alert-message {
@@ -1988,7 +2013,7 @@ main:focus {
   margin: 0 0 6px;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -2006,7 +2031,7 @@ main:focus {
 .case-source span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -2053,7 +2078,7 @@ main:focus {
 .footer-id,
 .footer-meta {
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
