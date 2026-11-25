@@ -1482,6 +1482,93 @@ main:focus {
   font-size: 14px;
 }
 
+/* ---------- contact ---------- */
+
+/* Two halves: the list of things worth writing about on the left, and the QR as an
+   object on the right. The QR sits on white so it keeps the quiet zone a scanner
+   needs, and never takes a tinted wash — a coloured field behind it breaks reads. */
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 56px;
+  align-items: start;
+}
+
+.contact-points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+}
+
+.contact-points li {
+  padding: 22px 0 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-points h3 {
+  margin: 0 0 7px;
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.contact-points p {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.contact-card {
+  margin: 0;
+  padding: 24px 24px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  text-align: center;
+}
+
+.contact-qr {
+  display: block;
+  width: 100%;
+  max-width: 252px;
+  height: auto;
+  margin: 0 auto 18px;
+  border-radius: var(--radius);
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.contact-card figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-card-kicker {
+  color: var(--tone, var(--accent));
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+}
+
+.contact-card b {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  user-select: all;
+}
+
+.contact-card figcaption span:last-child {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 /* ---------- code window ---------- */
 
 /* The Claude Code page shows a dark terminal window; code on this site uses the
@@ -2498,8 +2585,18 @@ main:focus {
 
   .problem-grid,
   .outcome-grid,
-  .fit-grid {
+  .fit-grid,
+  .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .contact-grid {
+    gap: 32px;
+  }
+
+  .contact-card {
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   .problem-col {

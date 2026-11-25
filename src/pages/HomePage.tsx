@@ -8,6 +8,7 @@ import {
   bootLines,
   boundaries,
   caseStudies,
+  contactPoints,
   contractApis,
   coverageRows,
   fits,
@@ -15,6 +16,7 @@ import {
   outcomes,
   pluginSkeleton,
   quickStart,
+  WECHAT_ID,
 } from "../data/content";
 
 const FLOW = [
@@ -439,6 +441,44 @@ export function HomePage() {
             </a>
           </div>
         </div>
+
+      <section className="section wrap tone-ochre" id="contact">
+        <header className="section-head">
+          <p className="eyebrow">
+            <span>11</span> 联系
+          </p>
+          <h2>有具体的事，直接加微信聊。</h2>
+          <p className="section-lede">
+            底座是开源的，问题可以直接提到 GitHub。如果是定制插件、产品落地这类需要来回确认的事，
+            加维护者微信更快：把场景和版本发过来就行。
+          </p>
+        </header>
+        <div className="contact-grid">
+          <ul className="contact-points">
+            {contactPoints.map((point) => (
+              <li key={point.title}>
+                <h3>{point.title}</h3>
+                <p>{point.text}</p>
+              </li>
+            ))}
+          </ul>
+          <figure className="contact-card">
+            <img
+              className="contact-qr"
+              src={`${import.meta.env.BASE_URL}wechat-qr.png`}
+              alt="维护者个人微信二维码"
+              width="240"
+              height="240"
+              loading="lazy"
+            />
+            <figcaption>
+              <span className="contact-card-kicker">WECHAT</span>
+              <b>{WECHAT_ID}</b>
+              <span>扫码添加，备注说明来意即可。</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
       </section>
     </>
   );

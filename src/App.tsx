@@ -26,13 +26,14 @@ const NAV = [
 ];
 
 export default function App() {
-  const { pathname } = useLocation();
+  const { pathname, hash: rawHash } = useLocation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   // Pages serves /cases/ from cases/index.html; normalize the trailing slash so the nav
   // still highlights the current section on a direct visit.
   const normalized = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
   const current = NAV.some((item) => item.key === normalized) ? normalized : "/";
+  const hash = rawHash.slice(1);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -45,7 +46,6 @@ export default function App() {
   // bottom of one page would open the next page half-way down. Reset to the top,
   // and keep in-page anchors (/#problem) working.
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
     const target = hash ? document.getElementById(hash) : null;
     if (target) {
       target.scrollIntoView({ block: "start" });
@@ -56,7 +56,7 @@ export default function App() {
     } else {
       window.scrollTo(0, 0);
     }
-  }, [pathname]);
+  }, [pathname, hash]);
 
   // Close the mobile menu on resize/blur so it never blocks a page underneath.
   useEffect(() => {
@@ -162,6 +162,9 @@ export default function App() {
                 <a href={`${REPO_URL}/tree/main/weaver-girl-plugin-template`} target="_blank" rel="noreferrer">
                   插件模板
                 </a>
+              </li>
+              <li>
+                <Link to="/#contact">加微信详聊</Link>
               </li>
             </ul>
           </div>

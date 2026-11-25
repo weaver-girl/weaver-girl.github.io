@@ -844,3 +844,31 @@ export const pluginSkeleton = `public final class PaymentPlugin extends Abstract
                 .build());
     }
 }`;
+
+/* -------------------------------------------------------------------------
+ * Contact. The maintainer's WeChat QR lives in public/wechat-qr.png; the id is
+ * spelled out too, because a desktop visitor cannot scan a screen with the
+ * phone it is shown on.
+ * ---------------------------------------------------------------------- */
+
+export interface ContactPoint {
+  title: string;
+  text: string;
+}
+
+export const contactPoints: ContactPoint[] = [
+  {
+    title: "定制插件",
+    text: "126 个内置插件没覆盖的框架、中间件或内部组件，按你们的调用链路补一个即可，业务代码照样不用动。",
+  },
+  {
+    title: "产品落地",
+    text: "要在底座上做 APM、IAST 或 RASP，从插件拆分、数据导出到上线路径，可以先聊清楚边界再开工。",
+  },
+  {
+    title: "现场排障",
+    text: "挂载失败、拦截不生效、上线后性能回归，把现象和版本发过来，一起定位。",
+  },
+];
+
+export const WECHAT_ID = "CC11001100-weixin";
