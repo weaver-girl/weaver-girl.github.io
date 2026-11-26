@@ -1,6 +1,9 @@
+import { Fragment } from "react";
 import { Alert } from "antd";
 import { PageHero } from "../components/PageHero";
-import { modules } from "../data/content";
+import { Reveal } from "../components/Reveal";
+import { WeaveMap } from "../components/WeaveMap";
+import { isolationLayers, modules } from "../data/content";
 
 const FLOW = [
   { name: "premain", text: "启动时挂入目标 JVM" },
@@ -8,6 +11,8 @@ const FLOW = [
   { name: "Registry", text: "登记拦截器与配置" },
   { name: "Advice", text: "内联进目标方法" },
 ];
+
+const BRIDGES = ["注入桥接类，Advice 才能回连注册表", "只有 public API 跨过这条边界"];
 
 export function ArchitecturePage() {
   return (
@@ -19,58 +24,93 @@ export function ArchitecturePage() {
       />
 
       <div className="page-body">
-      <p className="prose">
-        插件看到的是方法参数、返回值和异常，不是业务实现。底座负责发现、隔离和加载，
-        至于拦到之后做什么判断，由插件自己决定。
-      </p>
-      <div className="flow" style={{ marginTop: 36 }}>
-        {FLOW.map((node, i) => (
-          <span key={node.name} style={{ display: "contents" }}>
-            {i > 0 && <span className="flow-arrow">→</span>}
-            <div className="flow-node">
-              <b>{node.name}</b>
-              <span>{node.text}</span>
+        <Reveal className="prose" variant="fade">
+          插件看到的是方法参数、返回值和异常，不是业务实现。底座负责发现、隔离和加载，
+          至于拦到之后做什么判断，由插件自己决定。
+        </Reveal>
+
+        <Reveal className="weave-map-shell page-weave" variant="scale">
+          <WeaveMap />
+        </Reveal>
+
+        <div className="flow" style={{ marginTop: 36 }}>
+          {FLOW.map((node, i) => (
+            <span key={node.name} style={{ display: "contents" }}>
+              {i > 0 && <span className="flow-arrow">→</span>}
+              <div className="flow-node">
+                <em className="flow-step">{String(i + 1).padStart(2, "0")}</em>
+                <b>{node.name}</b>
+                <span>{node.text}</span>
+              </div>
+            </span>
+          ))}
+        </div>
+
+        <Reveal variant="fade">
+          <Alert
+            className="arch-alert"
+            type="info"
+            showIcon={false}
+            message="agent jar 本身不含插件实现"
+            description="能力按 jar 拆分：内置插件放在 agent 旁边的 plugins/，运行时能力配置对应键后才加载。少了 plugins/，agent 能启动，但不会拦截任何东西。"
+          />
+        </Reveal>
+
+        <Reveal as="h2" className="subhead">
+          底座、应用与管控
+        </Reveal>
+        <Reveal className="prose" variant="fade">
+          APM、IAST、RASP 都是切面应用，各自决定方法、字段和异常怎么判定。weaver-girl 提供底座：
+          切点植入、上下文改写、数据上报与模块加载。规则、控制台和存储，属于产品自己实现的部分。
+        </Reveal>
+
+        <Reveal as="h2" className="subhead">
+          模块
+        </Reveal>
+        <Reveal className="module-list" variant="fade">
+          {modules.map((mod) => (
+            <div key={mod.key} className="module-row">
+              <code>{mod.name}</code>
+              <span>{mod.description}</span>
             </div>
-          </span>
-        ))}
-      </div>
+          ))}
+        </Reveal>
 
-      <Alert
-        className="arch-alert"
-        type="info"
-        showIcon={false}
-        message="agent jar 本身不含插件实现"
-        description="能力按 jar 拆分：内置插件放在 agent 旁边的 plugins/，运行时能力配置对应键后才加载。少了 plugins/，agent 能启动，但不会拦截任何东西。"
-      />
+        <Reveal as="h2" className="subhead">
+          类加载隔离
+        </Reveal>
+        <Reveal className="prose" variant="fade">
+          Agent 使用 child-first 的 <code className="inline">AgentClassLoader</code> 装载 ByteBuddy 与插件，避免和业务
+          classpath 上的同名库打架；Advice 通过桥接类回连注册表。打包冒烟会校验 ByteBuddy 确实解析自
+          <code className="inline">AgentClassLoader</code>，防止隔离退化。
+        </Reveal>
 
-      <h2 className="subhead">底座、应用与管控</h2>
-      <p className="prose">
-        APM、IAST、RASP 都是切面应用，各自决定方法、字段和异常怎么判定。weaver-girl 提供底座：
-        切点植入、上下文改写、数据上报与模块加载。规则、控制台和存储，属于产品自己实现的部分。
-      </p>
+        <div className="iso-stack">
+          {isolationLayers.map((layer, index) => (
+            <Fragment key={layer.key}>
+              <Reveal className={`iso-layer tone-${layer.tone}`} delay={index * 90} variant="left">
+                <div className="iso-head">
+                  <span className="iso-label">{layer.label}</span>
+                  <span className="iso-owns">{layer.owns}</span>
+                </div>
+                <p>{layer.detail}</p>
+              </Reveal>
+              {index < isolationLayers.length - 1 && (
+                <div className="iso-bridge" aria-hidden="true">
+                  <span>{BRIDGES[index]}</span>
+                </div>
+              )}
+            </Fragment>
+          ))}
+        </div>
 
-      <h2 className="subhead">模块</h2>
-      <div className="module-list">
-        {modules.map((mod) => (
-          <div key={mod.key} className="module-row">
-            <code>{mod.name}</code>
-            <span>{mod.description}</span>
-          </div>
-        ))}
-      </div>
-
-      <h2 className="subhead">类加载隔离</h2>
-      <p className="prose">
-        Agent 使用 child-first 的 <code className="inline">AgentClassLoader</code> 装载 ByteBuddy 与插件，避免和业务
-        classpath 上的同名库打架；Advice 通过桥接类回连注册表。打包冒烟会校验 ByteBuddy 确实解析自
-        <code className="inline">AgentClassLoader</code>，防止隔离退化。
-      </p>
-
-      <h2 className="subhead">运行时要求</h2>
-      <p className="prose">
-        主代码以 <code className="inline">--release 8</code> 编译，产物只使用 JDK 8 的 API，可以运行在 Java 8 及以上；
-        发布门禁在 JDK 17 上执行完整构建与质量检查。已用打包后的 agent 在 JDK 8、11、17、21 上做过真实 attach 冒烟。
-      </p>
+        <Reveal as="h2" className="subhead">
+          运行时要求
+        </Reveal>
+        <Reveal className="prose" variant="fade">
+          主代码以 <code className="inline">--release 8</code> 编译，产物只使用 JDK 8 的 API，可以运行在 Java 8 及以上；
+          发布门禁在 JDK 17 上执行完整构建与质量检查。已用打包后的 agent 在 JDK 8、11、17、21 上做过真实 attach 冒烟。
+        </Reveal>
       </div>
     </>
   );

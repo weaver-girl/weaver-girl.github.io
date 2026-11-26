@@ -83,6 +83,26 @@ export const pluginGroups: { key: string; label: string; names: string[] }[] = [
   },
 ];
 
+/** One tone per functional group, reused by the catalogue and the coverage chart. */
+export const pluginTones = ["clay", "olive", "ochre", "slate", "plum", "teal", "clay"] as const;
+
+export interface PluginGroupStat {
+  key: string;
+  label: string;
+  count: number;
+  tone: (typeof pluginTones)[number];
+  names: string[];
+}
+
+/** The catalogue at a glance: group sizes drive the bar chart on the home page. */
+export const pluginGroupStats: PluginGroupStat[] = pluginGroups.map((group, index) => ({
+  key: group.key,
+  label: group.label,
+  count: group.names.length,
+  tone: pluginTones[index % pluginTones.length],
+  names: group.names,
+}));
+
 export interface PluginRow {
   key: string;
   name: string;
@@ -444,10 +464,15 @@ cd weaver-girl-agent/target
 java -javaagent:weaver-girl-agent-1.0.0-SNAPSHOT.jar \\
   -jar your-app.jar`;
 
-export const releaseInstall = `# GitHub Release 提供 weaver-girl-agent-<version>-dist.zip
-# 内含 agent jar 与它需要的 plugins/ 目录
-unzip weaver-girl-agent-1.0.0-dist.zip
-java -javaagent:weaver-girl-agent-1.0.0/weaver-girl-agent-1.0.0.jar \\
+export const releaseInstall = `# v1.0.0 GitHub Release 提供 dist.zip 与 sha256 / gpg 签名
+VERSION=1.0.0
+curl -LO https://github.com/weaver-girl/weaver-girl/releases/download/v$VERSION/weaver-girl-agent-$VERSION-dist.zip
+curl -LO https://github.com/weaver-girl/weaver-girl/releases/download/v$VERSION/weaver-girl-agent-$VERSION-dist.zip.sha256
+sha256sum -c weaver-girl-agent-$VERSION-dist.zip.sha256
+
+# 解包后 plugins/ 必须和 agent jar 放在同一层
+unzip weaver-girl-agent-$VERSION-dist.zip
+java -javaagent:weaver-girl-agent-$VERSION/weaver-girl-agent-$VERSION.jar \\
   -jar your-app.jar`;
 
 export const containerInstall = `# 构建产物就绪后，用仓库自带 Dockerfile 把 agent 与 plugins/ 一起打进镜像
@@ -499,10 +524,18 @@ public class MyInterceptor {
     }
 }`;
 
-export const pluginDependencyExample = `<dependency>
-  <groupId>io.github.cc11001100</groupId>
+export const pluginDependencyExample = `<!-- 1.0.0 已发布在 GitHub；Maven Central 尚未上线，先走 JitPack -->
+<repositories>
+  <repository>
+    <id>jitpack</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependency>
+  <groupId>com.github.weaver-girl.weaver-girl</groupId>
   <artifactId>weaver-girl-api</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>v1.0.0</version>
   <scope>provided</scope>
 </dependency>`;
 
@@ -872,3 +905,265 @@ export const contactPoints: ContactPoint[] = [
 ];
 
 export const WECHAT_ID = "CC11001100-weixin";
+
+/* -------------------------------------------------------------------------
+ * Performance ledger. Numbers come from docs/benchmarks/baseline-v1.md, which
+ * is captured in-process (forks=0) — honest for regression comparison, not a
+ * cross-machine absolute promise. Keep the caveat next to the numbers.
+ * ---------------------------------------------------------------------- */
+
+export interface BenchmarkRow {
+  key: string;
+  label: string;
+  en: string;
+  value: number;
+  note: string;
+}
+
+export const benchmarkRows: BenchmarkRow[] = [
+  {
+    key: "matcher",
+    label: "精确类 / 方法匹配",
+    en: "classMatcher_exactMatch",
+    value: 1.18,
+    note: "类名或方法名完全相等时的一次判断",
+  },
+  {
+    key: "sampling",
+    label: "采样判断",
+    en: "sampling_shouldSample_rate1",
+    value: 2.74,
+    note: "每次调用前的采样决策，采样率 1",
+  },
+  {
+    key: "breaker",
+    label: "熔断状态检查",
+    en: "circuitBreaker_shouldInvoke_fresh",
+    value: 25.03,
+    note: "进入拦截器前的熔断状态判断",
+  },
+  {
+    key: "pointcut",
+    label: "切点匹配 + 注册表查找",
+    en: "pointcutMatching_hit",
+    value: 74.24,
+    note: "命中切点后取出对应拦截器链",
+  },
+  {
+    key: "pattern",
+    label: "通配符类名匹配",
+    en: "classMatcher_patternMatch",
+    value: 133.75,
+    note: "带通配符的类名匹配，最慢的一档",
+  },
+];
+
+export const benchmarkEnv = "JMH 1.37 · OpenJDK 17.0.19 · Ryzen 9 5950X · forks=0（进程内）";
+
+export const benchmarkCaveat =
+  "这组数字来自仓库的 docs/benchmarks/baseline-v1.md，同机同版本的回归对比用它；进程内测量省掉了 fork 成本，跨机器引用时请按相对量级理解。";
+
+export interface OverheadStep {
+  key: string;
+  label: string;
+  value: string;
+  unit: string;
+  note: string;
+}
+
+/** README: turning every optional observation off takes a matched call from ~335 ns to ~88 ns. */
+export const overheadSteps: OverheadStep[] = [
+  {
+    key: "full",
+    label: "全部遥测开启",
+    value: "335",
+    unit: "ns / 次",
+    note: "telemetry · returnSnapshot · mdc · pluginMetrics · circuitBreaker",
+  },
+  {
+    key: "lean",
+    label: "只留拦截本身",
+    value: "88",
+    unit: "ns / 次",
+    note: "开关位于 agent 参数、YAML、-Dweavergirl.<name>.enabled 或运行期",
+  },
+];
+
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+export const faqs: FaqItem[] = [
+  {
+    q: "它会让现有系统变慢吗？",
+    a: "热路径上的判断是纳秒级的：精确匹配约 1.2 ns，熔断检查约 25 ns。真正的开销取决于插件在回调里做什么；把 telemetry、returnSnapshot、mdc、pluginMetrics、circuitBreaker 全部关掉后，一次被匹配的调用从约 335 ns 降到约 88 ns，拦截本身不受影响。",
+  },
+  {
+    q: "需要改业务代码吗？",
+    a: "不需要。启动命令加一个 -javaagent，旁边放 plugins/ 目录即可；业务代码不 import 任何插件，也不用预留接口。仓库里的三个演示程序就是这么做的。",
+  },
+  {
+    q: "插件写错了会不会拖垮业务？",
+    a: "底座按失败开放处理：织入失败保留原方法，插件类加载器 child-first 隔离；某个拦截器持续出错会被熔断器自动摘除，系统压力大时自适应采样会降低采样率。",
+  },
+  {
+    q: "升级 Java 或框架版本怎么办？",
+    a: "主代码以 --release 8 编译，只使用 JDK 8 API，可运行在 Java 8 及以上；发布前在 JDK 8、11、17、21 上做过真实 attach 冒烟。插件按目标库的类名与签名匹配，目标库不在场就不会加载。",
+  },
+  {
+    q: "还要额外部署什么中间件吗？",
+    a: "不用。插件跟着 plugins/ 目录走，指标、健康检查、OTLP 导出等都是可选的运行时 jar，配置了对应端口才启用；不用的能力可以直接从发行包里删掉。",
+  },
+  {
+    q: "它和 SkyWalking、OpenTelemetry Agent 是什么关系？",
+    a: "同类技术底座，定位不同。它们更接近开箱即用的成品 APM；weaver-girl 只提供切点植入、上下文、导出与隔离，让你在上面做自己的 APM、IAST、RASP 或审计产品。产品定位文档里有逐项对照表。",
+  },
+  {
+    q: "许可证是什么？可以商用吗？",
+    a: "MIT。1.0.0 已发布在 GitHub Release，代码、插件和文档同一个版本；Maven Central 尚未上线，当前从 JitPack 解析依赖。",
+  },
+];
+
+/* -------------------------------------------------------------------------
+ * Quick start: preflight, verification and the failures people actually hit.
+ * The curl shapes match the runtime plugins' real responses (README.md §Usage).
+ * ---------------------------------------------------------------------- */
+
+export interface Prerequisite {
+  key: string;
+  label: string;
+  detail: string;
+}
+
+export const prerequisites: Prerequisite[] = [
+  {
+    key: "jdk",
+    label: "Java 8 或更高",
+    detail: "主代码以 --release 8 编译；JDK 8、11、17、21 上都做过真实 attach 冒烟。",
+  },
+  {
+    key: "build",
+    label: "Maven 3.9+（从源码构建时）",
+    detail: "构建与质量门禁在 JDK 17 上跑；直接用发行包则不需要 Maven。",
+  },
+  {
+    key: "layout",
+    label: "agent 与 plugins/ 放在一起",
+    detail: "agent jar 本身不含插件实现。只拷 jar，程序能启动，但不会拦截任何东西。",
+  },
+  {
+    key: "config",
+    label: "可选：一个 weaver.yml",
+    detail: "不写配置也能启动，默认加载 plugins/ 里的全部内置插件。",
+  },
+];
+
+export interface VerifyCheck {
+  key: string;
+  label: string;
+  command: string;
+  expect: string;
+  note: string;
+}
+
+export const verifyChecks: VerifyCheck[] = [
+  {
+    key: "health",
+    label: "存活探针",
+    command: "curl -s localhost:9401/health",
+    expect: '{"status":"UP","agent":"weaver-girl",…}',
+    note: "healthPort 配置后才会启动；返回 UP 说明 agent 已经挂进进程。",
+  },
+  {
+    key: "ready",
+    label: "就绪探针",
+    command: "curl -s localhost:9401/ready",
+    expect: '{"status":"READY","interceptorCount":…}',
+    note: "interceptorCount 大于 0，说明插件已经登记了切点。",
+  },
+  {
+    key: "metrics",
+    label: "指标端点",
+    command: "curl -s localhost:9400/metrics | head",
+    expect: "weavergirl_… 文本格式指标",
+    note: "metricsPort 配置后可用；Prometheus 直接抓这个地址。",
+  },
+  {
+    key: "stats",
+    label: "自诊断",
+    command: "curl -s localhost:9402/stats",
+    expect: "拦截次数、错误数、热点的 JSON",
+    note: "diagnostics 运行时能力启用后，用 diagnosticsPort 指定端口。",
+  },
+];
+
+export interface Troubleshoot {
+  key: string;
+  symptom: string;
+  cause: string;
+  fix: string;
+}
+
+export const troubleshoots: Troubleshoot[] = [
+  {
+    key: "nothing",
+    symptom: "启动正常，但什么也没拦到",
+    cause: "agent jar 旁边没有 plugins/ 目录，或者插件 jar 被单独拷走。",
+    fix: "使用 release 的 dist.zip，或把构建产物 target/plugins/ 整个目录放到 agent jar 旁边。",
+  },
+  {
+    key: "port",
+    symptom: "/metrics 或 /health 连不上",
+    cause: "对应的运行时能力只配了 jar，没有配端口；或者端口被占用。",
+    fix: "在 agent 参数或 weaver.yml 里写 metricsPort / healthPort，再确认端口空闲。",
+  },
+  {
+    key: "silent",
+    symptom: "插件日志里出现织入失败",
+    cause: "目标库版本与插件匹配的类名或签名不同，或与业务 classpath 上的同名库冲突。",
+    fix: "先看失败开放是否保住了原方法；再用 disabledPlugins 单独关掉该插件定位，类冲突交给 child-first 隔离。",
+  },
+  {
+    key: "slow",
+    symptom: "开 agent 后吞吐下降",
+    cause: "插件在回调里做了重活，或者遥测开关全部打开。",
+    fix: "按 README 关闭 telemetry / returnSnapshot / mdc / pluginMetrics / circuitBreaker，或调高采样阈值。",
+  },
+];
+
+/* -------------------------------------------------------------------------
+ * Architecture: the class-loading boundary, drawn as a stack.
+ * ---------------------------------------------------------------------- */
+
+export interface IsolationLayer {
+  key: string;
+  label: string;
+  owns: string;
+  detail: string;
+  tone: "clay" | "olive" | "slate";
+}
+
+export const isolationLayers: IsolationLayer[] = [
+  {
+    key: "bootstrap",
+    label: "Bootstrap ClassLoader",
+    owns: "java.* / javax.* / JDK 运行时",
+    detail: "JDK 自带的类。agent 通过注入 bootstrap 的桥接类，才能让内联的 Advice 回连注册表。",
+    tone: "slate",
+  },
+  {
+    key: "agent",
+    label: "AgentClassLoader",
+    owns: "ByteBuddy · 插件 · 运行时能力",
+    detail: "child-first：自己的 ByteBuddy 与插件优先从自己加载，只有确实不存在的类才交给 parent。",
+    tone: "clay",
+  },
+  {
+    key: "app",
+    label: "App ClassLoader",
+    owns: "业务代码 · 框架 · 业务依赖",
+    detail: "业务自己的世界。插件通过公开的 weaver-girl-api 与底座通信，不把实现类泄漏进来。",
+    tone: "olive",
+  },
+];

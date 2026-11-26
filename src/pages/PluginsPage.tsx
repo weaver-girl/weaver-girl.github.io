@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { Input, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { CategoryMap } from "../components/CategoryMap";
 import { PageHero } from "../components/PageHero";
+import { Reveal } from "../components/Reveal";
 import {
   allPlugins,
   pluginGroups,
@@ -50,7 +52,15 @@ export function PluginsPage() {
       />
 
       <div className="page-body">
-      <h2 className="subhead">完整清单</h2>
+      <Reveal className="prose" variant="fade">
+        126 个插件不是一份平均分布的清单：Web 框架最多，其次是数据库和 HTTP/RPC 客户端。
+        先看版图，再决定从哪一类开始查。
+      </Reveal>
+      <CategoryMap />
+
+      <Reveal as="h2" className="subhead">
+        完整清单
+      </Reveal>
       <div className="plugin-toolbar">
         <Input.Search
           allowClear
@@ -86,7 +96,9 @@ export function PluginsPage() {
         {filtered.length === 0 && <p className="prose">没有匹配的插件，换个关键字试试。</p>}
       </div>
 
-      <h2 className="subhead">常用插件与配置</h2>
+      <Reveal as="h2" className="subhead">
+        常用插件与配置
+      </Reveal>
       <Table
         rowKey="key"
         className="plugin-table"
@@ -97,25 +109,30 @@ export function PluginsPage() {
         scroll={{ x: 640 }}
       />
 
-      <h2 className="subhead">14 个可选运行时能力</h2>
-      <p className="prose">
+      <Reveal as="h2" className="subhead">
+        14 个可选运行时能力
+      </Reveal>
+      <Reveal className="prose" variant="fade">
         这些 jar 属于 agent 自身而不是业务插件，只有配置了对应键才会启用；发行包里不用的能力可以直接删掉。
-      </p>
+      </Reveal>
       <div className="runtime-grid">
-        {runtimeCapabilities.map((capability) => (
-          <article key={capability.key} className="runtime-card">
+        {runtimeCapabilities.map((capability, index) => (
+          <Reveal as="article" key={capability.key} className="runtime-card" delay={index * 45}>
             <code>{capability.name}</code>
             <p>{capability.description}</p>
-          </article>
+          </Reveal>
         ))}
       </div>
 
-      <h2 className="subhead">自带插件之外</h2>
-      <p className="prose">
-        第三方插件只需要依赖 <code className="inline">weaver-girl-api</code>，实现 <code className="inline">WeaverPlugin</code>
+      <Reveal as="h2" className="subhead">
+        自带插件之外
+      </Reveal>
+      <Reveal className="prose" variant="fade">
+        第三方插件只需要依赖 <code className="inline">weaver-girl-api</code>，实现{" "}
+        <code className="inline">WeaverPlugin</code>
         ，把 jar 放进 agent 旁边的 <code className="inline">plugins/</code> 目录即可被发现。你写的插件和内置插件走同一条
         拦截、熔断、采样与导出链路。
-      </p>
+      </Reveal>
       </div>
     </>
   );

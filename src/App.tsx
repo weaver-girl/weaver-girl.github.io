@@ -25,6 +25,39 @@ const NAV = [
   { key: "/docs", label: "文档" },
 ];
 
+/** A 2px thread of clay across the top of the page: reading progress, not decoration alone. */
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return (
+    <div
+      className="scroll-progress"
+      style={{ transform: `scaleX(${progress})` }}
+      aria-hidden="true"
+    />
+  );
+}
+
 export default function App() {
   const { pathname, hash: rawHash } = useLocation();
   const [open, setOpen] = useState(false);
@@ -68,6 +101,7 @@ export default function App() {
   return (
     <>
       <RouteMeta />
+      <ScrollProgress />
       <header className={scrolled ? "nav scrolled" : "nav"}>
         <a
           className="skip-link"
@@ -112,19 +146,23 @@ export default function App() {
 
       <main className="page" id="main" tabIndex={-1}>
         <Suspense fallback={<div className="route-loading" role="status">正在加载…</div>}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/quick-start" element={<QuickStartPage />} />
-            <Route path="/cases" element={<CasesPage />} />
-            <Route path="/plugins" element={<PluginsPage />} />
-            <Route path="/architecture" element={<ArchitecturePage />} />
-            <Route path="/docs" element={<DocsPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          {/* Keying by path replays the fade on every navigation instead of swapping in place. */}
+          <div className="route-body" key={pathname}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/quick-start" element={<QuickStartPage />} />
+              <Route path="/cases" element={<CasesPage />} />
+              <Route path="/plugins" element={<PluginsPage />} />
+              <Route path="/architecture" element={<ArchitecturePage />} />
+              <Route path="/docs" element={<DocsPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
         </Suspense>
       </main>
 
       <footer className="site-footer">
+        <div className="footer-weave" aria-hidden="true" />
         <div className="footer-inner">
           <div>
             <Link to="/" className="footer-brand">
@@ -191,7 +229,8 @@ export default function App() {
         </div>
         <div className="footer-meta-row">
           <span>weaver-girl / hook base</span>
-          <span>MIT · Java 8–21 · pre-1.0</span>
+          <span>MIT · Java 8–21</span>
+          <span>1.0.0 · 2026-11-24</span>
           <span>文档与代码同一个版本</span>
         </div>
       </footer>

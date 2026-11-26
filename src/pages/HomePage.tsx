@@ -1,10 +1,20 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
+import { BenchmarkScale } from "../components/BenchmarkScale";
+import { CategoryMap } from "../components/CategoryMap";
 import { CodeBlock } from "../components/CodeBlock";
+import { CountUp } from "../components/CountUp";
+import { Faq } from "../components/Faq";
+import { LoomBackdrop } from "../components/LoomBackdrop";
+import { Reveal } from "../components/Reveal";
+import { WeaveMap } from "../components/WeaveMap";
 import {
   REPO_URL,
   afterBase,
   basePrimitives,
   beforeBase,
+  benchmarkCaveat,
+  benchmarkEnv,
   bootLines,
   boundaries,
   caseStudies,
@@ -14,6 +24,7 @@ import {
   fits,
   guarantees,
   outcomes,
+  overheadSteps,
   pluginSkeleton,
   quickStart,
   WECHAT_ID,
@@ -38,10 +49,22 @@ const HERO_CHIPS = [
   { label: "Quartz", tone: "olive" },
 ];
 
+const PERF_STATS = [
+  { value: "1.18", unit: "ns", label: "精确类 / 方法匹配" },
+  { value: "25.03", unit: "ns", label: "熔断状态检查" },
+  { value: "2.74", unit: "ns", label: "采样判断" },
+  { value: "3,671", unit: "个", label: "自动化测试" },
+];
+
 export function HomePage() {
   return (
     <>
       <section className="hero">
+        <LoomBackdrop className="hero-loom" />
+        <div className="hero-orbit" aria-hidden="true">
+          <span />
+          <span />
+        </div>
         <div className="hero-grid">
           <div className="hero-copy">
             <p className="kicker">
@@ -76,8 +99,8 @@ export function HomePage() {
                 <dd>Java 8 – 21</dd>
               </div>
               <div>
-                <dt>许可</dt>
-                <dd>MIT</dd>
+                <dt>当前版本</dt>
+                <dd>1.0.0</dd>
               </div>
             </dl>
           </div>
@@ -95,6 +118,7 @@ export function HomePage() {
             <div className="panel-command">
               <span className="panel-prompt">$</span>
               <code>-javaagent:weaver-girl-agent.jar=config=weaver.yml</code>
+              <span className="panel-caret" aria-hidden="true" />
             </div>
             <dl className="panel-lines">
               {bootLines.map((line) => (
@@ -111,8 +135,12 @@ export function HomePage() {
         <div className="hero-chips">
           <p className="chips-label">底座之上，插件决定它能做什么</p>
           <ul className="chips">
-            {HERO_CHIPS.map((chip) => (
-              <li key={chip.label} className={`tone-${chip.tone}`}>
+            {HERO_CHIPS.map((chip, index) => (
+              <li
+                key={chip.label}
+                className={`tone-${chip.tone}`}
+                style={{ "--chip-delay": `${index * 55}ms` } as CSSProperties}
+              >
                 {chip.label}
               </li>
             ))}
@@ -121,7 +149,10 @@ export function HomePage() {
       </section>
 
       <section className="section wrap tone-clay" id="problem">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            01
+          </span>
           <p className="eyebrow">
             <span>01</span> 问题
           </p>
@@ -130,30 +161,35 @@ export function HomePage() {
             给一个已经上线的系统加能力——敏感数据打码、操作记录、挡住攻击——通常意味着改业务代码、
             排期、回归、重新发布。风险大、周期长，很多团队干脆不做。
           </p>
-        </header>
+        </Reveal>
         <div className="problem-grid">
-          <article className="problem-col problem-without">
+          <Reveal as="article" className="problem-col problem-without" variant="left">
             <p className="problem-label">没有底座</p>
             <ul>
               {beforeBase.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
-          </article>
-          <article className="problem-col problem-with">
+          </Reveal>
+          <Reveal as="article" className="problem-col problem-with" variant="left" delay={120}>
             <p className="problem-label">有 weaver-girl</p>
             <ul>
               {afterBase.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
-          </article>
+          </Reveal>
         </div>
-        <p className="problem-note">把“给系统加能力”，从改代码变成插插件。</p>
+        <Reveal className="problem-note" variant="fade">
+          把“给系统加能力”，从改代码变成插插件。
+        </Reveal>
       </section>
 
       <section className="section wrap tone-olive" id="outcomes">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            02
+          </span>
           <p className="eyebrow">
             <span>02</span> 用途
           </p>
@@ -162,21 +198,31 @@ export function HomePage() {
             监控、安全、审计看起来是三件不同的事，底层都要先做同一件事：
             把逻辑插进运行中的系统，再把看到的数据送出去。换一批插件，就换一种产品。
           </p>
-        </header>
+        </Reveal>
         <div className="outcome-grid">
-          {outcomes.map((item) => (
-            <article key={item.key} className={`outcome-card outcome-${item.tone}`}>
+          {outcomes.map((item, index) => (
+            <Reveal
+              as="article"
+              key={item.key}
+              className={`outcome-card outcome-${item.tone}`}
+              delay={index * 90}
+            >
               <span className="outcome-en">{item.en}</span>
               <h3>{item.title}</h3>
               <p>{item.text}</p>
-            </article>
+            </Reveal>
           ))}
         </div>
-        <p className="outcome-note">底座只负责“通电”。规则、控制台和存储，由插件与产品层决定。</p>
+        <Reveal className="outcome-note" variant="fade">
+          底座只负责“通电”。规则、控制台和存储，由插件与产品层决定。
+        </Reveal>
       </section>
 
       <section className="section wrap tone-ochre" id="primitives">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            03
+          </span>
           <p className="eyebrow">
             <span>03</span> 职责
           </p>
@@ -185,10 +231,16 @@ export function HomePage() {
             读取配置、把逻辑插进程序、把数据送出去、安全地加载插件。判断规则、存储和界面，
             都不在底座里——那是上层产品的事。
           </p>
-        </header>
+        </Reveal>
         <ol className="primitive-list">
-          {basePrimitives.map((primitive) => (
-            <li key={primitive.n} className="primitive">
+          {basePrimitives.map((primitive, index) => (
+            <Reveal
+              as="li"
+              key={primitive.n}
+              className="primitive"
+              delay={index * 70}
+              variant="left"
+            >
               <span className="primitive-n">{primitive.n}</span>
               <div className="primitive-main">
                 <h3>
@@ -198,14 +250,18 @@ export function HomePage() {
                 <p>{primitive.detail}</p>
               </div>
               <code className="primitive-impl">{primitive.impl}</code>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </section>
 
       <section className="boundary-section tone-slate">
+        <LoomBackdrop tone="dark" className="boundary-loom" />
         <div className="wrap">
-          <header className="section-head section-head-invert">
+          <Reveal as="header" className="section-head section-head-invert">
+            <span className="ghost-index" aria-hidden="true">
+              04
+            </span>
             <p className="eyebrow">
               <span>04</span> 边界
             </p>
@@ -214,10 +270,15 @@ export function HomePage() {
               把底座想成墙里的电线：它负责通电，不决定你插什么电器。监控、安全、审计是电器，
               控制台和存储是物业。哪一层出问题，一眼就能找到。
             </p>
-          </header>
+          </Reveal>
           <div className="boundary-grid">
-            {boundaries.map((layer) => (
-              <article key={layer.layer} className={`boundary-col boundary-${layer.tone}`}>
+            {boundaries.map((layer, index) => (
+              <Reveal
+                as="article"
+                key={layer.layer}
+                className={`boundary-col boundary-${layer.tone}`}
+                delay={index * 110}
+              >
                 <header>
                   <h3>{layer.layer}</h3>
                   <span className="boundary-state">{layer.state}</span>
@@ -229,14 +290,17 @@ export function HomePage() {
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
-              </article>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
       <section className="section wrap tone-plum" id="contract">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            05
+          </span>
           <p className="eyebrow">
             <span>05</span> 契约
           </p>
@@ -245,9 +309,9 @@ export function HomePage() {
             插件只依赖 <code className="inline">weaver-girl-api</code> 这一个 jar。底座内部怎么实现、
             怎么升级，都不会牵连插件——写插件的人不用关心底座里有什么。
           </p>
-        </header>
+        </Reveal>
         <div className="contract-grid">
-          <div className="contract-side">
+          <Reveal className="contract-side" variant="left">
             <p className="prose">
               一个插件声明名称、登记要插入的位置，剩下的交给底座：发现、隔离、加载。
               约定越小，插件越容易写，也越不容易被底座的变化影响。
@@ -270,13 +334,18 @@ export function HomePage() {
             >
               从插件模板开始 →
             </a>
-          </div>
-          <CodeBlock code={pluginSkeleton} file="PaymentPlugin.java" />
+          </Reveal>
+          <Reveal className="contract-code" variant="scale" delay={120}>
+            <CodeBlock code={pluginSkeleton} file="PaymentPlugin.java" />
+          </Reveal>
         </div>
       </section>
 
       <section className="section wrap tone-teal" id="runtime">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            06
+          </span>
           <p className="eyebrow">
             <span>06</span> 运行时
           </p>
@@ -285,7 +354,10 @@ export function HomePage() {
             启动时挂上底座，它自己发现插件、登记位置、把逻辑织进程序。失败开放、隔离和自保，
             让它敢一直待在线上。
           </p>
-        </header>
+        </Reveal>
+        <Reveal className="weave-map-shell" variant="fade">
+          <WeaveMap />
+        </Reveal>
         <div className="flow">
           {FLOW.map((node, i) => (
             <span key={node.name} className="flow-item">
@@ -298,18 +370,21 @@ export function HomePage() {
           ))}
         </div>
         <div className="guarantee-grid">
-          {guarantees.map((item) => (
-            <article key={item.en} className="guarantee">
+          {guarantees.map((item, index) => (
+            <Reveal as="article" key={item.en} className="guarantee" delay={index * 60}>
               <span className="guarantee-en">{item.en}</span>
               <h3>{item.title}</h3>
               <p>{item.detail}</p>
-            </article>
+            </Reveal>
           ))}
         </div>
       </section>
 
       <section className="section wrap tone-clay" id="coverage">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            07
+          </span>
           <p className="eyebrow">
             <span>07</span> 覆盖
           </p>
@@ -318,16 +393,29 @@ export function HomePage() {
             数据库、缓存、消息队列、Web 框架、HTTP 客户端……系统里用什么，插件就拦什么；
             没用到的不会加载，也不占资源。
           </p>
-        </header>
+        </Reveal>
         <div className="coverage-table">
-          {coverageRows.map((row) => (
-            <div key={row.label} className="coverage-row">
+          {coverageRows.map((row, index) => (
+            <Reveal
+              as="div"
+              key={row.label}
+              className="coverage-row"
+              delay={index * 45}
+              variant="left"
+            >
               <span className="coverage-label">{row.label}</span>
               <b className="coverage-value">{row.value}</b>
               <span className="coverage-note">{row.note}</span>
-            </div>
+            </Reveal>
           ))}
         </div>
+        <Reveal className="coverage-map" variant="fade">
+          <div className="coverage-map-head">
+            <span className="coverage-map-kicker">PLUGIN MAP</span>
+            <p>126 个插件按功能分组，长条是数量。</p>
+          </div>
+          <CategoryMap />
+        </Reveal>
         <p className="coverage-link">
           <Link to="/plugins" className="link-arrow">
             查看全部插件与运行时能力 →
@@ -335,18 +423,73 @@ export function HomePage() {
         </p>
       </section>
 
-      <section className="section wrap tone-olive" id="evidence">
-        <header className="section-head">
+      <section className="section wrap tone-teal" id="performance">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            08
+          </span>
           <p className="eyebrow">
-            <span>08</span> 验证
+            <span>08</span> 性能
+          </p>
+          <h2>纳秒级的判断，才敢放在热路径上。</h2>
+          <p className="section-lede">
+            拦截发生在每一次方法调用之前，底座自己的开销必须小到可以被忽略。下面这组数字来自仓库的
+            JMH 基线，不是营销口径；真正的成本取决于插件在回调里做什么。
+          </p>
+        </Reveal>
+        <div className="perf-stats">
+          {PERF_STATS.map((stat, index) => (
+            <Reveal key={stat.label} className="perf-stat" delay={index * 70} variant="scale">
+              <b>
+                <CountUp value={stat.value} /> <small>{stat.unit}</small>
+              </b>
+              <span>{stat.label}</span>
+            </Reveal>
+          ))}
+        </div>
+        <BenchmarkScale />
+        <Reveal className="overhead-ladder" variant="fade">
+          <div className="overhead-step tone-clay">
+            <span className="overhead-label">{overheadSteps[0].label}</span>
+            <b>
+              <CountUp value={overheadSteps[0].value} />
+              <small>{overheadSteps[0].unit}</small>
+            </b>
+            <span className="overhead-note">{overheadSteps[0].note}</span>
+          </div>
+          <div className="overhead-arrow" aria-hidden="true">
+            <span>关掉遥测</span>
+            <i>→</i>
+          </div>
+          <div className="overhead-step tone-olive">
+            <span className="overhead-label">{overheadSteps[1].label}</span>
+            <b>
+              <CountUp value={overheadSteps[1].value} />
+              <small>{overheadSteps[1].unit}</small>
+            </b>
+            <span className="overhead-note">{overheadSteps[1].note}</span>
+          </div>
+        </Reveal>
+        <p className="bench-foot">
+          {benchmarkEnv}。{benchmarkCaveat}
+        </p>
+      </section>
+
+      <section className="section wrap tone-olive" id="evidence">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            09
+          </span>
+          <p className="eyebrow">
+            <span>09</span> 验证
           </p>
           <h2>三个小故事，看它改变了什么。</h2>
           <p className="section-lede">
             同一段业务代码跑两遍：一遍不装底座，一遍装上。差别由程序自己断言，
             不是手工截的图，也不是准备好的演示。
           </p>
-        </header>
-        <div className="evidence-table">
+        </Reveal>
+        <Reveal className="evidence-table" variant="fade">
           {caseStudies.map((study, i) => (
             <Link key={study.key} to="/cases" className="evidence-row">
               <span className="evidence-index">{String(i + 1).padStart(2, "0")}</span>
@@ -359,23 +502,31 @@ export function HomePage() {
               <span className="evidence-arrow">→</span>
             </Link>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <section className="section wrap tone-plum" id="fit">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            10
+          </span>
           <p className="eyebrow">
-            <span>09</span> 选型
+            <span>10</span> 选型
           </p>
           <h2>先想清楚：它是不是给你的。</h2>
           <p className="section-lede">
             底座不是万能的。它擅长“给系统加能力”，不擅长“直接给你一个能用的产品”。
             两句话就能判断。
           </p>
-        </header>
+        </Reveal>
         <div className="fit-grid">
           {fits.map((fit, i) => (
-            <article key={fit.key} className={`fit-card tone-${fit.tone}`}>
+            <Reveal
+              as="article"
+              key={fit.key}
+              className={`fit-card tone-${fit.tone}`}
+              delay={i * 100}
+            >
               <span className="fit-mark" aria-hidden="true">
                 {i === 0 ? "✓" : "✕"}
               </span>
@@ -383,32 +534,53 @@ export function HomePage() {
                 <h3>{fit.label}</h3>
                 <p>{fit.text}</p>
               </div>
-            </article>
+            </Reveal>
           ))}
         </div>
-        <p className="fit-note">
+        <Reveal className="fit-note" variant="fade">
           想知道它和 SkyWalking、OpenTelemetry Agent 的差别，
           <a href={`${REPO_URL}/blob/main/docs/positioning.md`} target="_blank" rel="noreferrer">
             产品定位文档
           </a>
           里有一张逐项对照表。
-        </p>
+        </Reveal>
+      </section>
+
+      <section className="section wrap tone-slate" id="faq">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            11
+          </span>
+          <p className="eyebrow">
+            <span>11</span> 常见问题
+          </p>
+          <h2>还有几个问题，先答在这里。</h2>
+          <p className="section-lede">
+            这些问题在接入前最常被问到：会不会变慢、要不要改代码、插件坏了怎么办、和现成 APM 有什么不同。
+          </p>
+        </Reveal>
+        <Faq />
       </section>
 
       <section className="section wrap tone-slate" id="start">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            12
+          </span>
           <p className="eyebrow">
-            <span>10</span> 开始
+            <span>12</span> 开始
           </p>
           <h2>三步，把它跑起来。</h2>
           <p className="section-lede">
             构建、挂上、观察。不需要改业务代码，也不需要额外安装中间件；插件跟着{" "}
             <code className="inline">plugins/</code> 目录走。
           </p>
-        </header>
+        </Reveal>
         <div className="start-grid">
-          <CodeBlock code={quickStart} file="terminal" />
-          <div className="start-links">
+          <Reveal className="start-code" variant="scale">
+            <CodeBlock code={quickStart} file="terminal" />
+          </Reveal>
+          <Reveal className="start-links" variant="left" delay={100}>
             <Link to="/quick-start" className="start-link">
               <span className="start-kicker">BUILD</span>
               <b>构建与挂载</b>
@@ -429,31 +601,30 @@ export function HomePage() {
               <b>版本与兼容性</b>
               <span>公开 API、语义化版本与 Java 支持范围</span>
             </a>
-            <a
-              className="start-link"
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a className="start-link" href={REPO_URL} target="_blank" rel="noreferrer">
               <span className="start-kicker">SOURCE</span>
               <b>源码与文档</b>
               <span>MIT 许可，文档与代码同一个版本</span>
             </a>
-          </div>
+          </Reveal>
         </div>
+      </section>
 
       <section className="section wrap tone-ochre" id="contact">
-        <header className="section-head">
+        <Reveal as="header" className="section-head">
+          <span className="ghost-index" aria-hidden="true">
+            13
+          </span>
           <p className="eyebrow">
-            <span>11</span> 联系
+            <span>13</span> 联系
           </p>
           <h2>有具体的事，直接加微信聊。</h2>
           <p className="section-lede">
             底座是开源的，问题可以直接提到 GitHub。如果是定制插件、产品落地这类需要来回确认的事，
             加维护者微信更快：把场景和版本发过来就行。
           </p>
-        </header>
-        <div className="contact-grid">
+        </Reveal>
+        <Reveal className="contact-grid" variant="fade">
           <ul className="contact-points">
             {contactPoints.map((point) => (
               <li key={point.title}>
@@ -477,8 +648,7 @@ export function HomePage() {
               <span>扫码添加，备注说明来意即可。</span>
             </figcaption>
           </figure>
-        </div>
-      </section>
+        </Reveal>
       </section>
     </>
   );

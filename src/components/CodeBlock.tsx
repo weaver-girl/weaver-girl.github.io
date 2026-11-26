@@ -1,7 +1,29 @@
+import { useState } from "react";
+
 interface CodeBlockProps {
   code: string;
   /** Text shown in the window title bar, e.g. a file name. */
   file?: string;
+}
+
+function CopyButton({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <button type="button" className="code-copy" onClick={copy} aria-live="polite">
+      {copied ? "已复制" : "复制"}
+    </button>
+  );
 }
 
 const COMMENT = /(\/\/.*|#.*)$/;
@@ -47,7 +69,8 @@ export function CodeBlock({ code, file }: CodeBlockProps) {
           <i />
           <i />
         </span>
-        {file ?? "shell"}
+        <span className="code-file">{file ?? "shell"}</span>
+        <CopyButton code={code} />
       </div>
       <pre className="code-block">
         <code>

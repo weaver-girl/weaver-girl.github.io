@@ -1,6 +1,8 @@
-import { Alert, Statistic } from "antd";
+import { Alert } from "antd";
 import { CodeBlock } from "../components/CodeBlock";
+import { CountUp } from "../components/CountUp";
 import { PageHero } from "../components/PageHero";
+import { Reveal } from "../components/Reveal";
 import { caseStudies } from "../data/content";
 
 const TONES: Record<string, string> = {
@@ -25,23 +27,37 @@ export function CasesPage() {
       <div className="page-body">
         <nav className="case-quicknav" aria-label="案例导航">
           {caseStudies.map((study, i) => (
-            <a
+            <Reveal
+              as="a"
               key={study.key}
-              href={`#${study.key}`}
               className={`case-quicknav-item tone-${TONES[study.tagColor] ?? "clay"}`}
+              href={`#${study.key}`}
+              delay={i * 80}
             >
               <span>{String(i + 1).padStart(2, "0")}</span>
               <b>{study.tag}</b>
               <small>{study.title}</small>
-            </a>
+            </Reveal>
           ))}
         </nav>
 
+        <Reveal className="case-legend" variant="fade">
+          <span>
+            <i className="legend-before" aria-hidden="true" /> 没有插件：业务原样运行
+          </span>
+          <span>
+            <i className="legend-after" aria-hidden="true" /> 挂上插件：同一段代码，结果不同
+          </span>
+          <span className="case-legend-note">两段输出来自脚本真实运行，并用退出码断言</span>
+        </Reveal>
+
         {caseStudies.map((study, index) => (
-          <article
+          <Reveal
+            as="article"
             key={study.key}
             id={study.key}
             className={`case-study tone-${TONES[study.tagColor] ?? "clay"}`}
+            delay={index * 60}
           >
             <header className="case-head">
               <div className="case-meta">
@@ -84,7 +100,9 @@ export function CasesPage() {
                 <div className="case-metrics">
                   {study.metrics.map((metric) => (
                     <div key={metric.label} className="case-metric">
-                      <Statistic value={metric.value} valueStyle={{ fontSize: 30, fontWeight: 600 }} />
+                      <b className="case-metric-value">
+                        <CountUp value={metric.value} />
+                      </b>
                       <span>{metric.label}</span>
                     </div>
                   ))}
@@ -122,10 +140,10 @@ export function CasesPage() {
                 </a>
               ))}
             </footer>
-          </article>
+          </Reveal>
         ))}
 
-        <section className="case-common">
+        <Reveal as="section" className="case-common" variant="fade">
           <p className="eyebrow">为什么这些案例可信</p>
           <h2>三个程序，同一个接入方式。</h2>
           <ul>
@@ -134,7 +152,7 @@ export function CasesPage() {
             <li>脚本对两种运行结果做退出码断言：有 agent 为 0，没有 agent 为 2，输出不是手工截取的。</li>
             <li>三个插件都只依赖 <code className="inline">weaver-girl-api</code>，换一个场景就是换一个插件。</li>
           </ul>
-        </section>
+        </Reveal>
       </div>
     </>
   );
