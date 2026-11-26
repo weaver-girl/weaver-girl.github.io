@@ -1,4 +1,5 @@
 import { Alert } from "antd";
+import { CaseTrace } from "../components/CaseTrace";
 import { CodeBlock } from "../components/CodeBlock";
 import { CountUp } from "../components/CountUp";
 import { PageHero } from "../components/PageHero";
@@ -70,6 +71,8 @@ export function CasesPage() {
               </h2>
               <p className="case-sub">{study.subtitle}</p>
             </header>
+
+            <CaseTrace trace={study.trace} tone={TONES[study.tagColor] ?? "clay"} />
 
             <div className="case-body">
               <div className="case-narrative">

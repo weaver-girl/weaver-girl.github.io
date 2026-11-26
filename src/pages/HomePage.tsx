@@ -1,27 +1,28 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { BenchmarkScale } from "../components/BenchmarkScale";
+import { BaseChassis } from "../components/BaseChassis";
+import { BoundaryStack } from "../components/BoundaryStack";
 import { CategoryMap } from "../components/CategoryMap";
 import { CodeBlock } from "../components/CodeBlock";
+import { ContractHub } from "../components/ContractHub";
 import { CountUp } from "../components/CountUp";
+import { DeliveryTracks } from "../components/DeliveryTracks";
 import { Faq } from "../components/Faq";
+import { FitFork } from "../components/FitFork";
 import { LoomBackdrop } from "../components/LoomBackdrop";
+import { OutcomeBus } from "../components/OutcomeBus";
 import { Reveal } from "../components/Reveal";
 import { WeaveMap } from "../components/WeaveMap";
 import {
   REPO_URL,
-  afterBase,
-  basePrimitives,
-  beforeBase,
   benchmarkCaveat,
   benchmarkEnv,
   bootLines,
   boundaries,
   caseStudies,
   contactPoints,
-  contractApis,
   coverageRows,
-  fits,
   guarantees,
   outcomes,
   overheadSteps,
@@ -162,24 +163,9 @@ export function HomePage() {
             排期、回归、重新发布。风险大、周期长，很多团队干脆不做。
           </p>
         </Reveal>
-        <div className="problem-grid">
-          <Reveal as="article" className="problem-col problem-without" variant="left">
-            <p className="problem-label">没有底座</p>
-            <ul>
-              {beforeBase.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal as="article" className="problem-col problem-with" variant="left" delay={120}>
-            <p className="problem-label">有 weaver-girl</p>
-            <ul>
-              {afterBase.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
+        <Reveal className="problem-visual" variant="fade">
+          <DeliveryTracks />
+        </Reveal>
         <Reveal className="problem-note" variant="fade">
           把“给系统加能力”，从改代码变成插插件。
         </Reveal>
@@ -198,6 +184,9 @@ export function HomePage() {
             监控、安全、审计看起来是三件不同的事，底层都要先做同一件事：
             把逻辑插进运行中的系统，再把看到的数据送出去。换一批插件，就换一种产品。
           </p>
+        </Reveal>
+        <Reveal className="outcome-visual" variant="fade">
+          <OutcomeBus />
         </Reveal>
         <div className="outcome-grid">
           {outcomes.map((item, index) => (
@@ -232,27 +221,9 @@ export function HomePage() {
             都不在底座里——那是上层产品的事。
           </p>
         </Reveal>
-        <ol className="primitive-list">
-          {basePrimitives.map((primitive, index) => (
-            <Reveal
-              as="li"
-              key={primitive.n}
-              className="primitive"
-              delay={index * 70}
-              variant="left"
-            >
-              <span className="primitive-n">{primitive.n}</span>
-              <div className="primitive-main">
-                <h3>
-                  {primitive.name}
-                  <span>{primitive.en}</span>
-                </h3>
-                <p>{primitive.detail}</p>
-              </div>
-              <code className="primitive-impl">{primitive.impl}</code>
-            </Reveal>
-          ))}
-        </ol>
+        <Reveal className="primitive-visual" variant="fade">
+          <BaseChassis />
+        </Reveal>
       </section>
 
       <section className="boundary-section tone-slate">
@@ -270,6 +241,9 @@ export function HomePage() {
               把底座想成墙里的电线：它负责通电，不决定你插什么电器。监控、安全、审计是电器，
               控制台和存储是物业。哪一层出问题，一眼就能找到。
             </p>
+          </Reveal>
+          <Reveal className="boundary-visual" variant="fade">
+            <BoundaryStack />
           </Reveal>
           <div className="boundary-grid">
             {boundaries.map((layer, index) => (
@@ -316,16 +290,9 @@ export function HomePage() {
               一个插件声明名称、登记要插入的位置，剩下的交给底座：发现、隔离、加载。
               约定越小，插件越容易写，也越不容易被底座的变化影响。
             </p>
-            <dl className="api-table">
-              {contractApis.map((api) => (
-                <div key={api.name}>
-                  <dt>
-                    <code>{api.name}</code>
-                  </dt>
-                  <dd>{api.role}</dd>
-                </div>
-              ))}
-            </dl>
+            <div className="contract-visual">
+              <ContractHub />
+            </div>
             <a
               className="link-arrow"
               href={`${REPO_URL}/tree/main/weaver-girl-plugin-template`}
@@ -519,24 +486,9 @@ export function HomePage() {
             两句话就能判断。
           </p>
         </Reveal>
-        <div className="fit-grid">
-          {fits.map((fit, i) => (
-            <Reveal
-              as="article"
-              key={fit.key}
-              className={`fit-card tone-${fit.tone}`}
-              delay={i * 100}
-            >
-              <span className="fit-mark" aria-hidden="true">
-                {i === 0 ? "✓" : "✕"}
-              </span>
-              <div>
-                <h3>{fit.label}</h3>
-                <p>{fit.text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal className="fit-visual" variant="fade">
+          <FitFork />
+        </Reveal>
         <Reveal className="fit-note" variant="fade">
           想知道它和 SkyWalking、OpenTelemetry Agent 的差别，
           <a href={`${REPO_URL}/blob/main/docs/positioning.md`} target="_blank" rel="noreferrer">

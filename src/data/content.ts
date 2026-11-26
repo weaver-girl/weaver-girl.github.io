@@ -248,6 +248,19 @@ export interface CaseMetric {
   label: string;
 }
 
+export interface CaseTrace {
+  /** The caller or entry point, in product language. */
+  from: string;
+  /** The real class or method the plugin weaves into. */
+  method: string;
+  /** What sits on the other side of the intercepted call. */
+  to: string;
+  /** What the plugin does at the weave point. */
+  tap: string;
+  /** The observable result of that intervention. */
+  effect: string;
+}
+
 export interface CaseStudy {
   key: string;
   tag: string;
@@ -257,6 +270,7 @@ export interface CaseStudy {
   scene: string;
   problem: string;
   approach: string;
+  trace: CaseTrace;
   /** Plain-language restatement of `approach`, shown above the technical detail. */
   plain?: string;
   beforeLabel: string;
@@ -281,6 +295,13 @@ export const caseStudies: CaseStudy[] = [
     tagColor: "blue",
     title: "客服工单里的卡号，在离开系统前被掩码",
     subtitle: "同一个工单程序，业务代码一行不改；差别只是 plugins/ 目录里多了一个 jar。",
+    trace: {
+      from: "客服工单",
+      method: "TicketStore.render",
+      to: "聊天 / 导出",
+      tap: "返回前改写返回值",
+      effect: "卡号、手机号在离开系统前被掩码",
+    },
     scene:
       "客服每天把工单内容复述到聊天窗口或工单备注里。工单系统保存的是客户原文，卡号和手机号会随文本一起离开系统。",
     problem:
@@ -332,6 +353,13 @@ plugin active: the pasted text was redacted without the desk knowing`,
     tagColor: "volcano",
     title: "故障支付通道被熔断，请求不再继续打过去",
     subtitle: "网关自己没有重试、没有降级；插件在它和下游之间补上这一层。",
+    trace: {
+      from: "支付网关",
+      method: "PaymentGateway.charge",
+      to: "下游通道",
+      tap: "连续失败 3 次后打开熔断",
+      effect: "第 4 笔直接拿到降级结果，不再打下游",
+    },
     scene:
       "支付网关调用下游通道。通道在一段时间内连续超时，而这套网关是早期代码，没有熔断和降级逻辑。",
     problem:
@@ -391,6 +419,13 @@ charges shed, from the metric registry: 1`,
     tagColor: "purple",
     title: "支付审计线旁路生成，核心链路零改动",
     subtitle: "财务要逐笔审计，支付服务不用排期改代码，插件自己把数据取走。",
+    trace: {
+      from: "支付服务",
+      method: "PaymentService",
+      to: "扣款 / 退款",
+      tap: "监听拦截事件，脱敏后交给 DataExporter",
+      effect: "审计行旁路生成，核心链路不调用它",
+    },
     scene:
       "支付服务处理扣款和退款。财务与风控需要逐笔审计线，但服务里原本没有任何埋点。",
     problem:

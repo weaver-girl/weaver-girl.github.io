@@ -1,7 +1,9 @@
-import { Steps, Tabs } from "antd";
+import { Tabs } from "antd";
+import { AttachSchematic } from "../components/AttachSchematic";
 import { CodeBlock } from "../components/CodeBlock";
 import { PageHero } from "../components/PageHero";
 import { Reveal } from "../components/Reveal";
+import { VerifyConsole } from "../components/VerifyConsole";
 import {
   annotationExample,
   configExample,
@@ -13,14 +15,7 @@ import {
   quickStart,
   releaseInstall,
   troubleshoots,
-  verifyChecks,
 } from "../data/content";
-
-const STEPS = [
-  { title: "拿到 agent", description: "下载发行包，或从源码构建一次" },
-  { title: "放进启动命令", description: "加 -javaagent 参数，旁边保留 plugins/ 目录" },
-  { title: "看结果", description: "插件自动开始工作，指标和健康检查随即可用" },
-];
 
 const INSTALL_TABS = [
   {
@@ -91,10 +86,9 @@ export function QuickStartPage() {
           业务代码不用改，程序照常启动。
         </Reveal>
 
-        <Steps
-          className="quick-steps"
-          items={STEPS.map((step) => ({ title: step.title, description: step.description }))}
-        />
+        <Reveal className="attach-visual" variant="fade">
+          <AttachSchematic />
+        </Reveal>
 
         <Reveal as="h2" className="subhead">
           开始之前
@@ -183,20 +177,9 @@ export function QuickStartPage() {
           挂上之后不要只看“进程没崩”。下面四个端点逐个打一遍，能回答“agent 进来了没有、插件登记了没有、
           指标出没出来”。
         </Reveal>
-        <div className="verify-grid">
-          {verifyChecks.map((check, index) => (
-            <Reveal key={check.key} className="verify-card" delay={index * 60}>
-              <div className="verify-head">
-                <span className="verify-label">{check.label}</span>
-                <code>{check.command}</code>
-              </div>
-              <p className="verify-expect">
-                预期 <code>{check.expect}</code>
-              </p>
-              <p className="verify-note">{check.note}</p>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal className="verify-visual" variant="fade">
+          <VerifyConsole />
+        </Reveal>
 
         <Reveal as="h2" className="subhead">
           出问题先看这里

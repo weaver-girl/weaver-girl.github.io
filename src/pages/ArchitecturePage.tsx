@@ -1,9 +1,10 @@
 import { Fragment } from "react";
 import { Alert } from "antd";
+import { ModuleMap } from "../components/ModuleMap";
 import { PageHero } from "../components/PageHero";
 import { Reveal } from "../components/Reveal";
 import { WeaveMap } from "../components/WeaveMap";
-import { isolationLayers, modules } from "../data/content";
+import { isolationLayers } from "../data/content";
 
 const FLOW = [
   { name: "premain", text: "启动时挂入目标 JVM" },
@@ -67,13 +68,8 @@ export function ArchitecturePage() {
         <Reveal as="h2" className="subhead">
           模块
         </Reveal>
-        <Reveal className="module-list" variant="fade">
-          {modules.map((mod) => (
-            <div key={mod.key} className="module-row">
-              <code>{mod.name}</code>
-              <span>{mod.description}</span>
-            </div>
-          ))}
+        <Reveal variant="fade">
+          <ModuleMap />
         </Reveal>
 
         <Reveal as="h2" className="subhead">
