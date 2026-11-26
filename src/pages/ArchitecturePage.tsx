@@ -1,5 +1,8 @@
 import { Fragment } from "react";
 import { Alert } from "antd";
+import { BridgeInvariant } from "../components/BridgeInvariant";
+import { CallDivision } from "../components/CallDivision";
+import { JavaSupport } from "../components/JavaSupport";
 import { ModuleMap } from "../components/ModuleMap";
 import { PageHero } from "../components/PageHero";
 import { Reveal } from "../components/Reveal";
@@ -60,9 +63,8 @@ export function ArchitecturePage() {
         <Reveal as="h2" className="subhead">
           底座、应用与管控
         </Reveal>
-        <Reveal className="prose" variant="fade">
-          APM、IAST、RASP 都是切面应用，各自决定方法、字段和异常怎么判定。weaver-girl 提供底座：
-          切点植入、上下文改写、数据上报与模块加载。规则、控制台和存储，属于产品自己实现的部分。
+        <Reveal className="call-division-visual" variant="fade">
+          <CallDivision />
         </Reveal>
 
         <Reveal as="h2" className="subhead">
@@ -75,10 +77,8 @@ export function ArchitecturePage() {
         <Reveal as="h2" className="subhead">
           类加载隔离
         </Reveal>
-        <Reveal className="prose" variant="fade">
-          Agent 使用 child-first 的 <code className="inline">AgentClassLoader</code> 装载 ByteBuddy 与插件，避免和业务
-          classpath 上的同名库打架；Advice 通过桥接类回连注册表。打包冒烟会校验 ByteBuddy 确实解析自
-          <code className="inline">AgentClassLoader</code>，防止隔离退化。
+        <Reveal className="bridge-invariant-visual" variant="fade">
+          <BridgeInvariant />
         </Reveal>
 
         <div className="iso-stack">
@@ -103,9 +103,8 @@ export function ArchitecturePage() {
         <Reveal as="h2" className="subhead">
           运行时要求
         </Reveal>
-        <Reveal className="prose" variant="fade">
-          主代码以 <code className="inline">--release 8</code> 编译，产物只使用 JDK 8 的 API，可以运行在 Java 8 及以上；
-          发布门禁在 JDK 17 上执行完整构建与质量检查。已用打包后的 agent 在 JDK 8、11、17、21 上做过真实 attach 冒烟。
+        <Reveal className="java-support-visual" variant="fade">
+          <JavaSupport />
         </Reveal>
       </div>
     </>

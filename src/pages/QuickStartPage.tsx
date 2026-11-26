@@ -1,6 +1,7 @@
 import { Tabs } from "antd";
 import { AttachSchematic } from "../components/AttachSchematic";
 import { CodeBlock } from "../components/CodeBlock";
+import { ModeConvergence } from "../components/ModeConvergence";
 import { PageHero } from "../components/PageHero";
 import { Reveal } from "../components/Reveal";
 import { VerifyConsole } from "../components/VerifyConsole";
@@ -128,6 +129,9 @@ export function QuickStartPage() {
 
         <Reveal as="h2" className="subhead">
           三种写法，同一套注册表
+        </Reveal>
+        <Reveal className="mode-converge-visual" variant="fade">
+          <ModeConvergence />
         </Reveal>
         <Reveal variant="fade">
           <Tabs

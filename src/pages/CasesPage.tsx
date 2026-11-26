@@ -1,9 +1,11 @@
 import { Alert } from "antd";
+import { CaseEffect } from "../components/CaseEffect";
 import { CaseTrace } from "../components/CaseTrace";
 import { CodeBlock } from "../components/CodeBlock";
 import { CountUp } from "../components/CountUp";
 import { PageHero } from "../components/PageHero";
 import { Reveal } from "../components/Reveal";
+import { TwoRunHarness } from "../components/TwoRunHarness";
 import { caseStudies } from "../data/content";
 
 const TONES: Record<string, string> = {
@@ -42,14 +44,8 @@ export function CasesPage() {
           ))}
         </nav>
 
-        <Reveal className="case-legend" variant="fade">
-          <span>
-            <i className="legend-before" aria-hidden="true" /> 没有插件：业务原样运行
-          </span>
-          <span>
-            <i className="legend-after" aria-hidden="true" /> 挂上插件：同一段代码，结果不同
-          </span>
-          <span className="case-legend-note">两段输出来自脚本真实运行，并用退出码断言</span>
+        <Reveal className="case-harness" variant="fade">
+          <TwoRunHarness />
         </Reveal>
 
         {caseStudies.map((study, index) => (
@@ -73,6 +69,7 @@ export function CasesPage() {
             </header>
 
             <CaseTrace trace={study.trace} tone={TONES[study.tagColor] ?? "clay"} />
+            <CaseEffect study={study} tone={TONES[study.tagColor] ?? "clay"} />
 
             <div className="case-body">
               <div className="case-narrative">

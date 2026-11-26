@@ -3,6 +3,7 @@ import { Input, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { CategoryMap } from "../components/CategoryMap";
 import { PageHero } from "../components/PageHero";
+import { PluginJar } from "../components/PluginJar";
 import { Reveal } from "../components/Reveal";
 import {
   allPlugins,
@@ -127,11 +128,8 @@ export function PluginsPage() {
       <Reveal as="h2" className="subhead">
         自带插件之外
       </Reveal>
-      <Reveal className="prose" variant="fade">
-        第三方插件只需要依赖 <code className="inline">weaver-girl-api</code>，实现{" "}
-        <code className="inline">WeaverPlugin</code>
-        ，把 jar 放进 agent 旁边的 <code className="inline">plugins/</code> 目录即可被发现。你写的插件和内置插件走同一条
-        拦截、熔断、采样与导出链路。
+      <Reveal className="plugin-jar-visual" variant="fade">
+        <PluginJar />
       </Reveal>
       </div>
     </>

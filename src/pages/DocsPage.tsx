@@ -1,3 +1,4 @@
+import { DocRoute } from "../components/DocRoute";
 import { PageHero } from "../components/PageHero";
 import { Reveal } from "../components/Reveal";
 import { docLinks, docTopics } from "../data/content";
@@ -11,13 +12,8 @@ export function DocsPage() {
         lede="文档和代码放在同一个仓库、同一个版本。下面按“先看懂、再接入、再上线、再维护”的顺序排好，从上往下读即可。"
       />
       <div className="page-body">
-        <Reveal className="doc-path" variant="fade">
-          {docTopics.map((topic, index) => (
-            <span key={topic.key} className="doc-path-step">
-              <i aria-hidden="true">0{index + 1}</i>
-              {topic.label}
-            </span>
-          ))}
+        <Reveal className="doc-route-visual" variant="fade">
+          <DocRoute />
         </Reveal>
 
         {docTopics.map((topic, index) => {

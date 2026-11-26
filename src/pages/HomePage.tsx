@@ -13,6 +13,8 @@ import { FitFork } from "../components/FitFork";
 import { LoomBackdrop } from "../components/LoomBackdrop";
 import { OutcomeBus } from "../components/OutcomeBus";
 import { Reveal } from "../components/Reveal";
+import { SafetyNet } from "../components/SafetyNet";
+import { TwoRunHarness } from "../components/TwoRunHarness";
 import { WeaveMap } from "../components/WeaveMap";
 import {
   REPO_URL,
@@ -23,7 +25,6 @@ import {
   caseStudies,
   contactPoints,
   coverageRows,
-  guarantees,
   outcomes,
   overheadSteps,
   pluginSkeleton,
@@ -336,15 +337,9 @@ export function HomePage() {
             </span>
           ))}
         </div>
-        <div className="guarantee-grid">
-          {guarantees.map((item, index) => (
-            <Reveal as="article" key={item.en} className="guarantee" delay={index * 60}>
-              <span className="guarantee-en">{item.en}</span>
-              <h3>{item.title}</h3>
-              <p>{item.detail}</p>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal className="safety-visual" variant="fade">
+          <SafetyNet />
+        </Reveal>
       </section>
 
       <section className="section wrap tone-clay" id="coverage">
@@ -455,6 +450,9 @@ export function HomePage() {
             同一段业务代码跑两遍：一遍不装底座，一遍装上。差别由程序自己断言，
             不是手工截的图，也不是准备好的演示。
           </p>
+        </Reveal>
+        <Reveal className="evidence-harness" variant="fade">
+          <TwoRunHarness />
         </Reveal>
         <Reveal className="evidence-table" variant="fade">
           {caseStudies.map((study, i) => (
