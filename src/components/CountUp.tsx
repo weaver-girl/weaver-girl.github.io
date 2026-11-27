@@ -7,7 +7,7 @@ function prefersReducedMotion() {
 }
 
 interface CountUpProps {
-  /** May carry a prefix, a numeric core and a suffix: "≈1.2 ns", "3,671", "8–21". */
+  /** May carry a prefix, a numeric core and a suffix: "≈1.2 ns", "3,819", "8–21". */
   value: string;
   duration?: number;
   className?: string;

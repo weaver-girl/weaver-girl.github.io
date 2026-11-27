@@ -4,7 +4,7 @@ const ROWS = [
     tone: "clay",
     who: "底座",
     verb: "提供机制",
-    text: "看到参数、返回值与异常；负责切点植入、上下文改写、上报与加载。",
+    text: "看到参数、返回值与异常；负责拦截植入、上下文、上报与加载。",
     mark: "weaver-girl",
   },
   {
@@ -36,7 +36,7 @@ export function CallDivision() {
     <div
       className="call-division"
       role="img"
-      aria-label="一次 PaymentService.charge 调用：底座提供切点、上下文、上报与加载；插件决定金额、脱敏与熔断规则；产品层负责控制台、存储与告警。"
+      aria-label="一次 PaymentService.charge 调用：底座提供拦截位置、上下文、上报与加载；插件决定判定、脱敏与熔断规则；产品层负责控制台、存储与告警。"
     >
       <div className="cd-call">
         <span>一次调用</span>

@@ -8,9 +8,9 @@ const RUNTIME = [
   },
   {
     trigger: "同一拦截器持续出错",
-    outcome: "自动摘除该拦截器",
-    tag: "CONTAINMENT",
-    note: "其它插件不受影响",
+    outcome: "熔断打开，跳过它",
+    tag: "CIRCUIT BREAKER",
+    note: "冷却后自动再试，其它插件不受影响",
     tone: "ochre",
   },
   {
@@ -32,7 +32,7 @@ const RUNTIME = [
 const STATIC = [
   { title: "类加载隔离", text: "插件与业务各用各的类库", mark: "child-first" },
   { title: "公开契约", text: "插件只依赖 weaver-girl-api", mark: "一个 jar" },
-  { title: "可验证", text: "3,671 个测试 · JDK 8/11/17/21 实机挂载", mark: "CI" },
+  { title: "可验证", text: "3,819 个测试 · JDK 8/11/17/21 实机挂载", mark: "CI" },
 ];
 
 /**
@@ -46,7 +46,7 @@ export function SafetyNet() {
     <div
       className="safety-net"
       role="img"
-      aria-label="插件出错时：失败开放保留原方法、持续出错自动摘除、压力大时降低采样、换配置或 jar 不用重启。设计上还有类加载隔离、唯一公开契约与自动化验证。"
+      aria-label="插件出错时：失败开放保留原方法、持续出错由熔断器跳过、压力大时降低采样、换配置或 jar 不用重启。设计上还有类加载隔离、唯一公开契约与自动化验证。"
     >
       <div className="sn-runtime">
         <header className="sn-head">

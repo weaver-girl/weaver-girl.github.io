@@ -4,7 +4,7 @@ import { GitHubStars } from "./components/GitHubStars";
 import { MotionField, ScrollThread } from "./components/Motion";
 import { SectionRail } from "./components/SectionRail";
 import { RouteMeta } from "./components/RouteMeta";
-import { REPO_URL } from "./data/content";
+import { PLUGIN_TEMPLATE_URL, REPO_URL } from "./data/content";
 import { HomePage } from "./pages/HomePage";
 
 // The home page is the landing target; the other five routes are split out so a
@@ -192,7 +192,7 @@ export default function App() {
                 <Link to="/docs">文档与契约</Link>
               </li>
               <li>
-                <a href={`${REPO_URL}/tree/main/weaver-girl-plugin-template`} target="_blank" rel="noreferrer">
+                <a href={PLUGIN_TEMPLATE_URL} target="_blank" rel="noreferrer">
                   插件模板
                 </a>
               </li>

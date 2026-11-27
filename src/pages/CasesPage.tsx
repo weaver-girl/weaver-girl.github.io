@@ -131,6 +131,10 @@ export function CasesPage() {
                 <CodeBlock code={study.after} file="with agent" />
               </div>
             </div>
+            <p className="case-output-note">
+              两段都是程序的原始输出，只去掉日志框架写到 stderr 的 INFO 行；脚本对退出码断言，
+              结果不是挑出来的。
+            </p>
 
             <footer className="case-source">
               <span>源码</span>
@@ -152,6 +156,13 @@ export function CasesPage() {
             <li>脚本对两份结果做退出码断言：有 agent 是 0，没有是 2——输出不是手工截的。</li>
             <li>三个插件都只依赖 <code className="inline">weaver-girl-api</code>；换场景，就是换一个插件。</li>
           </ul>
+          <p className="case-more">
+            这三页只演示方法拦截。仓库里还有四个同样可运行的脚本，覆盖不看返回值的其它织入位置：
+            字段读写与异常捕获（<code className="inline">run-field-catch-demo.sh</code>）、
+            给别人的类加接口（<code className="inline">run-introduction-demo.sh</code>）、
+            调用点记录与污点分析（<code className="inline">run-taint-demo.sh</code>）、
+            日志与 trace 关联（<code className="inline">run-log-correlation-demo.sh</code>）。
+          </p>
         </Reveal>
       </div>
     </>

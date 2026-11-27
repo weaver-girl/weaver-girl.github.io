@@ -17,10 +17,19 @@ const COLUMNS: ColumnsType<PluginRow> = [
   {
     title: "插件",
     dataIndex: "name",
-    width: 150,
-    render: (name: string) => <code className="plugin-code">{name}</code>,
+    width: 170,
+    render: (name: string, row) => (
+      <>
+        <code className="plugin-code">{name}</code>
+        {row.runtimeName && (
+          // The module name and the name the agent answers to differ for these three,
+          // and every config hint below is keyed by the runtime name.
+          <span className="plugin-alias">配置名 {row.runtimeName}</span>
+        )}
+      </>
+    ),
   },
-  { title: "拦截目标", dataIndex: "target", width: 220 },
+  { title: "拦截目标", dataIndex: "target", width: 200 },
   {
     title: "常用配置",
     dataIndex: "config",
@@ -55,7 +64,8 @@ export function PluginsPage() {
       <div className="page-body">
       <Reveal className="prose" variant="fade">
         126 个插件并不是平均分布：Web 框架最多，其次是数据库和 HTTP/RPC 客户端。
-        先看这张版图，再决定从哪一类查起。
+        它们也不会全部启动——每个插件先检查自己的目标库在不在 classpath 上，不在就保持 inactive，
+        既不织入也不占开销。先看这张版图，再决定从哪一类查起。
       </Reveal>
       <CategoryMap />
 
@@ -99,6 +109,10 @@ export function PluginsPage() {
 
       <Reveal as="h2" className="subhead">
         常用插件与配置
+      </Reveal>
+      <Reveal className="prose" variant="fade">
+        下表的配置键都来自插件源码里实际调用的读取方法，填进 YAML 才会生效。三个插件的运行时名字和模块名不同，
+        {" "}<code className="inline">disabledPlugins</code> 与 YAML 里的插件块要用「配置名」那一列。
       </Reveal>
       <Table
         rowKey="key"

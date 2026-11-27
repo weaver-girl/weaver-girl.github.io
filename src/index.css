@@ -8459,3 +8459,36 @@ main:focus {
     transition: none;
   }
 }
+
+/* A plugin whose runtime name differs from its module name says so under the name,
+   so the config keys beside it are not read against the wrong block. */
+.plugin-alias {
+  display: block;
+  margin-top: 2px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+/* The two output windows are verbatim stdout; say so under them instead of
+   leaving the reader to guess whether the good lines were selected. */
+.case-output-note {
+  max-width: 82ch;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+/* Where the three stories stop being the whole picture: the other runnable
+   demos, named so a reader can go run them. */
+.case-more {
+  max-width: 84ch;
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.8;
+}

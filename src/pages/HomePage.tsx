@@ -18,6 +18,7 @@ import { SafetyNet } from "../components/SafetyNet";
 import { TwoRunHarness } from "../components/TwoRunHarness";
 import { WeaveMap } from "../components/WeaveMap";
 import {
+  PLUGIN_TEMPLATE_URL,
   REPO_URL,
   benchmarkCaveat,
   benchmarkEnv,
@@ -56,7 +57,7 @@ const PERF_STATS = [
   { value: "1.18", unit: "ns", label: "精确类 / 方法匹配" },
   { value: "25.03", unit: "ns", label: "熔断状态检查" },
   { value: "2.74", unit: "ns", label: "采样判断" },
-  { value: "3,671", unit: "个", label: "自动化测试" },
+  { value: "3,819", unit: "个", label: "自动化测试" },
 ];
 
 export function HomePage() {
@@ -299,7 +300,7 @@ export function HomePage() {
             </div>
             <a
               className="link-arrow"
-              href={`${REPO_URL}/tree/main/weaver-girl-plugin-template`}
+              href={PLUGIN_TEMPLATE_URL}
               target="_blank"
               rel="noreferrer"
             >
@@ -437,6 +438,10 @@ export function HomePage() {
         </Reveal>
         <p className="bench-foot">
           {benchmarkEnv}。{benchmarkCaveat}
+        </p>
+        <p className="bench-foot">
+          上面那组 335 → 88 ns 测的是“一个匹配到插件、回调体为空”的调用：变化全部来自底座内建的观测开关，
+          不是插件本身的耗时。插件在回调里做的事另算。
         </p>
       </section>
 

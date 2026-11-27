@@ -1,6 +1,8 @@
 /** Static site content. Mirrors README.md, docs/ARCHITECTURE.md and the module tree. */
 
 export const REPO_URL = "https://github.com/weaver-girl/weaver-girl";
+/** The starter repository lives on its own, not under a path in the main repo. */
+export const PLUGIN_TEMPLATE_URL = "https://github.com/weaver-girl/weaver-girl-plugin-template";
 export const SITE_URL = "https://weaver-girl.github.io/";
 
 export interface Feature {
@@ -22,12 +24,12 @@ export const features: Feature[] = [
   {
     title: "插件即产品底座",
     description:
-      "做 APM、IAST 或 RASP 只需写一个插件：方法、字段、异常捕获三种拦截，加上追踪、指标、导出、拓扑、告警和污点分析，全部只依赖 weaver-girl-api。",
+      "做 APM、IAST 或 RASP 只需写一个插件：方法、构造方法、字段、异常捕获、静态块和接口引入，加上追踪、指标、导出、拓扑、告警和污点分析，全部只依赖 weaver-girl-api。",
   },
   {
     title: "零分配字节码织入",
     description:
-      "基于 ByteBuddy Advice 内联拦截，支持跳过原方法与改写返回值，热路径上不产生额外对象；必要时可注入 bootstrap，连 java.* 也能拦。",
+      "基于 ByteBuddy Advice 内联拦截，支持跳过原方法与改写返回值，热路径上不产生额外对象。内置插件匹配的是各框架自己的实现类（例如 H2 的 JdbcStatement），不是 JDK 自带的 java.sql 接口，所以在应用类加载器上完成织入。",
   },
   {
     title: "动态挂载与热加载",
@@ -37,7 +39,7 @@ export const features: Feature[] = [
   {
     title: "生产级自我保护",
     description:
-      "熔断器自动摘除异常拦截器，自适应采样在高负载下自动降低采样率，插件类加载器隔离，安全策略与审计日志托底。",
+      "同一个拦截器反复出错，熔断器会在一段冷却期内跳过它，冷却后自动再试；自适应采样在高负载下自动降低采样率；插件类加载器隔离，安全策略与审计日志托底。",
   },
 ];
 
@@ -108,41 +110,50 @@ export interface PluginRow {
   name: string;
   target: string;
   config: string;
+  /** Runtime name when it differs from the module/catalogue name. */
+  runtimeName?: string;
 }
 
-/** Most-used plugins. The full 126-name list is rendered from `allPlugins` below. */
+/**
+ * Most-used plugins. Every `config` entry below is a key the plugin actually reads
+ * (`context.getConfig*` in the plugin's own source) — a key that does not exist in the
+ * code is worse than no hint at all, because it silently does nothing. `name` is the
+ * module name from the catalogue; `runtimeName` is what `disabledPlugins` and the
+ * per-plugin YAML block must say when the two differ.
+ */
 export const pluginHighlights: PluginRow[] = [
-  { key: "servlet", name: "servlet", target: "javax.servlet", config: "slowRequestThreshold" },
-  { key: "spring", name: "spring", target: "Spring Framework", config: "slowThreshold" },
-  { key: "springmvc", name: "springmvc", target: "Spring MVC", config: "slowThreshold" },
-  { key: "jdbc", name: "jdbc", target: "java.sql", config: "slowQueryThreshold, logSql" },
-  { key: "mybatis", name: "mybatis", target: "MyBatis", config: "slowQueryThreshold" },
+  { key: "servlet", name: "servlet", target: "javax.servlet", config: "slowThreshold, logHeaders" },
+  { key: "spring", name: "spring", target: "Spring Framework", config: "slowThreshold, logArguments" },
+  { key: "springmvc", name: "springmvc", target: "Spring MVC", config: "slowRequestThreshold" },
+  { key: "jdbc", name: "jdbc", target: "java.sql", config: "slowQueryThreshold, logSql, maxSqlLength" },
+  { key: "mybatis", name: "mybatis", target: "MyBatis", config: "slowQueryThreshold, logStatementId" },
   { key: "hibernate", name: "hibernate", target: "Hibernate", config: "slowQueryThreshold" },
-  { key: "druid", name: "druid", target: "Druid", config: "slowQueryThreshold" },
+  { key: "druid", name: "druid", target: "Druid", config: "slowSqlThreshold, slowConnectionThreshold" },
   { key: "hikari", name: "hikari", target: "HikariCP", config: "leakThresholdMs, trackAcquisition" },
-  { key: "redis", name: "redis", target: "Jedis / Lettuce", config: "slowCommandThreshold" },
-  { key: "redisson", name: "redisson", target: "Redisson", config: "slowCommandThreshold" },
-  { key: "caffeine", name: "caffeine", target: "Caffeine Cache", config: "cacheOperationThreshold" },
-  { key: "kafka", name: "kafka", target: "Apache Kafka", config: "slowThreshold" },
-  { key: "rocketmq", name: "rocketmq", target: "Apache RocketMQ", config: "slowThreshold" },
-  { key: "rabbitmq", name: "rabbitmq", target: "RabbitMQ Client", config: "slowPublishThreshold" },
-  { key: "pulsar", name: "pulsar", target: "Apache Pulsar", config: "slowThreshold" },
+  { key: "redis", name: "redis", target: "Jedis / Lettuce", config: "slowCommandThreshold, logKeys, maxKeyLength" },
+  { key: "redisson", name: "redisson", target: "Redisson", config: "slowCommandThreshold, slowLockThreshold" },
+  { key: "caffeine", name: "caffeine", target: "Caffeine Cache", config: "slowLoadThreshold" },
+  { key: "kafka", name: "kafka", target: "Apache Kafka", config: "slowThreshold, logTopic" },
+  { key: "rocketmq", name: "rocketmq", target: "Apache RocketMQ", config: "slowSendThreshold, slowConsumeThreshold" },
+  { key: "rabbitmq", name: "rabbitmq", target: "RabbitMQ Client", config: "slowPublishThreshold, slowConsumeThreshold, trackMessageSize" },
+  { key: "pulsar", name: "pulsar", target: "Apache Pulsar", config: "slowSendThreshold, slowConsumeThreshold" },
   { key: "grpc", name: "grpc", target: "io.grpc", config: "slowThreshold" },
-  { key: "dubbo", name: "dubbo", target: "Apache Dubbo", config: "slowThreshold" },
-  { key: "feign", name: "feign", target: "OpenFeign", config: "slowThreshold" },
-  { key: "httpclient", name: "httpclient", target: "Apache HttpClient", config: "slowThreshold" },
-  { key: "okhttp", name: "okhttp", target: "OkHttp 3.x / 4.x", config: "slowThreshold, trackConnectionPool" },
-  { key: "netty", name: "netty", target: "Netty pipeline", config: "slowThreshold" },
-  { key: "tomcat", name: "tomcat", target: "Tomcat connector", config: "slowThreshold" },
-  { key: "jetty", name: "jetty", target: "Jetty handler", config: "slowThreshold" },
-  { key: "undertow", name: "undertow", target: "Undertow handler", config: "slowThreshold" },
+  { key: "dubbo", name: "dubbo", target: "Apache Dubbo", config: "slowInvocationThreshold" },
+  { key: "feign", name: "feign", target: "OpenFeign", config: "slowCallThreshold" },
+  { key: "httpclient", name: "httpclient", target: "Apache HttpClient", config: "slowThreshold, propagateTrace, traceHeaderName" },
+  { key: "okhttp", name: "okhttp", target: "OkHttp 3.x / 4.x", config: "slowThreshold, trackConnectionPool, propagateTrace" },
+  { key: "netty", name: "netty", target: "Netty pipeline", config: "slowDispatchThreshold" },
+  { key: "tomcat", name: "tomcat", target: "Tomcat connector", config: "slowRequestThreshold" },
+  { key: "jetty", name: "jetty", target: "Jetty handler", config: "slowRequestThreshold" },
+  { key: "undertow", name: "undertow", target: "Undertow handler", config: "slowRequestThreshold" },
   { key: "quartz", name: "quartz", target: "Quartz Scheduler", config: "slowJobThreshold" },
   { key: "xxljob", name: "xxljob", target: "XXL-Job executor", config: "slowJobThreshold" },
-  { key: "timing", name: "timing", target: "任意方法", config: "slowThreshold" },
-  { key: "exception", name: "exception", target: "任意异常", config: "maxStackTraceLength" },
-  { key: "logging", name: "logging", target: "SLF4J / Log4j2", config: "logLevel" },
-  { key: "trace", name: "trace", target: "W3C Trace Context", config: "headerName" },
+  { key: "timing", name: "timing", target: "任意方法", config: "slowThreshold, classPattern, methodPattern", runtimeName: "method-timing" },
+  { key: "exception", name: "exception", target: "任意异常", config: "maxStackTraceDepth, alertOnNewException", runtimeName: "exception-monitor" },
+  { key: "logging", name: "logging", target: "SLF4J / Log4j2", config: "mdcKeys, baggageKeys" },
+  { key: "trace", name: "trace", target: "W3C Trace Context", config: "headerName, mdcKey, entryPointPattern", runtimeName: "trace-correlation" },
 ];
+
 
 /**
  * Every instrumentation plugin module in weaver-girl-plugins/. Kept as a flat list so the
@@ -222,7 +233,7 @@ export const scenarios: Scenario[] = [
     tag: "RASP",
     title: "把运行时防护做成插件",
     description:
-      "在危险调用前后做判定：命中规则时跳过方法、改写返回值或替换异常。底座提供切点、上下文、隔离与熔断；规则库与阻断白名单属于应用层，本仓库不内置。",
+      "在危险调用前后做判定：命中规则时跳过方法、改写返回值或替换异常。底座提供拦截位置、上下文、隔离与熔断；规则库和阻断白名单属于应用层，本仓库不内置。",
     outcomes: ["方法跳过、返回值改写、异常替换", "字段写拒绝与 catch 抑制", "插件级隔离，规则出错不拖垮业务"],
   },
   {
@@ -314,15 +325,22 @@ export const caseStudies: CaseStudy[] = [
   ticket 1: my card 4111111111111234 was charged twice, please refund
   ticket 2: call me back on 13812345678 about order 9001
 
-secrets the plugin caught (0)
+secrets the plugin caught (0):
+secrets masked, from the metric registry: 0
+
 plugin not active: the raw card number and phone number left the process`,
     afterLabel: "挂上插件",
-    after: `what the agent would paste into chat:
+    after: `[ticket-redaction] ticket 1: masked 1 secret(s) before it left the desk
+[ticket-redaction] ticket 2: masked 1 secret(s) before it left the desk
+what the agent would paste into chat:
   ticket 1: my card 411111******1234 was charged twice, please refund
   ticket 2: call me back on 138****5678 about order 9001
 
-secrets the plugin caught (2)
+secrets the plugin caught (2):
+  ticket 1: masked 1 secret(s) before it left the desk
+  ticket 2: masked 1 secret(s) before it left the desk
 secrets masked, from the metric registry: 2
+
 plugin active: the pasted text was redacted without the desk knowing`,
     metrics: [
       { value: "2", label: "卡号与手机号被掩码" },
@@ -377,19 +395,40 @@ plugin active: the pasted text was redacted without the desk knowing`,
   charge 6 -> approved:600
 
 served by the provider: 2, failed: 4, shed by the plugin: 0
-the provider was actually called 6 time(s)`,
+the provider was actually called 6 time(s)
+
+what the plugin decided (0):
+charges shed, from the metric registry: 0
+
+plugin not active: every charge hit the provider and every failure reached the caller`,
     afterLabel: "挂上插件",
     after: `charges:
+[gateway-resilience] charge of 100 cents failed (1 in a row)
   charge 1 -> failed: provider timed out on call 1
+[gateway-resilience] charge of 200 cents failed (2 in a row)
   charge 2 -> failed: provider timed out on call 2
+[gateway-resilience] charge of 300 cents failed (3 in a row), circuit opened
   charge 3 -> failed: provider timed out on call 3
+[gateway-resilience] shed charge of 400 cents, circuit open
   charge 4 -> queued:400 (answered without the provider)
+[gateway-resilience] charge of 500 cents failed (1 in a row)
   charge 5 -> failed: provider timed out on call 4
+[gateway-resilience] charge of 600 cents approved, circuit closed
   charge 6 -> approved:600
 
 served by the provider: 1, failed: 4, shed by the plugin: 1
 the provider was actually called 5 time(s)
-charges shed, from the metric registry: 1`,
+
+what the plugin decided (6):
+  charge of 100 cents failed (1 in a row)
+  charge of 200 cents failed (2 in a row)
+  charge of 300 cents failed (3 in a row), circuit opened
+  shed charge of 400 cents, circuit open
+  charge of 500 cents failed (1 in a row)
+  charge of 600 cents approved, circuit closed
+charges shed, from the metric registry: 1
+
+plugin active: the circuit breaker shed a charge the gateway would have sent`,
     metrics: [
       { value: "5", label: "下游实际调用次数（原 6）" },
       { value: "1", label: "被熔断降级的请求" },
@@ -436,20 +475,33 @@ charges shed, from the metric registry: 1`,
     beforeLabel: "没有插件",
     before: `service rejected a bad charge: amount must be positive, got -1
 
+payments the service recorded:
   Payment{id=1, card=4111111111111234, amount=2599, status=REFUNDED}
   Payment{id=2, card=5500000000009876, amount=750, status=CHARGED}
 
-audit events the plugin published (0)
+audit events the plugin published (0):
 cents charged, from the metric registry: 0
+
 plugin not active: run this under the agent with the plugin jar in plugins/`,
     afterLabel: "挂上插件",
     after: `[payment-audit] charge card=4111********1234 cents=2599 in 4ms
+[payment-audit] exported charge card=4111********1234 cents=2599 in 4ms
 [payment-audit] charge card=5500********9876 cents=750 in 0ms
+[payment-audit] exported charge card=5500********9876 cents=750 in 0ms
 [payment-audit] refund payment=1 in 0ms
+[payment-audit] exported refund payment=1 in 0ms
 service rejected a bad charge: amount must be positive, got -1
 
-audit events the plugin published (3)
+payments the service recorded:
+  Payment{id=1, card=4111111111111234, amount=2599, status=REFUNDED}
+  Payment{id=2, card=5500000000009876, amount=750, status=CHARGED}
+
+audit events the plugin published (3):
+  charge card=4111********1234 cents=2599 in 4ms
+  charge card=5500********9876 cents=750 in 0ms
+  refund payment=1 in 0ms
 cents charged, from the metric registry: 3349
+
 plugin active: the audit trail was produced without the service calling it`,
     metrics: [
       { value: "3", label: "审计事件（2 扣款 + 1 退款）" },
@@ -486,7 +538,7 @@ export const stats = [
 export const benchmarks = [
   { value: "≈1.2 ns", label: "精确类/方法匹配" },
   { value: "≈25 ns", label: "熔断检查" },
-  { value: "3,671", label: "自动化测试" },
+  { value: "3,819", label: "自动化测试" },
   { value: "0.0", label: "SpotBugs High / Checkstyle 违规" },
 ];
 
@@ -499,23 +551,35 @@ cd weaver-girl-agent/target
 java -javaagent:weaver-girl-agent-1.0.0-SNAPSHOT.jar \\
   -jar your-app.jar`;
 
-export const releaseInstall = `# v1.0.0 GitHub Release 提供 dist.zip 与 sha256 / gpg 签名
+export const releaseInstall = `# v1.0.0 的 Release 带 dist.zip、sha256 与 GPG 签名；先下压缩包，别只下 jar
 VERSION=1.0.0
 curl -LO https://github.com/weaver-girl/weaver-girl/releases/download/v$VERSION/weaver-girl-agent-$VERSION-dist.zip
 curl -LO https://github.com/weaver-girl/weaver-girl/releases/download/v$VERSION/weaver-girl-agent-$VERSION-dist.zip.sha256
 sha256sum -c weaver-girl-agent-$VERSION-dist.zip.sha256
+
+# 验签：导入发布公钥（也在仓库 docs/release-signing-key.asc 里）
+gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 56EF998B96FA1B31
+curl -LO https://github.com/weaver-girl/weaver-girl/releases/download/v$VERSION/weaver-girl-agent-$VERSION-dist.zip.asc
+gpg --verify weaver-girl-agent-$VERSION-dist.zip.asc weaver-girl-agent-$VERSION-dist.zip
 
 # 解包后 plugins/ 必须和 agent jar 放在同一层
 unzip weaver-girl-agent-$VERSION-dist.zip
 java -javaagent:weaver-girl-agent-$VERSION/weaver-girl-agent-$VERSION.jar \\
   -jar your-app.jar`;
 
-export const containerInstall = `# 构建产物就绪后，用仓库自带 Dockerfile 把 agent 与 plugins/ 一起打进镜像
+export const containerInstall = `# 先用仓库自带的 Dockerfile 构建基础镜像：agent 和 plugins/ 都打在里面
 mvn clean package -DskipTests
-docker build -t my-app-with-weaver .
+docker build -t weaver-girl-base .
 
-# 运行时指定业务 jar；agent 已通过 JAVA_AGENT_OPTS 挂好
-docker run --rm -e APP_JAR=/opt/app/app.jar my-app-with-weaver`;
+# 业务镜像只需 FROM 它，再把你的 jar 放进去并设置 APP_JAR
+# 入口脚本会用 JAVA_AGENT_OPTS 把 agent 挂好（metricsPort / healthPort / diagnosticsPort 已默认开启）
+cat > Dockerfile <<'DOCKER'
+FROM weaver-girl-base
+COPY target/app.jar /opt/app/app.jar
+ENV APP_JAR=/opt/app/app.jar
+DOCKER
+docker build -t my-app-with-weaver .
+docker run --rm -p 8080:8080 -p 9401:9401 my-app-with-weaver`;
 
 export const configExample = `# 只拦截自己的代码
 onlyInterceptPackages:
@@ -710,11 +774,11 @@ export const basePrimitives: Primitive[] = [
   },
   {
     n: "02",
-    name: "切点植入",
+    name: "拦截植入",
     en: "WEAVING",
     impl: "WeaverTransformer · ByteBuddy Advice",
     detail:
-      "在程序的关节处“插一句话”：方法进入、字段读取、异常抛出。业务代码不用改，也不用预留接口。",
+      "在程序的关键位置“插一句话”：方法进入、方法返回、字段读写、抛出异常时都能插。业务代码不用改，也不用提前留接口。",
   },
   {
     n: "03",
@@ -752,7 +816,7 @@ export const boundaries: BoundaryLayer[] = [
     summary: "底座负责“通电”：知道怎么接进程序、把插件装好、把数据送出去。",
     items: [
       "读取配置，改完即时生效",
-      "在方法、字段、异常处插入逻辑",
+      "在方法、构造方法、字段、异常、静态块和接口处插入逻辑",
       "改写参数与返回值",
       "把事件、指标、链路送出去",
       "加载插件，隔离、熔断与采样",
@@ -796,10 +860,10 @@ export interface ContractApi {
 /** The public surface a plugin may rely on. Everything else is internal. */
 export const contractApis: ContractApi[] = [
   { name: "WeaverPlugin", role: "插件入口：声明名称并登记拦截器" },
-  { name: "InterceptorRegistry", role: "唯一的切点注册表" },
+  { name: "InterceptorRegistry", role: "登记拦截位置的地方（方法、字段、异常等）" },
   { name: "MethodInvocation", role: "参数、返回值与异常" },
-  { name: "Tracer", role: "span、baggage 与 W3C 上下文" },
-  { name: "MetricRegistry", role: "计数、计时与快照" },
+  { name: "Tracer", role: "记录调用区间，并在服务之间传递 trace id" },
+  { name: "MetricRegistry", role: "计数、计时，随时读出快照" },
   { name: "DataExporter", role: "把事件送到自己的后端" },
 ];
 
@@ -828,7 +892,7 @@ export const guarantees: Guarantee[] = [
   {
     title: "自我保护",
     en: "CONTAINMENT",
-    detail: "某个拦截器一直出错会被自动摘除；系统压力大时自动降低采样。",
+    detail: "同一个拦截器一直出错，熔断器会打开并在一段冷却期内跳过它，之后自动再试；系统压力大时自动降低采样。",
   },
   {
     title: "公开契约",
@@ -838,7 +902,7 @@ export const guarantees: Guarantee[] = [
   {
     title: "可验证",
     en: "VERIFIED",
-    detail: "3,671 个自动化测试，以及在 JDK 8 / 11 / 17 / 21 上的真实挂载验证。",
+    detail: "全量反应堆 3,819 个自动化测试（0 失败），以及在 JDK 8 / 11 / 17 / 21 上的真实挂载验证。",
   },
 ];
 
@@ -852,9 +916,9 @@ export interface CoverageRow {
 export const coverageRows: CoverageRow[] = [
   { label: "现成能力插件", value: "126", note: "每个能力一个 jar，系统里没有的库不会加载" },
   { label: "可选运行时模块", value: "14", note: "配置对应功能后才启用" },
-  { label: "可插入的位置", value: "3", note: "方法 / 字段 / 异常" },
+  { label: "可插入的位置", value: "6", note: "方法 / 构造方法 / 字段 / 异常 / 静态块 / 接口引入" },
   { label: "支持的系统", value: "Java 8–21", note: "同一份程序，向上兼容" },
-  { label: "自动化测试", value: "3,671", note: "0 失败，0 错误" },
+  { label: "自动化测试", value: "3,819", note: "1.0.0 质量门禁全量通过，0 失败" },
   { label: "每次判断的耗时", value: "≈1.2 ns", note: "基准值，跑在业务热路径上" },
 ];
 
@@ -886,7 +950,9 @@ export const bootLines: { key: string; value: string }[] = [
   { key: "contract", value: "weaver-girl-api" },
   { key: "weaving", value: "WeaverTransformer / ByteBuddy Advice" },
   { key: "export", value: "json-events · prometheus · otlp" },
-  { key: "plugins", value: "126 jars discovered from plugins/" },
+  // Verbatim from the shipped agent: 140 capability jars are discovered, and the ones whose
+  // target library is not on the classpath stay inactive instead of weaving nothing.
+  { key: "plugins", value: "140 jars discovered · 134 inactive (库不在场)" },
   { key: "isolation", value: "child-first · fail-open" },
   { key: "product", value: "your APM / IAST / RASP plugin" },
 ];
@@ -979,10 +1045,10 @@ export const benchmarkRows: BenchmarkRow[] = [
   },
   {
     key: "pointcut",
-    label: "切点匹配 + 注册表查找",
+    label: "拦截位置匹配 + 注册表查找",
     en: "pointcutMatching_hit",
     value: 74.24,
-    note: "命中切点后取出对应拦截器链",
+    note: "命中后取出对应的拦截器链",
   },
   {
     key: "pattern",
@@ -993,10 +1059,10 @@ export const benchmarkRows: BenchmarkRow[] = [
   },
 ];
 
-export const benchmarkEnv = "JMH 1.37 · OpenJDK 17.0.19 · Ryzen 9 5950X · forks=0（进程内）";
+export const benchmarkEnv = "JMH 1.37 · OpenJDK 17.0.19 · Ryzen 9 5950X · 16 核 / 32 线程 · forks=0（进程内）";
 
 export const benchmarkCaveat =
-  "这组数字来自仓库的 docs/benchmarks/baseline-v1.md，同机同版本的回归对比用它；进程内测量省掉了 fork 成本，跨机器引用时请按相对量级理解。";
+  "这组数字来自仓库的 docs/benchmarks/baseline-v1.md：进程内（forks=0）、测量时机器有负载，同一场景重复跑会上下浮动 20%–30%。适合拿来对比同机同版本的回归，不适合当作跨机器的绝对值。";
 
 export interface OverheadStep {
   key: string;
@@ -1013,14 +1079,14 @@ export const overheadSteps: OverheadStep[] = [
     label: "全部遥测开启",
     value: "335",
     unit: "ns / 次",
-    note: "telemetry · returnSnapshot · mdc · pluginMetrics · circuitBreaker",
+    note: "打开 telemetry · returnSnapshot · mdc · pluginMetrics · circuitBreaker（默认）",
   },
   {
     key: "lean",
-    label: "只留拦截本身",
+    label: "关掉观测，只留拦截",
     value: "88",
     unit: "ns / 次",
-    note: "开关位于 agent 参数、YAML、-Dweavergirl.<name>.enabled 或运行期",
+    note: "开关可写在 agent 参数、YAML、-Dweavergirl.<name>.enabled，运行期也能改",
   },
 ];
 
@@ -1040,7 +1106,7 @@ export const faqs: FaqItem[] = [
   },
   {
     q: "插件写错了会不会拖垮业务？",
-    a: "底座按失败开放处理：织入失败就保留原方法，插件走 child-first 类加载隔离。某个拦截器持续出错，会被熔断器自动摘掉；系统压力上来，自适应采样自动调低采样率。拦截还在，开销先降。",
+    a: "底座按失败开放处理：单个类织入失败，原方法照常运行；插件走 child-first 类加载隔离，同名依赖互不覆盖。同一个拦截器反复出错，熔断器会在一段冷却期内跳过它（打开状态），冷却后自动再试；系统压力上来，自适应采样自动调低采样率。被跳过的只是那一个拦截器，业务方法和其它插件不受影响。",
   },
   {
     q: "升级 Java 或框架版本怎么办？",
@@ -1052,7 +1118,7 @@ export const faqs: FaqItem[] = [
   },
   {
     q: "它和 SkyWalking、OpenTelemetry Agent 是什么关系？",
-    a: "同一类技术底座，定位不同。它们更接近开箱即用的成品 APM；weaver-girl 只提供切点植入、上下文、导出和隔离，让你在上面做自己的 APM、IAST、RASP 或审计产品。逐项对照表在《产品定位》文档里。",
+    a: "同一类技术底座，定位不同。它们更接近开箱即用的成品 APM；weaver-girl 只负责把逻辑插进运行中的程序、提供上下文、把数据送出去、并做隔离，让你在上面做自己的 APM、IAST、RASP 或审计产品。逐项对照表在《产品定位》文档里。",
   },
   {
     q: "许可证是什么？可以商用吗？",
@@ -1090,7 +1156,7 @@ export const prerequisites: Prerequisite[] = [
   {
     key: "config",
     label: "可选：一个 weaver.yml",
-    detail: "不写配置也能启动，默认加载 plugins/ 里的全部内置插件。",
+    detail: "不写配置也能启动：plugins/ 里的内置插件全部加载、用各自默认值。只有要开指标端口、改阈值或关闭某个插件时才需要它。",
   },
 ];
 
@@ -1115,7 +1181,7 @@ export const verifyChecks: VerifyCheck[] = [
     label: "就绪探针",
     command: "curl -s localhost:9401/ready",
     expect: '{"status":"READY","interceptorCount":…}',
-    note: "interceptorCount 大于 0，说明插件已经登记了切点。",
+    note: "interceptorCount 大于 0，说明插件已经登记了拦截位置。",
   },
   {
     key: "metrics",
