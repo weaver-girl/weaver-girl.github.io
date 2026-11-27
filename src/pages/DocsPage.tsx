@@ -9,7 +9,7 @@ export function DocsPage() {
       <PageHero
         kicker="DOCS & CONTRACT"
         title="文档与契约"
-        lede="文档和代码放在同一个仓库、同一个版本。下面按“先看懂、再接入、再上线、再维护”的顺序排好，从上往下读即可。"
+        lede="文档和代码在同一个仓库、同一个版本。下面按“先看懂、再接进来、再上线、再维护”排好了顺序，从上往下读就行。"
       />
       <div className="page-body">
         <Reveal className="doc-route-visual" variant="fade">
@@ -43,7 +43,7 @@ export function DocsPage() {
                   >
                     <span className="doc-kicker">{doc.title}</span>
                     <h3>{doc.description}</h3>
-                    <span className="doc-open">打开 →</span>
+                    <span className="doc-open">打开</span>
                   </a>
                 ))}
               </div>

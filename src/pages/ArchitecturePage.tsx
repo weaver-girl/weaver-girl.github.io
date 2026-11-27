@@ -24,13 +24,13 @@ export function ArchitecturePage() {
       <PageHero
         kicker="HOW IT WORKS"
         title="底座是怎么工作的"
-        lede="它不碰业务逻辑，只在程序运行时，把插件登记的代码“织”到指定位置。一次挂载，四步完成：进入系统、发现插件、登记位置、织入逻辑。"
+        lede="它不碰业务逻辑，只在程序运行时把插件登记的代码“织”到指定位置。一次挂载，四步走完：进入系统、发现插件、登记位置、织入逻辑。"
       />
 
       <div className="page-body">
         <Reveal className="prose" variant="fade">
-          插件看到的是方法参数、返回值和异常，不是业务实现。底座负责发现、隔离和加载，
-          至于拦到之后做什么判断，由插件自己决定。
+          插件看见的只有方法参数、返回值和异常，不是业务实现。发现、隔离、加载归底座；
+          拦到之后怎么判断，由插件自己决定。
         </Reveal>
 
         <Reveal className="weave-map-shell page-weave" variant="scale">

@@ -316,7 +316,7 @@ main:focus {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 7px 12px;
+  padding: 5px 7px 5px 12px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--card);
@@ -328,6 +328,70 @@ main:focus {
 .nav-github:hover {
   border-color: var(--ink-2);
   color: var(--ink);
+}
+
+/* The star count sits in its own tinted capsule inside the GitHub link: a mark,
+   not a second button. It reserves its width up front so the header never jumps
+   when the API answers. */
+.nav-stars {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 2px 8px 2px 7px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.4;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.nav-stars.pending {
+  color: var(--faint);
+}
+
+.nav-star-mark {
+  flex: none;
+  fill: var(--accent-mark);
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1), fill 200ms ease;
+}
+
+.nav-github:hover .nav-stars {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.nav-github:hover .nav-star-mark {
+  fill: var(--accent);
+  transform: rotate(-72deg) scale(1.08);
+}
+
+.nav-stars-value {
+  display: inline-block;
+  min-width: var(--star-width, 2ch);
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The count lands with a small stamp, the way a thread is pulled taut. */
+.nav-stars-value.pop {
+  animation: star-land 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes star-land {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(1px) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .nav-cta {
@@ -2036,13 +2100,27 @@ main:focus {
 }
 
 .doc-card .doc-open {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
   margin-top: 8px;
   color: var(--muted);
   font-size: 13.5px;
+  transition: color 160ms ease;
+}
+
+.doc-card .doc-open::after {
+  display: inline-block;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  content: "→";
 }
 
 .doc-card:hover .doc-open {
   color: var(--accent);
+}
+
+.doc-card:hover .doc-open::after {
+  transform: translateX(4px);
 }
 
 /* ---------- cases ---------- */
@@ -2509,8 +2587,12 @@ main:focus {
     font-size: 14px;
   }
 
-  .nav-github span {
+  .nav-github-text {
     display: none;
+  }
+
+  .nav-github {
+    padding-left: 9px;
   }
 }
 
@@ -4662,6 +4744,64 @@ main:focus {
   content: "";
 }
 
+/* The lead each tap hangs from, and the spark that runs down it in turn. */
+.bus-lead {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 1px;
+  height: 30px;
+  overflow: hidden;
+}
+
+.bus-lead::after {
+  position: absolute;
+  top: -12px;
+  left: -1.5px;
+  width: 4px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--tone, var(--accent));
+  content: "";
+  animation: bus-spark 2.7s ease-in-out infinite;
+  animation-delay: var(--tap-delay, 0s);
+}
+
+@keyframes bus-spark {
+  0% {
+    top: -14px;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  58% {
+    top: 30px;
+    opacity: 1;
+  }
+  70%,
+  100% {
+    top: 30px;
+    opacity: 0;
+  }
+}
+
+.bus-tap i {
+  animation: bus-tap-pulse 2.7s ease-in-out infinite;
+  animation-delay: calc(var(--tap-delay, 0s) + 1.4s);
+}
+
+@keyframes bus-tap-pulse {
+  0%,
+  42%,
+  100% {
+    box-shadow: 0 0 0 4px var(--paper);
+  }
+  54% {
+    box-shadow: 0 0 0 4px var(--paper), 0 0 0 8px var(--tone-soft, rgba(169, 76, 41, 0.12));
+  }
+}
+
 .bus-tap i {
   position: relative;
   z-index: 1;
@@ -4679,7 +4819,8 @@ main:focus {
   letter-spacing: 0.09em;
 }
 
-.bus-tap span {
+.bus-tap .bus-tap-label {
+  margin-top: 3px;
   color: var(--muted);
   font-size: 12.5px;
   text-align: center;
@@ -7636,5 +7777,685 @@ main:focus {
 
   .bi-arrow {
     padding-left: 14px;
+  }
+}
+
+
+/* =====================================================================
+ * Motion, third pass: the page as a piece of cloth.
+ *
+ * Everything below reacts to two CSS custom properties that MotionField keeps
+ * current — --pointer-x / --pointer-y (0..1 inside the viewport) — plus the
+ * --tilt / --char-delay that SplitHeading writes. No component re-renders for
+ * any of it. All of it is decoration: layout is identical with the properties
+ * left at their defaults, and the whole block collapses under
+ * prefers-reduced-motion.
+ * ===================================================================== */
+
+.motion-field {
+  --pointer-x: 0.5;
+  --pointer-y: 0.5;
+  position: relative;
+  isolation: isolate;
+}
+
+/* ---------- the reading thread ---------- */
+
+.scroll-thread {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
+}
+
+.scroll-thread-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--clay-mark), var(--accent) 72%);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 90ms linear;
+}
+
+/* The knot at the tip: a 7px bead with a soft ring, so the rail reads as a
+   thread being pulled rather than a loading bar. */
+.scroll-thread-knot {
+  position: absolute;
+  top: -2px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(169, 76, 41, 0.14);
+  transition: left 90ms linear, opacity 220ms ease;
+}
+
+/* ---------- titles that lean ---------- */
+
+.split-title {
+  --tilt: 0deg;
+  transform: rotate(var(--tilt));
+  transform-origin: 3% 82%;
+  transition: transform 560ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+/* Each character rises out of its own blur; inline-block keeps the line metrics,
+   so the sentence never reflows as the characters settle. */
+.split-char {
+  display: inline-block;
+  animation: char-rise 780ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: var(--char-delay, 0ms);
+}
+
+@keyframes char-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.3em);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+/* ---------- the weave mesh: warp and weft, drawn in ---------- */
+
+.weave-mesh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* A whisper of parallax: the mesh trails the pointer by a pixel or two. */
+  transform: translate3d(
+    calc((var(--pointer-x) - 0.5) * -14px),
+    calc((var(--pointer-y) - 0.5) * -9px),
+    0
+  );
+  transition: transform 1800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.weave-mesh svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mesh-thread {
+  stroke: var(--tone-mark, var(--clay-mark));
+  stroke-width: 1;
+  opacity: 0.5;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: mesh-draw 2.4s cubic-bezier(0.3, 0.1, 0.2, 1) forwards;
+  animation-delay: var(--mesh-delay, 0ms);
+}
+
+@keyframes mesh-draw {
+  60% {
+    opacity: 0.62;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.mesh-knot {
+  fill: var(--tone-mark, var(--clay-mark));
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mesh-knot-in 620ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(420ms + var(--knot-delay, 0ms));
+}
+
+@keyframes mesh-knot-in {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+  to {
+    opacity: 0.86;
+    scale: 1;
+  }
+}
+
+.weave-mesh-dark .mesh-thread {
+  opacity: 0.4;
+}
+
+.weave-mesh-dark .mesh-knot {
+  animation-name: mesh-knot-in-dark;
+}
+
+@keyframes mesh-knot-in-dark {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+  to {
+    opacity: 0.95;
+    scale: 1;
+  }
+}
+
+/* ---------- the loom leans into the cursor ---------- */
+
+.hero .hero-loom,
+.boundary-loom {
+  transform: translate3d(
+    calc((var(--pointer-x) - 0.5) * 28px),
+    calc((var(--pointer-y) - 0.5) * 18px),
+    0
+  );
+  transition: transform 1600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---------- cards lift a hair under the cursor ---------- */
+
+@media (hover: hover) {
+  .outcome-card,
+  .route-lane,
+  .case-quicknav-item,
+  .sn-static-item {
+    transition:
+      transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      border-color 200ms ease,
+      box-shadow 260ms ease;
+  }
+
+  .outcome-card:hover,
+  .route-lane:hover,
+  .case-quicknav-item:hover,
+  .sn-static-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 10px rgba(20, 20, 19, 0.055);
+  }
+}
+
+/* ---------- the weave map's thread flows ---------- */
+
+.weave-thread {
+  height: 1px;
+  border-top: 0;
+  background-image: linear-gradient(90deg, var(--line-strong) 0 6px, transparent 6px 12px);
+  background-size: 12px 100%;
+  animation: thread-flow 2.2s linear infinite;
+}
+
+@keyframes thread-flow {
+  to {
+    background-position: 12px 0;
+  }
+}
+
+/* ---------- the page heroes' drawn rule ---------- */
+
+.page-hero::after {
+  display: block;
+  width: 64px;
+  height: 3px;
+  margin-top: 26px;
+  background: var(--clay-mark);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: rule-draw 900ms 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* ---------- footer: a thread that keeps moving ---------- */
+
+.footer-weave {
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--clay-mark) 0 22px,
+    var(--teal-mark) 22px 30px,
+    var(--ochre-mark) 30px 48px,
+    var(--slate-mark) 48px 56px,
+    transparent 56px 76px
+  );
+  opacity: 0.75;
+  animation: footer-weave-drift 22s linear infinite;
+}
+
+@keyframes footer-weave-drift {
+  to {
+    background-position: 76px 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .weave-thread {
+    width: 1px;
+    height: 100%;
+    background-image: linear-gradient(180deg, var(--line-strong) 0 6px, transparent 6px 12px);
+    background-size: 100% 12px;
+    border-left: 0;
+    animation-name: thread-flow-v;
+  }
+
+  @keyframes thread-flow-v {
+    to {
+      background-position: 0 12px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-title {
+    transform: none !important;
+  }
+
+  .split-char {
+    animation: none !important;
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  .weave-mesh {
+    transform: none !important;
+  }
+
+  .mesh-thread {
+    animation: none !important;
+    stroke-dashoffset: 0;
+    opacity: 0.45;
+  }
+
+  .mesh-knot {
+    animation: none !important;
+    opacity: 0.8;
+    scale: 1;
+  }
+
+  .hero .hero-loom,
+  .boundary-loom {
+    transform: none !important;
+  }
+
+  .weave-thread,
+  .footer-weave {
+    animation: none !important;
+  }
+
+  .page-hero::after {
+    transform: scaleX(1) !important;
+  }
+}
+
+/* The page hero keeps the knots behind its copy, like the home hero. */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.page-hero .weave-mesh {
+  top: -76px;
+  right: -4%;
+  left: 58%;
+  bottom: auto;
+  height: 300px;
+  opacity: 0.5;
+  mask-image: linear-gradient(100deg, transparent 0 8%, #000 46%, #000 100%);
+  -webkit-mask-image: linear-gradient(100deg, transparent 0 8%, #000 46%, #000 100%);
+}
+
+/* The mesh is a backdrop for the right-hand column, never a weight behind the
+   copy: it starts past the text column and fades out toward the left edge. */
+.hero .weave-mesh {
+  right: -8%;
+  left: 46%;
+  top: -120px;
+  bottom: -140px;
+  opacity: 0.62;
+  mask-image: linear-gradient(100deg, transparent 0 22%, #000 52%, #000 100%);
+  -webkit-mask-image: linear-gradient(100deg, transparent 0 22%, #000 52%, #000 100%);
+}
+
+.boundary-section .weave-mesh {
+  left: 30%;
+  right: -10%;
+  top: -40px;
+  bottom: -40px;
+  opacity: 0.5;
+  mask-image: linear-gradient(100deg, transparent 0 12%, #000 52%, #000 100%);
+  -webkit-mask-image: linear-gradient(100deg, transparent 0 12%, #000 52%, #000 100%);
+}
+
+@media (max-width: 1040px) {
+  .hero .weave-mesh {
+    left: 30%;
+    opacity: 0.4;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero .weave-mesh,
+  .page-hero .weave-mesh {
+    display: none;
+  }
+}
+
+/* =====================================================================
+ * Small loom details, fourth pass.
+ *
+ * Three recurring gestures, applied wherever the page already has a linear
+ * structure: a rule that draws itself once the section is in view, a knot that
+ * lands at the tip of a measured bar, and a hairline that ties a row together
+ * from left to right. They are all one-shot, all cheap, and all skipped under
+ * prefers-reduced-motion.
+ * ===================================================================== */
+
+/* A section heading gathers a 2px mark beneath it, as if the first thread of
+   that section were being pulled across. */
+.section-head h2 {
+  position: relative;
+}
+
+.section-head.is-visible h2::after,
+.section-head-invert.is-visible h2::after {
+  transform: scaleX(1);
+}
+
+.section-head h2::after {
+  display: block;
+  width: 40px;
+  height: 2px;
+  margin-top: 20px;
+  background: var(--tone-mark, var(--accent-mark));
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 760ms 200ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.section-head-invert h2::after {
+  background: var(--accent-mark);
+}
+
+/* The bar chart's tip gets a knot, so a length reads as a piece of yarn with an
+   end rather than a progress meter. */
+.cat-bar i::after {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--card);
+  border-radius: 50%;
+  background: var(--tone, var(--accent));
+  content: "";
+  transform: translate(50%, -50%) scale(0);
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--reveal-delay, 0ms) + 620ms);
+}
+
+.reveal.is-visible .cat-bar i::after {
+  transform: translate(50%, -50%) scale(1);
+}
+
+.cat-bar i {
+  position: relative;
+}
+
+/* Coverage rows: the hairline between row and row draws in from the left. */
+.coverage-row {
+  position: relative;
+}
+
+.coverage-row::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line-strong);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 700ms 120ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal.is-visible .coverage-row::after {
+  transform: scaleX(1);
+}
+
+/* ---------- accordions open like a fold, not a snap ---------- */
+
+.faq-item > p,
+.trouble-item > dl {
+  animation: fold-open 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes fold-open {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.faq-icon,
+.trouble-icon {
+  transition: color 200ms ease, border-color 200ms ease,
+    transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---------- chips arrive as a run of threads ---------- */
+
+.chips li::before {
+  box-shadow: 0 0 0 0 transparent;
+  transition: transform 180ms ease, box-shadow 260ms ease;
+}
+
+.chips li:hover::before {
+  box-shadow: 0 0 0 3px var(--tone-soft, rgba(169, 76, 41, 0.1));
+}
+
+/* ---------- the contract hub breathes ---------- */
+
+.hub-spokes path {
+  stroke-dasharray: 3 4;
+  animation: hub-flow 14s linear infinite;
+}
+
+@keyframes hub-flow {
+  to {
+    stroke-dashoffset: -140;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item > p,
+  .trouble-item > dl,
+  .hub-spokes path {
+    animation: none !important;
+  }
+}
+
+/* =====================================================================
+ * Small refinements, fifth pass.
+ * ===================================================================== */
+
+/* Case quick-nav: the rule above each card fills with its tone on hover, and
+   the number rides up a touch, so the three stories feel like tabs. */
+.case-quicknav-item > span:first-child {
+  transition: color 200ms ease;
+}
+
+.case-quicknav-item:hover > span:first-child {
+  color: var(--tone, var(--accent));
+}
+
+/* The two-run harness: the exit-code chips sit at a steady width so the
+   comparison reads left-aligned rather than ragged. */
+.two-run-item em {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Plugin tags: the monospace run is a wall of text at rest; a hover gives the
+   hovered tag a tone ring without moving anything around it. */
+@media (hover: hover) {
+  .plugin-tag.ant-tag:hover {
+    box-shadow: 0 0 0 2px var(--clay-soft);
+  }
+
+  .plugin-filter:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Metric numbers settle into tabular figures so a count-up never shifts its
+   neighbours while it runs. */
+.perf-stat b,
+.coverage-value,
+.case-metric-value,
+.overhead-step b {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The verification console's last row closes the card, not a hairline into
+   nothing. */
+.verify-console-list li:last-child {
+  border-bottom: 0;
+}
+
+/* Long code lines wrap; horizontal scrollbars in a code window look broken. */
+.code-block {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* ---------- the section rail ---------- */
+
+/* A hairline down the right edge with one knot per numbered section. It exists
+   only where there is room beside the 1200px column; below 1280px it is gone. */
+.section-rail {
+  position: fixed;
+  top: 50%;
+  right: 22px;
+  z-index: 15;
+  display: block;
+  width: 18px;
+  height: min(56vh, 520px);
+  transform: translateY(-50%);
+}
+
+.section-rail-line,
+.section-rail-fill {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  width: 1px;
+  height: 100%;
+  background: var(--line);
+}
+
+.section-rail-fill {
+  background: linear-gradient(180deg, var(--clay-mark), var(--accent));
+  transform-origin: top center;
+  transform: scaleY(0);
+  transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.section-rail-stop {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.section-rail-dot {
+  width: 5px;
+  height: 5px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  transition: transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    background 200ms ease, box-shadow 240ms ease;
+}
+
+.section-rail-stop.reached .section-rail-dot {
+  background: var(--accent-mark);
+}
+
+.section-rail-stop.current .section-rail-dot {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(169, 76, 41, 0.16);
+  transform: scale(1.5);
+}
+
+.section-rail-stop:hover .section-rail-dot {
+  transform: scale(1.9);
+  background: var(--accent);
+}
+
+.section-rail-label {
+  position: absolute;
+  right: 16px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.section-rail-stop.current .section-rail-label,
+.section-rail-stop:hover .section-rail-label {
+  opacity: 1;
+}
+
+.section-rail-tip {
+  position: absolute;
+  top: 50%;
+  right: 26px;
+  max-width: 220px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  box-shadow: 0 2px 8px rgba(20, 20, 19, 0.06);
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+@media (max-width: 1279px) {
+  .section-rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-rail-dot,
+  .section-rail-fill {
+    transition: none;
   }
 }

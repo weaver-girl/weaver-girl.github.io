@@ -49,13 +49,13 @@ export function PluginsPage() {
       <PageHero
         kicker="WHAT CAN PLUG IN"
         title="126 块现成能力"
-        lede="数据库、缓存、消息队列、HTTP 客户端、Web 框架……常见的 Java 组件都有现成插件。系统里用到哪个，才加载哪个；没用到的不占资源，也可以按名称随时关掉。"
+        lede="数据库、缓存、消息队列、HTTP 客户端、Web 框架——常见的 Java 组件都有现成插件。用到哪个才加载哪个；没用到的不占资源，也能按名字随时关掉。"
       />
 
       <div className="page-body">
       <Reveal className="prose" variant="fade">
-        126 个插件不是一份平均分布的清单：Web 框架最多，其次是数据库和 HTTP/RPC 客户端。
-        先看版图，再决定从哪一类开始查。
+        126 个插件并不是平均分布：Web 框架最多，其次是数据库和 HTTP/RPC 客户端。
+        先看这张版图，再决定从哪一类查起。
       </Reveal>
       <CategoryMap />
 
@@ -114,7 +114,7 @@ export function PluginsPage() {
         14 个可选运行时能力
       </Reveal>
       <Reveal className="prose" variant="fade">
-        这些 jar 属于 agent 自身而不是业务插件，只有配置了对应键才会启用；发行包里不用的能力可以直接删掉。
+        这些 jar 属于 agent 自己，不算业务插件。配了对应的键才会启用；发行包里用不上的，直接删掉就行。
       </Reveal>
       <div className="runtime-grid">
         {runtimeCapabilities.map((capability, index) => (

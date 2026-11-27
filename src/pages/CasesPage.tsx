@@ -24,7 +24,7 @@ export function CasesPage() {
       <PageHero
         kicker="REAL, RUNNABLE STORIES"
         title="三个小故事，看它改变了什么"
-        lede="三个真实可运行的小程序：同一个业务，跑两遍——先不装底座，再装上。差别由程序自己断言，不是演示稿。"
+        lede="三个真实可运行的小程序：同一段业务，跑两遍——先不装底座，再装上。差别由程序自己断言，不给演示稿留余地。"
       />
 
       <div className="page-body">
@@ -147,10 +147,10 @@ export function CasesPage() {
           <p className="eyebrow">为什么这些案例可信</p>
           <h2>三个程序，同一个接入方式。</h2>
           <ul>
-            <li>业务程序没有 import 任何插件，也没有为插件预留接口。</li>
-            <li>插件 jar 放进 <code className="inline">plugins/</code> 后被发现，移除后行为立即回到原样。</li>
-            <li>脚本对两种运行结果做退出码断言：有 agent 为 0，没有 agent 为 2，输出不是手工截取的。</li>
-            <li>三个插件都只依赖 <code className="inline">weaver-girl-api</code>，换一个场景就是换一个插件。</li>
+            <li>业务程序不 import 任何插件，也没有为插件预留接口。</li>
+            <li>插件 jar 放进 <code className="inline">plugins/</code> 就被发现；拿掉后，行为立刻回到原样。</li>
+            <li>脚本对两份结果做退出码断言：有 agent 是 0，没有是 2——输出不是手工截的。</li>
+            <li>三个插件都只依赖 <code className="inline">weaver-girl-api</code>；换场景，就是换一个插件。</li>
           </ul>
         </Reveal>
       </div>

@@ -653,17 +653,17 @@ export interface Primitive {
 
 /** Plain-language framing for the home page: the problem before the mechanism. */
 export const beforeBase = [
-  "每加一项能力，就要改一次业务代码",
-  "每个团队各写一套改造工具，重复踩坑",
-  "上线要排期、回归、发布，几周过去",
-  "一处插件出错，可能影响整个系统",
+  "每加一项能力，就得改一次业务代码",
+  "每个团队各写一套土办法，坑要踩一遍",
+  "上线要排期、回归、发布，几个星期就这么过去",
+  "一处出错，往往拖累整个系统",
 ];
 
 export const afterBase = [
   "能力做成插件，放进目录就生效",
-  "业务代码一行不改，也不用预留接口",
-  "改配置即时生效，不用重启系统",
-  "插件相互隔离，坏了只摘除它自己",
+  "业务代码一行不改，也不用提前留接口",
+  "改配置即时生效，连重启都省了",
+  "插件彼此隔离，坏一个只摘它自己",
 ];
 
 export interface Outcome {
@@ -680,21 +680,21 @@ export const outcomes: Outcome[] = [
     key: "apm",
     en: "APM · 监控",
     title: "看清系统慢在哪里",
-    text: "每次请求经过了哪些服务、每一步花了多久，自动记录下来，不用在业务代码里埋点。",
+    text: "一次请求走过哪些服务、每一步花了多久，自动记下来——不用在业务代码里埋点。",
     tone: "clay",
   },
   {
     key: "security",
     en: "IAST / RASP · 安全",
     title: "发现并挡住安全问题",
-    text: "检查进入系统的数据，发现代码里的漏洞；可疑请求在到达核心逻辑前就被拦住。",
+    text: "检查流进系统的数据，找出代码里的漏洞；可疑请求还没碰到核心逻辑，就被拦在门外。",
     tone: "olive",
   },
   {
     key: "audit",
     en: "AUDIT · 审计",
     title: "留下可追溯的记录",
-    text: "谁在什么时候动了敏感数据，自动留痕，满足合规、对账和事后追查的需要。",
+    text: "谁、在什么时候、动了哪条敏感数据，全部自动留痕——合规、对账、事后追查都有据可查。",
     tone: "slate",
   },
 ];
@@ -706,7 +706,7 @@ export const basePrimitives: Primitive[] = [
     name: "配置读取",
     en: "CONFIG",
     impl: "weaver.yml · watch=true",
-    detail: "告诉底座要开启哪些能力。改完配置即时生效，不用重启系统，接入方式保持稳定。",
+    detail: "告诉底座该开哪些能力。改完即时生效，不用重启，接入方式始终不变。",
   },
   {
     n: "02",
@@ -714,21 +714,21 @@ export const basePrimitives: Primitive[] = [
     en: "WEAVING",
     impl: "WeaverTransformer · ByteBuddy Advice",
     detail:
-      "在程序的关键位置“插一句话”：方法进入、字段读取、异常抛出。业务代码不用改，也不用提前预留接口。",
+      "在程序的关节处“插一句话”：方法进入、字段读取、异常抛出。业务代码不用改，也不用预留接口。",
   },
   {
     n: "03",
     name: "数据上报",
     en: "EXPORT",
     impl: "events · metrics · trace · OTLP",
-    detail: "把看到的事情整理成事件、指标和调用链路，送到你自己的监控或安全平台。",
+    detail: "把看到的事整理成事件、指标和调用链，送进你自己的监控或安全平台。",
   },
   {
     n: "04",
     name: "模块加载",
     en: "LOADING",
     impl: "AgentClassLoader · plugins/",
-    detail: "每个能力独立打包、独立加载。某个插件坏了，只摘除它自己，系统照常运行。",
+    detail: "每个能力独立打包、独立加载。哪个插件坏了，摘掉它就行，系统照常跑。",
   },
 ];
 
@@ -763,7 +763,7 @@ export const boundaries: BoundaryLayer[] = [
     owner: "插件",
     state: "由你实现",
     tone: "app",
-    summary: "插件（也就是产品）负责“决定”：拦到之后怎么做判断、记什么、报给谁。",
+    summary: "插件（也就是产品）负责“决定”：拦到之后怎么判断、记什么、报给谁。",
     items: [
       "监控平台（APM）：记录请求怎么走",
       "安全检测（IAST）：发现代码里的漏洞",
@@ -777,7 +777,7 @@ export const boundaries: BoundaryLayer[] = [
     owner: "产品层",
     state: "不提供",
     tone: "control",
-    summary: "管控层负责“物业”：界面、存储、告警与权限，交给你的平台团队。",
+    summary: "管控层负责“物业”：界面、存储、告警与权限，交给你自己的平台团队。",
     items: [
       "控制台与规则下发",
       "数据存储、查询与检索",
@@ -871,13 +871,13 @@ export const fits: FitRow[] = [
     key: "yes",
     label: "适合你，如果",
     tone: "olive",
-    text: "你要做的是自己的监控、安全或审计产品，需要稳定地插进别人的系统，又不想从零写一套字节码引擎。",
+    text: "你要做自己的监控、安全或审计产品，得稳稳地插进别人的系统，又不想从零写一套字节码引擎。",
   },
   {
     key: "no",
     label: "不适合，如果",
     tone: "clay",
-    text: "你只是想买一个开箱即用的 APM 平台。那种需求用现成产品更划算，底座给不了界面、存储和规则库。",
+    text: "你只想买一个开箱即用的 APM 平台。这种需求用现成产品更划算——界面、存储和规则库，底座本来就不提供。",
   },
 ];
 
@@ -1032,31 +1032,31 @@ export interface FaqItem {
 export const faqs: FaqItem[] = [
   {
     q: "它会让现有系统变慢吗？",
-    a: "热路径上的判断是纳秒级的：精确匹配约 1.2 ns，熔断检查约 25 ns。真正的开销取决于插件在回调里做什么；把 telemetry、returnSnapshot、mdc、pluginMetrics、circuitBreaker 全部关掉后，一次被匹配的调用从约 335 ns 降到约 88 ns，拦截本身不受影响。",
+    a: "热路径上的判断是纳秒级的：精确匹配约 1.2 ns，熔断检查约 25 ns。真正花多少，取决于插件在回调里做什么。把 telemetry、returnSnapshot、mdc、pluginMetrics、circuitBreaker 全部关掉后，一次被匹配的调用从约 335 ns 降到约 88 ns，拦截本身一点没少。",
   },
   {
     q: "需要改业务代码吗？",
-    a: "不需要。启动命令加一个 -javaagent，旁边放 plugins/ 目录即可；业务代码不 import 任何插件，也不用预留接口。仓库里的三个演示程序就是这么做的。",
+    a: "不需要。启动命令加一个 -javaagent，旁边放好 plugins/ 目录即可。业务代码不 import 任何插件，也不用预留接口——仓库里的三个演示程序就是这么跑的。",
   },
   {
     q: "插件写错了会不会拖垮业务？",
-    a: "底座按失败开放处理：织入失败保留原方法，插件类加载器 child-first 隔离；某个拦截器持续出错会被熔断器自动摘除，系统压力大时自适应采样会降低采样率。",
+    a: "底座按失败开放处理：织入失败就保留原方法，插件走 child-first 类加载隔离。某个拦截器持续出错，会被熔断器自动摘掉；系统压力上来，自适应采样自动调低采样率。拦截还在，开销先降。",
   },
   {
     q: "升级 Java 或框架版本怎么办？",
-    a: "主代码以 --release 8 编译，只使用 JDK 8 API，可运行在 Java 8 及以上；发布前在 JDK 8、11、17、21 上做过真实 attach 冒烟。插件按目标库的类名与签名匹配，目标库不在场就不会加载。",
+    a: "主代码以 --release 8 编译，只用 JDK 8 API，所以 Java 8 及以上都能跑；发布前在 JDK 8、11、17、21 上做过真实 attach 冒烟。插件按目标库的类名和签名匹配，目标库不在场就根本不加载。",
   },
   {
     q: "还要额外部署什么中间件吗？",
-    a: "不用。插件跟着 plugins/ 目录走，指标、健康检查、OTLP 导出等都是可选的运行时 jar，配置了对应端口才启用；不用的能力可以直接从发行包里删掉。",
+    a: "不用。插件跟着 plugins/ 目录走；指标、健康检查、OTLP 导出都是可选的运行时 jar，配了对应端口才启用，不用的直接从发行包里删掉即可。",
   },
   {
     q: "它和 SkyWalking、OpenTelemetry Agent 是什么关系？",
-    a: "同类技术底座，定位不同。它们更接近开箱即用的成品 APM；weaver-girl 只提供切点植入、上下文、导出与隔离，让你在上面做自己的 APM、IAST、RASP 或审计产品。产品定位文档里有逐项对照表。",
+    a: "同一类技术底座，定位不同。它们更接近开箱即用的成品 APM；weaver-girl 只提供切点植入、上下文、导出和隔离，让你在上面做自己的 APM、IAST、RASP 或审计产品。逐项对照表在《产品定位》文档里。",
   },
   {
     q: "许可证是什么？可以商用吗？",
-    a: "MIT。1.0.0 已发布在 GitHub Release，代码、插件和文档同一个版本；Maven Central 尚未上线，当前从 JitPack 解析依赖。",
+    a: "MIT。1.0.0 已发布在 GitHub Release，代码、插件和文档同一个版本；Maven Central 还没上线，依赖目前从 JitPack 解析。",
   },
 ];
 

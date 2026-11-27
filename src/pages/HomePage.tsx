@@ -10,6 +10,7 @@ import { CountUp } from "../components/CountUp";
 import { DeliveryTracks } from "../components/DeliveryTracks";
 import { Faq } from "../components/Faq";
 import { FitFork } from "../components/FitFork";
+import { SplitHeading, WeaveMesh } from "../components/Motion";
 import { LoomBackdrop } from "../components/LoomBackdrop";
 import { OutcomeBus } from "../components/OutcomeBus";
 import { Reveal } from "../components/Reveal";
@@ -63,6 +64,7 @@ export function HomePage() {
     <>
       <section className="hero">
         <LoomBackdrop className="hero-loom" />
+        <WeaveMesh />
         <div className="hero-orbit" aria-hidden="true">
           <span />
           <span />
@@ -73,11 +75,12 @@ export function HomePage() {
               <span className="kicker-index">00</span>
               PLUG-IN BASE / RUNNING SYSTEM
             </p>
-            <h1>切面底座</h1>
+            <SplitHeading text="切面底座" stagger={110} delay={260} lean={1.2} />
             <p className="hero-line">不用改代码，就能给系统加能力。</p>
             <p className="lede">
-              很多系统还在跑，却已经改不动了：想给敏感数据打码、记录操作、挡住攻击，都得改业务代码、
-              排期、重新发布。weaver-girl 把这层能力做成“插件”，放进去就生效。
+              系统还在跑，却已经改不动了：想给敏感数据打码、记录操作、挡住攻击，都要改业务代码、
+              排期、回归、重新发布。weaver-girl 把这些能力做成插件——放一个 jar 进去，下一次加载就生效，
+              业务代码一行不动。
             </p>
             <div className="cta-row">
               <Link to="/quick-start" className="btn btn-primary">
@@ -160,15 +163,15 @@ export function HomePage() {
           </p>
           <h2>系统还在跑，但改不动了。</h2>
           <p className="section-lede">
-            给一个已经上线的系统加能力——敏感数据打码、操作记录、挡住攻击——通常意味着改业务代码、
-            排期、回归、重新发布。风险大、周期长，很多团队干脆不做。
+            给一个已经上线的系统加能力——打码、留痕、挡住攻击——通常意味着一轮改代码、排期、回归和发布。
+            风险不小，周期又长，于是很多团队干脆不做。
           </p>
         </Reveal>
         <Reveal className="problem-visual" variant="fade">
           <DeliveryTracks />
         </Reveal>
         <Reveal className="problem-note" variant="fade">
-          把“给系统加能力”，从改代码变成插插件。
+          于是“加能力”这件事，从一次发布变成一次插电。
         </Reveal>
       </section>
 
@@ -182,8 +185,8 @@ export function HomePage() {
           </p>
           <h2>一块底座，长出三种产品。</h2>
           <p className="section-lede">
-            监控、安全、审计看起来是三件不同的事，底层都要先做同一件事：
-            把逻辑插进运行中的系统，再把看到的数据送出去。换一批插件，就换一种产品。
+            监控、安全、审计看着是三件事，底层却是同一件事：把逻辑插进正在运行的系统，再把看到的数据送出去。
+            换一批插件，就换一种产品——底座本身不用重写。
           </p>
         </Reveal>
         <Reveal className="outcome-visual" variant="fade">
@@ -218,8 +221,8 @@ export function HomePage() {
           </p>
           <h2>底座只做四件事。</h2>
           <p className="section-lede">
-            读取配置、把逻辑插进程序、把数据送出去、安全地加载插件。判断规则、存储和界面，
-            都不在底座里——那是上层产品的事。
+            只有四件：读配置、把逻辑插进程序、把数据送出去、安全地加载插件。
+            判断规则、存储和界面都不在这里——那是上层产品的事。
           </p>
         </Reveal>
         <Reveal className="primitive-visual" variant="fade">
@@ -240,7 +243,7 @@ export function HomePage() {
             <h2>三层分工，各归其位。</h2>
             <p className="section-lede">
               把底座想成墙里的电线：它负责通电，不决定你插什么电器。监控、安全、审计是电器，
-              控制台和存储是物业。哪一层出问题，一眼就能找到。
+              控制台和存储是物业。哪一层出了故障，顺着线就能找到是谁。
             </p>
           </Reveal>
           <Reveal className="boundary-visual" variant="fade">
@@ -281,15 +284,15 @@ export function HomePage() {
           </p>
           <h2>写插件，只需要认一个接口。</h2>
           <p className="section-lede">
-            插件只依赖 <code className="inline">weaver-girl-api</code> 这一个 jar。底座内部怎么实现、
-            怎么升级，都不会牵连插件——写插件的人不用关心底座里有什么。
+            插件只依赖 <code className="inline">weaver-girl-api</code> 一个 jar。底座怎么实现、怎么升级，
+            都牵连不到插件——写插件的人不需要知道底座里有什么。
           </p>
         </Reveal>
         <div className="contract-grid">
           <Reveal className="contract-side" variant="left">
             <p className="prose">
-              一个插件声明名称、登记要插入的位置，剩下的交给底座：发现、隔离、加载。
-              约定越小，插件越容易写，也越不容易被底座的变化影响。
+              插件只做两件事：报上名字，登记要插在哪；发现、隔离、加载都归底座。
+              约定越窄，插件越好写，也越不容易被底座的变化带翻。
             </p>
             <div className="contract-visual">
               <ContractHub />
@@ -319,8 +322,8 @@ export function HomePage() {
           </p>
           <h2>一次挂载，四步生效。</h2>
           <p className="section-lede">
-            启动时挂上底座，它自己发现插件、登记位置、把逻辑织进程序。失败开放、隔离和自保，
-            让它敢一直待在线上。
+            启动时挂上，它自己发现插件、登记位置、把逻辑织进程序。失败开放、类加载隔离和自保，
+            让它可以一直待在线上，不靠人盯着。
           </p>
         </Reveal>
         <Reveal className="weave-map-shell" variant="fade">
@@ -352,8 +355,8 @@ export function HomePage() {
           </p>
           <h2>126 块现成能力，常见系统都覆盖。</h2>
           <p className="section-lede">
-            数据库、缓存、消息队列、Web 框架、HTTP 客户端……系统里用什么，插件就拦什么；
-            没用到的不会加载，也不占资源。
+            数据库、缓存、消息队列、Web 框架、HTTP 客户端——系统里用什么，插件就拦什么。
+            没用到的根本不加载，也就不占资源。
           </p>
         </Reveal>
         <div className="coverage-table">
@@ -395,8 +398,8 @@ export function HomePage() {
           </p>
           <h2>纳秒级的判断，才敢放在热路径上。</h2>
           <p className="section-lede">
-            拦截发生在每一次方法调用之前，底座自己的开销必须小到可以被忽略。下面这组数字来自仓库的
-            JMH 基线，不是营销口径；真正的成本取决于插件在回调里做什么。
+            拦截发生在每一次方法调用之前，底座自身的开销必须小到可以忽略。下面这组数字直接取自仓库的
+            JMH 基线，不是营销口径；真正花多少，取决于插件在回调里做什么。
           </p>
         </Reveal>
         <div className="perf-stats">
@@ -447,8 +450,8 @@ export function HomePage() {
           </p>
           <h2>三个小故事，看它改变了什么。</h2>
           <p className="section-lede">
-            同一段业务代码跑两遍：一遍不装底座，一遍装上。差别由程序自己断言，
-            不是手工截的图，也不是准备好的演示。
+            同一段业务代码跑两遍：一遍不装，一遍装上。差别由程序自己断言、自己给出退出码，
+            不是手工截的图，也不是排练过的演示。
           </p>
         </Reveal>
         <Reveal className="evidence-harness" variant="fade">
@@ -480,8 +483,8 @@ export function HomePage() {
           </p>
           <h2>先想清楚：它是不是给你的。</h2>
           <p className="section-lede">
-            底座不是万能的。它擅长“给系统加能力”，不擅长“直接给你一个能用的产品”。
-            两句话就能判断。
+            底座并不万能。它擅长“给系统加能力”，不擅长“直接交给你一个能用的产品”。
+            一句话就能分清楚。
           </p>
         </Reveal>
         <Reveal className="fit-visual" variant="fade">
@@ -506,7 +509,8 @@ export function HomePage() {
           </p>
           <h2>还有几个问题，先答在这里。</h2>
           <p className="section-lede">
-            这些问题在接入前最常被问到：会不会变慢、要不要改代码、插件坏了怎么办、和现成 APM 有什么不同。
+            接入前最常被问的就是这几件：会不会变慢、要不要改代码、插件坏了怎么办、和现成 APM 有什么不同。
+            答案都在下面。
           </p>
         </Reveal>
         <Faq />
@@ -522,7 +526,7 @@ export function HomePage() {
           </p>
           <h2>三步，把它跑起来。</h2>
           <p className="section-lede">
-            构建、挂上、观察。不需要改业务代码，也不需要额外安装中间件；插件跟着{" "}
+            构建、挂上、观察。不改业务代码，也不装中间件；插件跟着{" "}
             <code className="inline">plugins/</code> 目录走。
           </p>
         </Reveal>

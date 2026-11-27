@@ -1,3 +1,5 @@
+import { SplitHeading, WeaveMesh } from "./Motion";
+
 interface PageHeroProps {
   kicker: string;
   title: string;
@@ -8,9 +10,12 @@ interface PageHeroProps {
 export function PageHero({ kicker, title, lede }: PageHeroProps) {
   return (
     <header className="page-hero">
-      <p className="kicker">{kicker}</p>
-      <h1>{title}</h1>
-      <p className="dek">{lede}</p>
+      <WeaveMesh />
+      <div className="page-hero-copy">
+        <p className="kicker">{kicker}</p>
+        <SplitHeading text={title} />
+        <p className="dek">{lede}</p>
+      </div>
     </header>
   );
 }

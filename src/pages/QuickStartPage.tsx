@@ -77,14 +77,14 @@ export function QuickStartPage() {
       <PageHero
         kicker="BUILD & ATTACH"
         title="三步，把它跑起来"
-        lede="构建底座、挂到你的 Java 程序、看结果。支持 Java 8 及以上；不需要改业务代码，也不需要额外安装中间件。"
+        lede="构建底座、挂到你的 Java 程序、看结果。Java 8 及以上都能跑；不改业务代码，也不装中间件。"
       />
 
       <div className="page-body">
         <Reveal className="prose" variant="fade">
-          如果只是先看看效果：把 agent jar 和它旁边的 <code className="inline">plugins/</code> 目录一起放进服务器，
-          在启动命令里加一个 <code className="inline">-javaagent</code> 参数就行——相当于告诉 Java“启动时先加载这个工具”。
-          业务代码不用改，程序照常启动。
+          想先看效果：把 agent jar 和它旁边的 <code className="inline">plugins/</code> 一起放到服务器上，
+          启动命令里加一个 <code className="inline">-javaagent</code> 就完了——相当于告诉 Java“启动时先加载这个工具”。
+          业务代码不动，程序照常起来。
         </Reveal>
 
         <Reveal className="attach-visual" variant="fade">
@@ -154,9 +154,9 @@ export function QuickStartPage() {
         </Reveal>
         <Reveal className="prose" variant="fade">
           第三方插件只依赖 <code className="inline">weaver-girl-api</code>。实现{" "}
-          <code className="inline">WeaverPlugin</code> 后把 jar 放进 <code className="inline">plugins/</code>
-          ，它会和内置插件一起被加载。1.0.0 已发布在 GitHub；Maven Central 尚未上线，当前从 JitPack 解析依赖，
-          本地开发也可以先从源码 <code className="inline">mvn install</code> 安装 SDK。
+          <code className="inline">WeaverPlugin</code>，把 jar 丢进 <code className="inline">plugins/</code>
+          ，它就会和内置插件一起被加载。1.0.0 已经发在 GitHub；Maven Central 还没上线，依赖目前走 JitPack，
+          本地开发也可以先 <code className="inline">mvn install</code> 把 SDK 装进仓库。
         </Reveal>
         <Reveal variant="scale">
           <CodeBlock code={pluginDependencyExample} file="pom.xml" />
@@ -166,9 +166,9 @@ export function QuickStartPage() {
           指标与健康检查
         </Reveal>
         <Reveal className="prose" variant="fade">
-          metrics、health、OTLP 等都是运行时能力 jar，配置对应端口后才启用；Prometheus 抓取{" "}
+          metrics、health、OTLP 都是运行时能力 jar，配了对应端口才会启用。Prometheus 抓{" "}
           <code className="inline">/metrics</code>，Kubernetes 探针直接打{" "}
-          <code className="inline">/health</code> 与 <code className="inline">/ready</code>。
+          <code className="inline">/health</code> 和 <code className="inline">/ready</code>。
         </Reveal>
         <Reveal variant="scale">
           <CodeBlock code={observabilityExample} file="terminal" />
@@ -178,8 +178,8 @@ export function QuickStartPage() {
           确认它真的在工作
         </Reveal>
         <Reveal className="prose" variant="fade">
-          挂上之后不要只看“进程没崩”。下面四个端点逐个打一遍，能回答“agent 进来了没有、插件登记了没有、
-          指标出没出来”。
+          挂上之后，别只看“进程没崩”。下面四个端点挨个打一遍，就能回答三件事：
+          agent 进来了没有、插件登记了没有、指标出没出来。
         </Reveal>
         <Reveal className="verify-visual" variant="fade">
           <VerifyConsole />
