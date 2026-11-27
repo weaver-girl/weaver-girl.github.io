@@ -11,6 +11,7 @@ import { DeliveryTracks } from "../components/DeliveryTracks";
 import { Faq } from "../components/Faq";
 import { FitFork } from "../components/FitFork";
 import { SplitHeading, WeaveMesh } from "../components/Motion";
+import { LimitTable } from "../components/LimitTable";
 import { LoomBackdrop } from "../components/LoomBackdrop";
 import { OutcomeBus } from "../components/OutcomeBus";
 import { Reveal } from "../components/Reveal";
@@ -494,6 +495,12 @@ export function HomePage() {
         </Reveal>
         <Reveal className="fit-visual" variant="fade">
           <FitFork />
+        </Reveal>
+        <Reveal as="h3" className="subhead limit-heading" variant="fade">
+          还有几条能力边界，最好现在就看清。
+        </Reveal>
+        <Reveal className="limit-visual" variant="fade">
+          <LimitTable />
         </Reveal>
         <Reveal className="fit-note" variant="fade">
           想知道它和 SkyWalking、OpenTelemetry Agent 的差别，

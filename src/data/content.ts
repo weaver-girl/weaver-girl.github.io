@@ -945,6 +945,45 @@ export const fits: FitRow[] = [
   },
 ];
 
+export interface LimitRow {
+  joint: string;
+  limit: string;
+  instead: string;
+}
+
+/**
+ * The engine's real limits, from docs/plugin-developer-guide.md §"What each join point can and
+ * cannot do". They are listed on the site because a hook written without knowing them looks
+ * correct and silently behaves differently — which is the worst way to find out.
+ */
+export const joinPointLimits: LimitRow[] = [
+  {
+    joint: "构造方法",
+    limit: "跳过方法、捕获异常都不生效，拿不到方法名和参数类型。",
+    instead: "参数类型从自己的匹配器里拿；失败用调用方自己的 try/catch 表达。",
+  },
+  {
+    joint: "字段",
+    limit: "只看得到 getX / isX / setX 这类访问方法；方法体里直接读写字段看不见，写 null 和读也分不开。",
+    instead: "要看见直接读写，就拦声明类的方法，或走 Instrumentation 接口自己写转换器。",
+  },
+  {
+    joint: "异常",
+    limit: "触发点是“方法带着异常退出”，不是“进入某个 catch 块”。",
+    instead: "想知道方法抛不抛某个异常，这正好够用；要按 catch 块粒度做，就不行。",
+  },
+  {
+    joint: "静态初始化",
+    limit: "每个类每个 JVM 只跑一次，而且不能跳过。",
+    instead: "只能观察，不能改变已经发生的事。",
+  },
+  {
+    joint: "参数改写",
+    limit: "要用 ARGUMENT_REWRITE 模式，只覆盖前 8 个参数，bootstrap 加载的类会被跳过。",
+    instead: "默认拦截模式本来就写不回参数——这是设计，不是 bug。",
+  },
+];
+
 /** Hero panel: what the JVM prints when the base starts. */
 export const bootLines: { key: string; value: string }[] = [
   { key: "contract", value: "weaver-girl-api" },

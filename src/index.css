@@ -8492,3 +8492,95 @@ main:focus {
   font-size: 14px;
   line-height: 1.8;
 }
+
+/* ---------- the limits table (home: fit) ---------- */
+
+.limit-heading {
+  margin-top: 56px;
+}
+
+.limit-visual {
+  margin-top: 4px;
+}
+
+.limit-table {
+  border-top: 1px solid var(--line-strong);
+}
+
+.limit-head {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 24px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+}
+
+.limit-row {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.limit-joint {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.limit-why {
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.limit-instead {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 860px) {
+  .limit-head {
+    display: none;
+  }
+
+  .limit-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 16px 0 18px;
+  }
+
+  .limit-joint {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+/* On a phone the three columns stack, so each block says what it is. */
+.limit-tag {
+  display: none;
+  margin-right: 6px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-style: normal;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 860px) {
+  .limit-tag {
+    display: inline;
+  }
+
+  .limit-instead {
+    margin-top: 4px;
+  }
+}
