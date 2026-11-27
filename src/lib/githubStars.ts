@@ -19,6 +19,15 @@ const DB_NAME = "weaver-girl-site";
 const DB_VERSION = 1;
 const STORE = "repo";
 const STAR_KEY = "stars";
+const BACKOFF_KEY = "stars-backoff";
+
+/**
+ * After a failed or refused request, do not ask again for this long. GitHub's
+ * anonymous quota is 60 requests per hour per IP and a shared NAT can spend it
+ * on someone else's behalf; retrying on every page load would only keep the
+ * badge blank and burn the quota further.
+ */
+const FAILURE_BACKOFF = 15 * 60 * 1000;
 
 export interface StarSnapshot {
   count: number;
@@ -54,6 +63,42 @@ function openDb(): Promise<IDBDatabase | null> {
     request.onerror = () => resolve(null);
     request.onblocked = () => resolve(null);
   });
+}
+
+async function readRecord<T>(key: string): Promise<T | null> {
+  const db = await openDb();
+  if (!db) return null;
+  try {
+    return await new Promise<T | null>((resolve) => {
+      const tx = db.transaction(STORE, "readonly");
+      const request = tx.objectStore(STORE).get(key);
+      request.onsuccess = () => resolve((request.result as T | undefined) ?? null);
+      request.onerror = () => resolve(null);
+      tx.onabort = () => resolve(null);
+    });
+  } catch {
+    return null;
+  } finally {
+    db.close();
+  }
+}
+
+async function writeRecord(key: string, value: unknown): Promise<void> {
+  const db = await openDb();
+  if (!db) return;
+  try {
+    await new Promise<void>((resolve) => {
+      const tx = db.transaction(STORE, "readwrite");
+      tx.objectStore(STORE).put(value, key);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+      tx.onabort = () => resolve();
+    });
+  } catch {
+    // A full or read-only store only costs us the next visit's head start.
+  } finally {
+    db.close();
+  }
 }
 
 export async function readStarSnapshot(): Promise<StarSnapshot | null> {
@@ -133,10 +178,17 @@ export async function resolveStars(): Promise<StarResult | null> {
     return { count: cached.count, savedAt: cached.savedAt, fresh: false };
   }
 
+  // A recent failure parks the network path until the backoff expires.
+  const lastFailure = await readRecord<{ at: number }>(BACKOFF_KEY);
+  if (lastFailure && Date.now() - lastFailure.at < FAILURE_BACKOFF) {
+    return cached ? { count: cached.count, savedAt: cached.savedAt, fresh: false } : null;
+  }
+
   const outcome = await fetchStars(cached?.etag);
 
   if (outcome.kind === "count") {
     const savedAt = Date.now();
+    void writeRecord(BACKOFF_KEY, { at: 0 });
     void writeStarSnapshot({ count: outcome.count, savedAt, etag: outcome.etag });
     return { count: outcome.count, savedAt, fresh: true };
   }
@@ -147,7 +199,8 @@ export async function resolveStars(): Promise<StarResult | null> {
     return { count: cached.count, savedAt, fresh: true };
   }
 
-  // Rate-limited, offline, blocked: the last known number is the answer.
+  // Rate-limited, offline, blocked: note it, and answer from the cache if any.
+  void writeRecord(BACKOFF_KEY, { at: Date.now() });
   return cached ? { count: cached.count, savedAt: cached.savedAt, fresh: false } : null;
 }
 
